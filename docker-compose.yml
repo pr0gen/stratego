@@ -1,0 +1,11 @@
+version: "2"
+services:
+  electron:
+    build:
+      context: .
+      dockerfile: docker/build/electron/Dockerfile
+      args:
+        DOCKER_WWW_DATA_GID: 1000
+        DOCKER_WWW_DATA_UID: 1000
+    working_dir: /app
+
