@@ -73,4 +73,4 @@ RUN addgroup -g 1001 node \
   && rm -f "node-v$NODE_VERSION-linux-$ARCH-musl.tar.xz" \
   && apk del .build-deps
 
-RUN  git clone https://github.com/electron-react-boilerplate/electron-react-boilerplate.git ./app \
+RUN  git clone https://github.com/electron-react-boilerplate/electron-react-boilerplate.git \
