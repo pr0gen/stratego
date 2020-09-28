@@ -8,4 +8,10 @@ services:
         DOCKER_WWW_DATA_GID: 1000
         DOCKER_WWW_DATA_UID: 1000
     working_dir: /app
+    volumes_from:
+      - appdata
 
+  appdata:
+    image: tianon/true
+    volumes:
+      - ./app:/app
