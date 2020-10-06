@@ -1,7 +1,10 @@
+import { Piece } from './piece/piece';
+
 export interface Case {
 	state: CaseState,
 	x: number,
-	y: number
+	y: number,
+	content: Piece
 }
 
 export enum CaseState {
