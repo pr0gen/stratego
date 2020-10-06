@@ -5,6 +5,21 @@ export interface Piece {
 	rank: number,
 }
 
+export enum PieceType {
+	Bomb = -2,
+	Marshal = 10,
+	General = 9,
+	Colonel = 8,
+	Major = 7,
+	Captain = 6,
+	Lieutenant = 5,
+	Sergeant = 4,
+	Miner = 3,
+	Scout = 2,
+	Spy = 1,
+	Flag = -1
+}
+
 export function create(type: PieceType) : Piece {
 	switch(type) {
 		case PieceType.Bomb:
@@ -68,20 +83,5 @@ export function create(type: PieceType) : Piece {
 			rank: PieceType.Flag
 		};
 	}
-}
-
-export enum PieceType {
-	Bomb = -2,
-	Marshal = 10,
-	General = 9,
-	Colonel = 8,
-	Major = 7,
-	Captain = 6,
-	Lieutenant = 5,
-	Sergeant = 4,
-	Miner = 3,
-	Scout = 2,
-	Spy = 1,
-	Flag = -1
 }
 
