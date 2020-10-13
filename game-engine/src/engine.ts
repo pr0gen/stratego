@@ -2,6 +2,7 @@ import { Board, StrategoBoard } from './board/board';
 import { CaseState, create as createCase } from './case';
 import { createAllPiece } from './piece/infra/piece_utils';
 import { Player } from './player/player';
+import { gameIsOver } from './engine_utils';
 
 let board = new StrategoBoard(10);
 let pieces = createAllPiece();
@@ -12,8 +13,8 @@ console.log(board.state());
 
 class GameEngine {
 
-	board: Board;
-	players: Player[];
+	private board: Board;
+	private players: Player[];
 
 	constructor(p1: Player, p2: Player) {
 		this.board = new StrategoBoard(10);
@@ -22,8 +23,14 @@ class GameEngine {
 		this.players.push(p2);
 	}
 
-	launch() {
+	public launch() {
+		while(!this.isOver()) {
+			//TODO
+		}
+	}
 
+	private isOver(): boolean {
+		return gameIsOver();
 	}
 
 }
