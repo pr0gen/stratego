@@ -12,3 +12,11 @@ export enum CaseState {
 	Empty = 0,
 	Full = 1
 }
+
+export function create(state: CaseState, 
+		      x: number,
+		      y: number,
+		      content: Piece): Case {
+
+	return {state, x, y, content};
+}

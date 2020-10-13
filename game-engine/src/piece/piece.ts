@@ -6,6 +6,7 @@ export interface Piece {
 }
 
 export enum PieceType {
+	Null = -10,
 	Bomb = -2,
 	Marshal = 10,
 	General = 9,
@@ -22,6 +23,11 @@ export enum PieceType {
 
 export function create(type: PieceType) : Piece {
 	switch(type) {
+		case PieceType.Null:
+			return {
+			move: moveCreate(AvailableMoves.Immovable),
+			rank: PieceType.Null
+		};
 		case PieceType.Bomb:
 			return {
 			move: moveCreate(AvailableMoves.Immovable),
