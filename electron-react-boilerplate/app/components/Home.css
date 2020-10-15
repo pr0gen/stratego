@@ -1,7 +1,6 @@
 .container {
-  position: absolute;
-  top: 30%;
-  left: 10px;
+  margin: auto;
+  padding: 10% 20%;
   text-align: center;
 }
 
@@ -11,4 +10,18 @@
 
 .container a {
   font-size: 1.4rem;
+}
+
+.choiceContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+button, button>Link{
+  margin: 30px;
+  color: darkblue;
+}
+
+a{
+  color: darkblue;
 }

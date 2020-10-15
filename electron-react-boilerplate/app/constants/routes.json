@@ -1,4 +1,9 @@
 {
   "HOME": "/",
-  "COUNTER": "/counter"
+  "COUNTER": "/counter",
+  "CREATE_GAME": "/create",
+  "JOIN_GAME": "/join",
+  "SETTINGS": "/settings",
+  "RULES": "/rules",
+  "QUIT": "/quit"
 }
