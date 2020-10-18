@@ -1,1 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
+
+.idea/
+game-engine/node_modules/
+game-engine/.env

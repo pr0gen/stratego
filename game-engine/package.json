@@ -4,11 +4,13 @@
   "description": "Stratego game engine in TS (why)",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev": "(tsc main.ts -w) & nodemon main.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "ts-results": "^3.0.0"
   },
   "devDependencies": {
