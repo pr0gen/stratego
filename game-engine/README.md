@@ -13,6 +13,7 @@ Run `mode dist/index.js`
 
 ```
 npm install -g nodemon
+npm install @types/node --save-dev
 ```
 
 ### Configuration
