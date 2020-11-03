@@ -1,9 +1,7 @@
 import { Ok, Err, Result } from 'ts-results';
-
 import { Piece, PieceType, create as createPiece } from '../piece/piece';
 import { Case, CaseState, create as createCase } from '../case';
-import { StrategoError, MoveError } from '../error/error';
-
+import { StrategoError, MoveError, PlacementError } from '../error/error';
 
 export interface Board {
 
@@ -18,7 +16,7 @@ export class StrategoBoard implements Board {
 
 	board: Case[][];
 
-	constructor(size: number) {
+	public constructor(size: number) {
 		this.board = new Array(size);
 		for(var i: number = 0; i < size; i++) {
 			this.board[i] = new Array(size);
@@ -26,6 +24,16 @@ export class StrategoBoard implements Board {
 				this.board[i][j] = createCase(CaseState.Empty, i, j, createPiece(PieceType.Null));
 			}
 		}
+	}
+
+	public placePiece(x: number, y: number, p: Piece): Result<Piece, StrategoError> {
+		let actualCase = this.board[x][y];
+		if (actualCase.state == CaseState.Empty) {
+			this.board[x][y] = createCase(CaseState.Full, x, y, p);
+			return Ok(p);
+		}
+
+		return Err(new PlacementError(x, y, p));
 	}
 
 	state(): Case[][] {
@@ -42,5 +50,4 @@ export class StrategoBoard implements Board {
 	}
 
 }
-
 
