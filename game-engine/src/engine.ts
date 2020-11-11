@@ -1,6 +1,6 @@
 import { Board, StrategoBoard } from './board/board';
 import { CaseState, create as createCase } from './case';
-import { createAllPiece } from './piece/infra/piece_utils';
+import { createPiecesForNormalGame } from './piece/infra/piece_utils';
 import { Player } from './player/player';
 import { gameIsOver } from './engine_utils';
 
@@ -23,7 +23,8 @@ class GameEngine {
 	}
 
 	private isOver(): boolean {
-		return gameIsOver(this.board);
+		return true;
+		//return gameIsOver(this.board);
 	}
 
 }
