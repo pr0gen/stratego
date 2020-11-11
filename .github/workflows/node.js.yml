@@ -27,13 +27,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     defaults:
-      shell: bash
-      working-directory: game-engine
       run: |
         npm ci
         npm run build --if-present
         npm test
-
+      working-directory: game-engine
 
 
 
