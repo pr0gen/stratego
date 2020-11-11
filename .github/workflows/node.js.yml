@@ -19,15 +19,20 @@ jobs:
       matrix:
         node-version: [12.x]
 
+    defaults:
+      shell: bash
+      working-directory: game-engine
+
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+        
+      run: |
+        npm ci
+        npm run build --if-present
+        npm test
 
-    - run: cd game-engine
-    - run: pwd
-    - run: npm ci
-    - run: npm run build --if-present
-    - run: npm test
+
