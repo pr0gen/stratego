@@ -19,10 +19,6 @@ jobs:
       matrix:
         node-version: [12.x]
 
-    defaults:
-      shell: bash
-      working-directory: game-engine
-
     steps:
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -30,9 +26,14 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - run: |
+    defaults:
+      shell: bash
+      working-directory: game-engine
+      run: |
         npm ci
         npm run build --if-present
         npm test
+
+
 
 
