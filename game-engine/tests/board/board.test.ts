@@ -1,9 +1,9 @@
 import * as board from '../../src/board/board';
 import { PieceType, create as createPiece } from '../../src/piece/piece';
-import { create as createCase, CaseState } from '../../src/case';
+import { create as createCase, CaseState, Case, createEmpty, createUnreachable } from '../../src/case';
 
 test('Should build a StrategoBoard', () => {
-	let strategoBoard = new board.StrategoBoard(2);
+	let strategoBoard = board.StrategoBoard.createEmptyStrategoBoard(2);
 	let state = strategoBoard.state();
 	
 	expect(state.length).toBe(2);
@@ -11,7 +11,7 @@ test('Should build a StrategoBoard', () => {
 });
 
 test('Should place a piece in board', () => {
-	let strategoBoard = new board.StrategoBoard(2);
+	let strategoBoard = board.StrategoBoard.createEmptyStrategoBoard(2);
 	strategoBoard.placePiece(0, 0, createPiece(PieceType.Bomb));
 
 	let state = strategoBoard.state();
@@ -21,14 +21,11 @@ test('Should place a piece in board', () => {
 
 	expect(content.rank).toBe(PieceType.Bomb);
 	expect(content.move).toEqual({min: 0, max:0});
-
-	expect(actualCase.state).toBe(1);
-	expect(actualCase.x).toBe(0);
-	expect(actualCase.y).toBe(0);
+	expect(actualCase.state).toBe(1); expect(actualCase.x).toBe(0); expect(actualCase.y).toBe(0);
 });
 
 test('Should move piece', () => {
-	let strategoBoard = new board.StrategoBoard(2);
+	let strategoBoard = board.StrategoBoard.createEmptyStrategoBoard(2);
 	let piece = createPiece(PieceType.General);
 	strategoBoard.placePiece(0, 0, piece);
 
@@ -48,9 +45,22 @@ test('Should move piece', () => {
 		expect(actualCase.state).toBe(1);
 		expect(actualCase.x).toBe(1);
 		expect(actualCase.y).toBe(1);
-
 	} else {
 		//If it fails we show it, should not happen
 		expect(1).toBe(0);
 	}
 });
+
+test('Should not move piece cause unreachable', () => {
+	let piece = createPiece(PieceType.Sergeant);
+	let newBoard: Case[][] = [
+		[createEmpty(0, 0), createEmpty(0, 1)],
+		[createEmpty(1, 0), createUnreachable(1, 1)]
+	];
+	let strategoBoard = new board.StrategoBoard(newBoard);
+
+	let res = strategoBoard.move(createCase(CaseState.Full, 1, 1, piece), {x: 1, y:1});
+
+	expect(res.err).toBe(true);
+});
+
