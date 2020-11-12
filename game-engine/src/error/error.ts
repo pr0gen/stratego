@@ -1,5 +1,6 @@
 import { Piece } from '../piece/piece';
 import { Case } from '../case';
+import { Coordinate } from '../board/board';
 
 export class StrategoError implements Error {
 
@@ -15,8 +16,8 @@ export class StrategoError implements Error {
 
 export class MoveError extends StrategoError {
 
-	constructor(c: Case, p: Piece) {
-		super("move", "Can not move piece " + p.rank + "to {" + c.x + ", " + c.y + ")");
+	constructor(c: Case, coo: Coordinate) {
+		super("move", "Can not move piece " + c.content.rank + "{" + c.x + "," + c.y + "} " + "to {" + coo.x + ", " + coo.y + ")");
 	}
 
 }

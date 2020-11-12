@@ -3,13 +3,18 @@ import { Piece, PieceType, create as createPiece } from '../piece/piece';
 import { Case, CaseState, create as createCase } from '../case';
 import { StrategoError, MoveError, PlacementError } from '../error/error';
 
+export interface Coordinate {
+	x: number,
+	y: number
+}
+
 export interface Board {
 
 	board: Case[][];
 
 	state(): Case[][];
 
-	move(c: Case, p: Piece): Result<Piece, StrategoError>;
+	move(c: Case, to: Coordinate): Result<Case, StrategoError>;
 }
 
 export class StrategoBoard implements Board {
@@ -40,13 +45,24 @@ export class StrategoBoard implements Board {
 		return this.board;
 	}
 
-	move(c: Case, p: Piece): Result<Piece, StrategoError> {
-		let actualCase = this.board[c.x][c.y];
-		if (actualCase.state == CaseState.Empty) {
-			this.board[c.x][c.y] = {state: CaseState.Full, x: c.x, y: c.y, content: p};
-			return Ok(p);
+	move(c: Case, to: Coordinate): Result<Case, StrategoError> {
+		let aimCase = this.board[to.x][to.y];
+		switch (aimCase.state) {
+			case CaseState.Empty: {
+				let newCase = createCase(CaseState.Full, to.x, to.y, c.content);
+				this.board[to.x][to.y] = newCase;
+				return Ok(newCase);
+			}
+			case CaseState.Full: {
+				//TODO
+			}
+			case CaseState.Unreachable:  {
+				return Err(new MoveError(c, to));
+			}
+			default: {
+				return Err(new MoveError(c, to));
+			}
 		}
-		return Err(new MoveError(c, p));	
 	}
 
 }
