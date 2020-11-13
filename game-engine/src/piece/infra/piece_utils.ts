@@ -1,6 +1,6 @@
 import { Piece, PieceType, create as pieceCreate } from '../piece';
 
-export function createAllPiece() : Piece[] {
+export function createPiecesForNormalGame() : Piece[] {
 	return [
 		pieceCreate(PieceType.Bomb),
 		pieceCreate(PieceType.Bomb),
