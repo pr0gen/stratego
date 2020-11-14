@@ -1,6 +1,6 @@
 import { Ok, Err, Result } from 'ts-results';
 import { Piece, PieceType, create as createPiece } from '../piece/piece';
-import { Case, CaseState, create as createCase } from '../case';
+import { Case, CaseState, createEmpty, create as createCase } from '../case';
 import { StrategoError, MoveError, PlacementError } from '../error/error';
 
 export interface Coordinate {
@@ -29,7 +29,7 @@ export class StrategoBoard implements Board {
 		for(var i: number = 0; i < size; i++) {
 			board[i] = new Array(size);
 			for(var j: number = 0; j < size; j++) {
-				board[i][j] = createCase(CaseState.Empty, i, j, createPiece(PieceType.Null));
+				board[i][j] = createEmpty(i, j);
 			}
 		}
 		return new StrategoBoard(board);

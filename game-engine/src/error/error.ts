@@ -29,3 +29,11 @@ export class PlacementError extends StrategoError {
 	}
 }
 
+export class InitGameError extends StrategoError {
+	
+	constructor(message: string) {
+		super("initialization", message);
+	}
+}
+
+
