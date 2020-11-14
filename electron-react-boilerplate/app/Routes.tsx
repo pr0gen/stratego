@@ -14,7 +14,7 @@ const LazyCounterPage = React.lazy(() =>
 );
 
 const LazyCreatePage = React.lazy(() =>
-  import(/* webpackChunkName: "CreatePage" */ './containers/CreatePage')
+  import(/* webpackChunkName: "CounterPage" */ './containers/CreatePage')
 );
 
 const CounterPage = (props: Record<string, any>) => (
@@ -34,8 +34,8 @@ export default function Routes() {
     <App>
       <Switch>
         <Route name="counterRouter" path="/counter" component={CounterPage} />
+        <Route name="createRouteur" path="/create" component={CreatePage} />
         <Route name="homeRouter" path="/" component={HomePage} />
-        <Route name="createRouter" path="/create" component={CreatePage} />
         <Route name="rulesRouter" path="rules" component={RulesPage} />
         <Route name="settingRouter" path="/settings" component={SettingsPage} />
         <Route name="quitRouter" path="/quit" component={QuitPage} />
