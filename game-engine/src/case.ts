@@ -14,6 +14,10 @@ export enum CaseState {
 	Full = 1
 }
 
+export function display(c: Case): string {
+	return "{" + c.x + "," + c.y + "}" + c.content.rank.toString();
+}
+
 export function createUnreachable(x: number, y: number): Case {
 	return create(
 		CaseState.Unreachable,
