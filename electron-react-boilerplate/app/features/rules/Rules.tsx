@@ -10,7 +10,7 @@ export default function Rules() {
           <i className="fa fa-arrow-left fa-3x" />
         </Link>
       </div>
-      <div>Test </div>
+      <div>PAGE RULES </div>
     </div>
   );
 }

@@ -3,10 +3,6 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
-import RulesPage from "./containers/RulesPage";
-import SettingsPage from "./containers/SettingsPage";
-import QuitPage from "./containers/QuitPage";
-import JoinPage from "./containers/JoinPage";
 
 // Lazily load routes and code split with webpack
 const LazyCounterPage = React.lazy(() =>
@@ -15,6 +11,22 @@ const LazyCounterPage = React.lazy(() =>
 
 const LazyCreatePage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/CreatePage')
+);
+
+const LazyRulesPage = React.lazy(() =>
+  import(/* webpackChunkName: "CounterPage" */ './containers/RulesPage')
+);
+
+const LazySettingsPage = React.lazy(() =>
+  import(/* webpackChunkName: "CounterPage" */ './containers/SettingsPage')
+);
+
+const LazyJoinPage = React.lazy(() =>
+  import(/* webpackChunkName: "CounterPage" */ './containers/JoinPage')
+);
+
+const LazyQuitPage = React.lazy(() =>
+  import(/* webpackChunkName: "CounterPage" */ './containers/QuitPage')
 );
 
 const CounterPage = (props: Record<string, any>) => (
@@ -29,17 +41,41 @@ const CreatePage = (props: Record<string, any>) => (
   </React.Suspense>
 );
 
+const RulesPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazyRulesPage {...props} />
+  </React.Suspense>
+);
+
+const SettingsPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazySettingsPage {...props} />
+  </React.Suspense>
+);
+
+const JoinPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazyJoinPage {...props} />
+  </React.Suspense>
+);
+
+const QuitPage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazyQuitPage {...props} />
+  </React.Suspense>
+);
+
 export default function Routes() {
   return (
     <App>
       <Switch>
         <Route name="counterRouter" path="/counter" component={CounterPage} />
         <Route name="createRouteur" path="/create" component={CreatePage} />
-        <Route name="homeRouter" path="/" component={HomePage} />
-        <Route name="rulesRouter" path="rules" component={RulesPage} />
+        <Route name="rulesRouter" path="/rules" component={RulesPage} />
         <Route name="settingRouter" path="/settings" component={SettingsPage} />
-        <Route name="quitRouter" path="/quit" component={QuitPage} />
         <Route name="joinRouter" path="/join" component={JoinPage} />
+        <Route name="quitRouter" path="/quit" component={QuitPage} />
+        <Route name="homeRouter" path="/" component={HomePage} />
       </Switch>
     </App>
   );
