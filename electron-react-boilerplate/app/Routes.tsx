@@ -1,10 +1,8 @@
 /* eslint react/jsx-props-no-spreading: off */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import routes from './constants/routes.json';
 import App from './containers/App';
 import HomePage from './containers/HomePage';
-import CreatePage from "./containers/CreatePage";
 import RulesPage from "./containers/RulesPage";
 import SettingsPage from "./containers/SettingsPage";
 import QuitPage from "./containers/QuitPage";
@@ -15,9 +13,19 @@ const LazyCounterPage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
 );
 
+const LazyCreatePage = React.lazy(() =>
+  import(/* webpackChunkName: "CreatePage" */ './containers/CreatePage')
+);
+
 const CounterPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>
     <LazyCounterPage {...props} />
+  </React.Suspense>
+);
+
+const CreatePage = (props: Record<string, any>) => (
+  <React.Suspense fallback={<h1>Loading...</h1>}>
+    <LazyCreatePage {...props} />
   </React.Suspense>
 );
 
@@ -25,13 +33,13 @@ export default function Routes() {
   return (
     <App>
       <Switch>
-        <Route path={routes.COUNTER} component={CounterPage} />
-        <Route path={routes.HOME} component={HomePage} />
-        <Route path={routes.CREATE_GAME} component={CreatePage} />
-        <Route path={routes.RULES} component={RulesPage} />
-        <Route path={routes.SETTINGS} component={SettingsPage} />
-        <Route path={routes.QUIT} component={QuitPage} />
-        <Route path={routes.JOIN_GAME} component={JoinPage} />
+        <Route name="counterRouter" path="/counter" component={CounterPage} />
+        <Route name="homeRouter" path="/" component={HomePage} />
+        <Route name="createRouter" path="/create" component={CreatePage} />
+        <Route name="rulesRouter" path="rules" component={RulesPage} />
+        <Route name="settingRouter" path="/settings" component={SettingsPage} />
+        <Route name="quitRouter" path="/quit" component={QuitPage} />
+        <Route name="joinRouter" path="/join" component={JoinPage} />
       </Switch>
     </App>
   );

@@ -20,7 +20,6 @@ export default function Counter() {
         <Link to={routes.HOME}>
           <i className="fa fa-arrow-left fa-3x" />
         </Link>
-        test
       </div>
       <div className={`counter ${styles.counter}`} data-tid="counter">
         {value}
