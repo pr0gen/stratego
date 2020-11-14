@@ -2,7 +2,7 @@ import { Move, AvailableMoves, create as moveCreate} from './move';
 
 export interface Piece {
 	move: Move,
-	rank: number,
+	rank: PieceType,
 }
 
 export enum PieceType {
