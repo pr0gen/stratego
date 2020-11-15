@@ -2,3 +2,5 @@
 game-engine/coverage/
 
 .idea/
+
+server/node_modules/
