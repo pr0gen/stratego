@@ -1,4 +1,3 @@
-
 enum PlayerState {
     Waiting ,
     InGame,

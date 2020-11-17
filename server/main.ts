@@ -1,5 +1,7 @@
 // Env
-import {config as dotenv} from "dotenv"
+import {config as dotenv} from 'dotenv'
+import run from './app'
+
 dotenv()
 
 // Require
@@ -13,7 +15,7 @@ const io = socketio(server, { cors: { origin: '*' } })
 
 // Constante
 const port = process.env.PORT
-const devMode = process.env.MODE == 'DEV' //bool
+const devMode = process.env.NODE_ENV !== 'production' //bool
 io.set('origins', '*:*');
 
 const options = {
@@ -25,62 +27,11 @@ if (devMode) {
     app.use(morgan('dev'))
 }
 
-
-// Express
-app.get('/', (req, res) => {
-    res.sendFile('index.html', options)
-})
-
-// Socket
-
-let games = []
-
-io.on('connection', (socket) => {
-    console.log('connection : ' + socket.id)
-
-    socket.on('create-game', () => {
-        const code = generateCode()
-        console.log('create-game ' + code )
-        games[socket.id] = code
-        socket.emit('response-create-game', code)
-    })
-
-    socket.on('join-game', (code) => {
-
-        //check if code exist
-        let found = false
-        let socketOtherPlayer = null
-
-        for (let socketId in games) {
-            if (games[socketId] == code ) {
-                found = true
-                socketOtherPlayer = socketId
-            }
-        }
-        console.log(found)
-        console.log(socketOtherPlayer)
-        if (found) {
-            socket.emit('response-join-game','start game')
-            socket.to(socketOtherPlayer).emit('player-found')
-        } else {
-            socket.emit('response-join-game','code pas bon')
-        }
-
-    })
-
-
-    socket.on('disconnect', () => {
-        console.log('disconnect : ' + socket.id)
-    })
-
-
-})
+run(app,io,options)
 
 // Function
 
-function generateCode() {
-    return Math.round(Math.random() * 10000)
-}
+
 
 // Start listening
 server.listen(port, () => {
