@@ -19,8 +19,9 @@ const devMode = process.env.NODE_ENV !== 'production' //bool
 io.set('origins', '*:*');
 
 const options = {
-    root: __dirname + '/views/'
+    root: __dirname + './../views/'
 }
+
 
 // Middleware
 if (devMode) {

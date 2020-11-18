@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "dev": "(tsc main.ts -w) & nodemon main.js"
+    "dev": "(tsc -w) & nodemon dist/main.js"
   },
   "author": "",
   "license": "ISC",

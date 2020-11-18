@@ -1,4 +1,4 @@
-enum PlayerState {
+export enum PlayerState {
     Waiting ,
     InGame,
     waitPlayerJoinGame,
