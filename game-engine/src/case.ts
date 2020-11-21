@@ -1,5 +1,5 @@
 import { AvailableMoves, create as createMove } from './piece/move';
-import { Piece, PieceType } from './piece/piece';
+import { Color, Piece, PieceType } from './piece/piece';
 
 export interface Case {
 	state: CaseState,
@@ -15,14 +15,16 @@ export enum CaseState {
 }
 
 export function display(c: Case): string {
-	return "{" + c.x + "," + c.y + "}" + c.content.rank.toString();
+	let content = c.content;
+	return "S" + c.state + "{" + c.x + "," + c.y + "}" 
+	+ content.rank.toString() + "/C" + content.color;
 }
 
 export function createUnreachable(x: number, y: number): Case {
 	return create(
 		CaseState.Unreachable,
 		x, y,
-		{move: createMove(AvailableMoves.Immovable), rank:PieceType.Null}
+		{move: createMove(AvailableMoves.Immovable), rank:PieceType.Null, color: Color.None}
 	);
 }
 
@@ -30,7 +32,7 @@ export function createEmpty(x: number, y: number): Case {
 	return create(
 		CaseState.Empty,
 		x, y,
-		{move: createMove(AvailableMoves.Immovable), rank:PieceType.Null}
+		{move: createMove(AvailableMoves.Immovable), rank:PieceType.Null, color: Color.None}
 	);
 }
 export function create(state: CaseState, 

@@ -1,58 +1,58 @@
-import { Piece, PieceType, create as pieceCreate } from '../piece';
+import { Piece, PieceType, create as pieceCreate, Color } from '../piece';
 
-export function createPiecesForNormalGame() : Piece[] {
+export function createPiecesForNormalGame(c: Color) : Piece[] {
 	return [
-		pieceCreate(PieceType.Bomb),
-		pieceCreate(PieceType.Bomb),
-		pieceCreate(PieceType.Bomb),
-		pieceCreate(PieceType.Bomb),
-		pieceCreate(PieceType.Bomb),
-		pieceCreate(PieceType.Bomb),
+		pieceCreate(PieceType.Bomb, c),
+		pieceCreate(PieceType.Bomb, c),
+		pieceCreate(PieceType.Bomb, c),
+		pieceCreate(PieceType.Bomb, c),
+		pieceCreate(PieceType.Bomb, c),
+		pieceCreate(PieceType.Bomb, c),
 
-		pieceCreate(PieceType.Marshal),
+		pieceCreate(PieceType.Marshal, c),
 		
-		pieceCreate(PieceType.General),
+		pieceCreate(PieceType.General, c),
 
-		pieceCreate(PieceType.Colonel),
-		pieceCreate(PieceType.Colonel),
+		pieceCreate(PieceType.Colonel, c),
+		pieceCreate(PieceType.Colonel, c),
 
-		pieceCreate(PieceType.Major),
-		pieceCreate(PieceType.Major),
-		pieceCreate(PieceType.Major),
+		pieceCreate(PieceType.Major, c),
+		pieceCreate(PieceType.Major, c),
+		pieceCreate(PieceType.Major, c),
 
-		pieceCreate(PieceType.Captain),
-		pieceCreate(PieceType.Captain),
-		pieceCreate(PieceType.Captain),
-		pieceCreate(PieceType.Captain),
+		pieceCreate(PieceType.Captain, c),
+		pieceCreate(PieceType.Captain, c),
+		pieceCreate(PieceType.Captain, c),
+		pieceCreate(PieceType.Captain, c),
 
-		pieceCreate(PieceType.Lieutenant),
-		pieceCreate(PieceType.Lieutenant),
-		pieceCreate(PieceType.Lieutenant),
-		pieceCreate(PieceType.Lieutenant),
+		pieceCreate(PieceType.Lieutenant, c),
+		pieceCreate(PieceType.Lieutenant, c),
+		pieceCreate(PieceType.Lieutenant, c),
+		pieceCreate(PieceType.Lieutenant, c),
 
-		pieceCreate(PieceType.Sergeant),
-		pieceCreate(PieceType.Sergeant),
-		pieceCreate(PieceType.Sergeant),
-		pieceCreate(PieceType.Sergeant),
+		pieceCreate(PieceType.Sergeant, c),
+		pieceCreate(PieceType.Sergeant, c),
+		pieceCreate(PieceType.Sergeant, c),
+		pieceCreate(PieceType.Sergeant, c),
 
-		pieceCreate(PieceType.Miner),
-		pieceCreate(PieceType.Miner),
-		pieceCreate(PieceType.Miner),
-		pieceCreate(PieceType.Miner),
-		pieceCreate(PieceType.Miner),
+		pieceCreate(PieceType.Miner, c),
+		pieceCreate(PieceType.Miner, c),
+		pieceCreate(PieceType.Miner, c),
+		pieceCreate(PieceType.Miner, c),
+		pieceCreate(PieceType.Miner, c),
 
-		pieceCreate(PieceType.Scout),
-		pieceCreate(PieceType.Scout),
-		pieceCreate(PieceType.Scout),
-		pieceCreate(PieceType.Scout),
-		pieceCreate(PieceType.Scout),
-		pieceCreate(PieceType.Scout),
-		pieceCreate(PieceType.Scout),
-		pieceCreate(PieceType.Scout),
+		pieceCreate(PieceType.Scout, c),
+		pieceCreate(PieceType.Scout, c),
+		pieceCreate(PieceType.Scout, c),
+		pieceCreate(PieceType.Scout, c),
+		pieceCreate(PieceType.Scout, c),
+		pieceCreate(PieceType.Scout, c),
+		pieceCreate(PieceType.Scout, c),
+		pieceCreate(PieceType.Scout, c),
 
-		pieceCreate(PieceType.Spy),
+		pieceCreate(PieceType.Spy, c),
 
-		pieceCreate(PieceType.Flag),
+		pieceCreate(PieceType.Flag, c),
 
 
 	];

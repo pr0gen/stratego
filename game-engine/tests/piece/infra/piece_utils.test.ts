@@ -1,9 +1,9 @@
 import { createPiecesForNormalGame } from '../../../src/piece/infra/piece_utils';
-import { PieceType } from '../../../src/piece/piece';
+import { Color, PieceType } from '../../../src/piece/piece';
 
 
 test('Should create all pieces', () => {
-	let pieces = createPiecesForNormalGame();	
+	let pieces = createPiecesForNormalGame(Color.Blue);	
 	expect(pieces.length).toBe(40);
 
 	let bombs = pieces.filter(piece => piece.rank === PieceType.Bomb);
