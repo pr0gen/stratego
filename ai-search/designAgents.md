@@ -91,7 +91,7 @@ connues de l'agent **et** de prévoir comment l'adversaire voit notre plateau de
 jeu. Il faut inverser la situation, pour baser la prédiction inverse. (Ça fait
 beaucoup de guess tout ça).
 
-![Comment on peut voir notre agent](/images/MultiPlisAgent.png)
+![Comment on peut voir notre agent](./images/MultiPlisAgent.png)
 
 On effectue donc un arbre de prédictions de déplacements adverses et alliés
 afin de baser notre choix.
