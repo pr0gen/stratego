@@ -51,17 +51,20 @@ dans 55% des cas sans connaître le modèle de l'opposant.
 
 Maarten et al. prouve que la recherche quiescence est efficace pour le Stratego.
 
-	La recherche quiescente [(Quiescence
-	search)](https://en.wikipedia.org/wiki/Quiescence_search) vise à immiter
-	l'intuition humaine dans les jeux de plateau. Par exemple, l'Homme sait s'il
-	doit abandonner une partie, ou un mouvement prometteur dans quelques coups. 
+	La recherche quiescente [(Quiescence search)](https://en.wikipedia.org/wiki/Quiescence_search) 
+	vise à immiter l'intuition humaine dans les jeux de plateau. Par exemple,
+	l'Homme sait s'il doit abandonner une partie, ou un mouvement prometteur dans
+	quelques coups. 
 
 En effet, il y a plusieurs positions de jeu sans mouvement, qui peuvent ammener
 à un changement de l'état du jeu complet. Boer et Tunru ont testé la
 faisabilité d'algorithmes génétiques. Le poids considère nombre de mouvements,
 nombre de pièces restantes, résultat de la partie.
 
-	//TODO Algorithmes génétiques
+	Les algorithmes génétiques essayent d'approche un problème d'optimisation
+	afin de résoudre celui-ci dans un temps raisonnable. Ils prennent en compte
+	la selection naturelle. Ils effectuent des bonds dans les solutions à
+	l'instar d'un procédure de [séparation et évaluation (branch & bound)](https://fr.wikipedia.org/wiki/S%C3%A9paration_et_%C3%A9valuation)
 
 ### Désign d'agent pour le Stratego
 
@@ -82,9 +85,38 @@ bien faire attention à la possibilité d'une pièce de pouvoir se mouvoir.
 L'agent multi-plis agit de la même manière que l'agent probalistique, mais lors
 d'attaque, il évalue non pas la position après l'attaque, mais il simule le
 mouvement adverse. Remarque, pour simuler le mouvement adverse, il prend en
-compte si l'agent est probalistique, ou multi-plis. 
+compte si l'agent est probalistique, ou multi-plis. La complexité de la tâche
+est de réussir à prévoir le mouvement adversaire, à partir des informations
+connues de l'agent **et** de prévoir comment l'adversaire voit notre plateau de
+jeu. Il faut inverser la situation, pour baser la prédiction inverse. (Ça fait
+beaucoup de guess tout ça).
 
+![Comment on peut voir notre agent](/images/MultiPlisAgent.png)
 
+On effectue donc un arbre de prédictions de déplacements adverses et alliés
+afin de baser notre choix.
+
+#### Phase d'initialisation
+
+Choisir des positionnements complètement est contrairement à la pensée
+jusqu'ici, plutôt une bonne idée. En effet, l'aléatoire st difficile à prévoir.
+Cela dit, le fait d'avoir un placement aléatoire, limite les stratégies
+offensives. En effet, nos plus hauts rangs, peuvent se retrouver en dernière
+ligne. Il devient difficile de capturer. Les parties longues, sont donc compromises.
+
+Il convient donc, de placer certaines pièces en fonctions de notre stratégie.
+Par exemple, en fonction de notre adversaire.
+
+La fonction d'évaluation ici, output un nombre négatif si le bleu gagne,
+positif si rouge gagne. Elle se base sur l'avantage matériel des joueurs.
+On obtient une complexité polynomiale avec O(n.m) avec n nombre de lignes et m
+de colonnes. Ainsi que la distance du Drapeau ennemie. 
+
+De manière générale, on essaye de gagner en capturant le Drapeau plutôt qu'en
+prennant toutes les pièces movibles.
+
+La dernière partie du document décrit les résultats de cet agent avec
+différents paramètres, et contre différents agents. 
 
 
 ## Conclusion du papier (TL;DR)
@@ -100,7 +132,7 @@ un rang proche, afin de ne pas dévoiler ses pièces secrètes trop rapidement.
 
 En effet, l'utilisation d'algorithmes de parcours en profondeur du type Monte
 Carlos ou alpha-béta, même pour un nombre important de "branches" (10-50),
-l'efficacité de l'IA est moindre.
+l'efficacité de l'IA est moindre sans informations.
 
 En abordant une autre méthode, en essayant de révéler de l'informations au
 maximum, en prédisant la place d'une pièce le jeu semble plus facile à
@@ -108,12 +140,17 @@ résoudre.
 
 Peut on imaginer une combinaison des deux méthodes avec une phase
 d'apprentissage contre le joueur actuel puis en utilisant des arbres ? 
-	
 
+La réponse est oui, on peut très bien imaginer des arbres assez conséquents sur
+les probabilités des emplacements des pièces et du coup que va jouer notre
+ennemie.
+
+**Note:** Les fonctions d'évalutions de ce papier sont intéressantes. En effet,
+elle se base sur l'avantage matériel pour gagner.
 
 ## Notre implémentation
 
-	Work in progress 
+Work in progress 
 
 
 
