@@ -1,14 +1,5 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-
-name: Stratego Game 
-
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+name: Manual Workflow - Game Engine
+on: workflow_dispatch
 
 jobs:
   build:
@@ -35,6 +26,3 @@ jobs:
     - name: NPM test
       run: npm test
       working-directory: ./game-engine
-
-
-
