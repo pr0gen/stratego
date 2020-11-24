@@ -1,30 +1,34 @@
-import { Board, StrategoBoard } from './board/board';
-import { CaseState, create as createCase } from './case';
-import { createAllPiece } from './piece/infra/piece_utils';
+import { Board } from './board/board';
+import { createPiecesForNormalGame } from './piece/infra/piece_utils';
 import { Player } from './player/player';
-import { gameIsOver } from './engine_utils';
+import * as engine from './engine_utils';
 
-class GameEngine {
+export class GameEngine {
 
-	private board: Board;
-	private players: [Player, Player];
-	private turn: boolean; // Who plays
+    private board: Board;
+    private players: [Player, Player];
+    private turn: boolean; // Who plays true = p1
 
-	constructor(p1: Player, p2: Player, board: Board) {
-		this.board = board;
-		this.players = [p1, p2];
-		this.turn = true;
-	}
+    constructor(p1: Player, p2: Player, board: Board) {
+        this.board = board;
+        this.players = [p1, p2];
+        this.turn = true;
+    }
 
-	public launch(): void {
-		while(!this.isOver()) {
+    public launch(): void {
+        while (!this.isOver()) {
 
-		}
-	}
+        }
+    }
 
-	private isOver(): boolean {
-		return gameIsOver(this.board);
-	}
+    private isOver(): boolean {
+        return true;
+        //return gameIsOver(this.board);
+    }
 
+    public getBoard(): Board {
+        return this.board;
+    }
 }
+
 
