@@ -1,28 +1,29 @@
-// @ts-ignore
-import generateCode from "../utils/generateCode";
-
-import {Player} from '../src/Player'
 import {PlayerState} from "../src/PlayerState";
+import {Rooms} from "../src/Rooms";
+import {Players} from "../src/Players";
+import startSockets from "../routes/socket";
+
 
 export default function run(app, io, options): void {
 
 // Express
+
     app.get('/', (req, res) => {
         res.sendFile('index.html', options)
     })
 
+
 // Socket
 
-    let players :Player[] = [];
+    let players = new Players()
+    let rooms = new Rooms()
 
     io.on('connection', socket => {
 
-        // When client connect
         console.log('new player connected ' + socket.id)
-        let player = new Player(socket.id, PlayerState.Waiting)
-        players.push(player)
+        players.addPlayer(socket.id, PlayerState.Waiting)
+        startSockets(socket, players, rooms)
 
     })
-
 
 }
