@@ -35,6 +35,7 @@
     })
 
     socket.on('response-create-game', (code) => {
+        console.log('response : create game ' + code)
         document.querySelector('.code').innerHTML = code
     })
 
