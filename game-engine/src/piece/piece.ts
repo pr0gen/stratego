@@ -111,3 +111,37 @@ export function create(type: PieceType, color: Color): Piece {
     }
 }
 
+export function display(p: Piece): string {
+    let msg = " R";
+    if(p.color === Color.Blue) {
+      msg = " B";
+    }
+    switch (p.rank) {
+        case PieceType.Null:
+            return "   " + msg;
+        case PieceType.Bomb:
+            return " B " + msg;
+        case PieceType.Marshal:
+            return "Mar" + msg;
+        case PieceType.General:
+            return " G " + msg;
+        case PieceType.Colonel:
+            return "Col" + msg;
+        case PieceType.Major:
+            return "Maj" + msg;
+        case PieceType.Captain:
+            return "Capt" + msg;
+        case PieceType.Lieutenant:
+            return " L " + msg;
+        case PieceType.Sergeant:
+            return "Ser" + msg;
+        case PieceType.Miner:
+            return "Min" + msg;
+        case PieceType.Scout:
+            return "Sco" + msg;
+        case PieceType.Spy:
+            return "Spy" + msg;
+        case PieceType.Flag:
+            return " F " + msg;
+    }
+}
