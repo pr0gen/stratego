@@ -17,6 +17,8 @@ export interface Board {
 
     move(c: Case, to: Coordinate): Result<Case[], StrategoError>;
 
+    state(): Case[][];
+
     display(): string;
 
 }
@@ -43,13 +45,13 @@ export class StrategoBoard implements Board {
         board[4][7] = createUnreachable(4, 7);
         board[5][6] = createUnreachable(5, 6);
         board[5][7] = createUnreachable(7, 5);
+
         return new StrategoBoard(board);
     }
 
     public constructor(board: Case[][]) {
         this.board = board;
     }
-
 
     state(): Case[][] {
         return this.board;
@@ -85,6 +87,5 @@ export class StrategoBoard implements Board {
             .map(row => "|" + row.map(c => displayCase(c) + " | "))
             .join('\n');
     }
-
 }
 

@@ -44,7 +44,6 @@ export function createEmpty(x: number, y: number): Case {
         { move: createMove(AvailableMoves.Immovable), rank: PieceType.Null, color: Color.None }
     );
 }
-
 export function create(state: CaseState,
     x: number,
     y: number,

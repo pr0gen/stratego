@@ -25,6 +25,7 @@ test('Should place a piece in board', () => {
     expect(content.rank).toBe(PieceType.Bomb);
     expect(content.move).toEqual({ min: 0, max: 0 });
     expect(content.color).toBe(Color.Blue);
+
     expect(actualCase.state).toBe(1);
     expect(actualCase.x).toBe(0);
     expect(actualCase.y).toBe(0);
@@ -42,6 +43,7 @@ test('Should move piece', () => {
     let res = strategoBoard.move(createCase(CaseState.Full, 0, 0, general), { x: 1, y: 1 });
     if (res.ok) {
         let p = res.val[0];
+
         expect(p.content.rank).toBe(PieceType.General);
 
         let state = strategoBoard.state();
@@ -75,7 +77,6 @@ test('Should not move piece cause unreachable', () => {
     expect(res.err).toBe(true);
 });
 
-
 test('Should move and capture', () => {
     let sergeant = createPiece(PieceType.Sergeant, Color.Blue);
     let lieutenant = createPiece(PieceType.Lieutenant, Color.Red);
@@ -104,4 +105,3 @@ test('Should move and capture', () => {
       expect(1).toBe(0);
     }
 });
-

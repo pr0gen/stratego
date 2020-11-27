@@ -9,4 +9,5 @@ console.log(board.display());
 const state = board.state();
 board.move(state[][]);
 
+console.log(board.display());
 
