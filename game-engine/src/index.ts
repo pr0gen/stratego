@@ -5,9 +5,18 @@ import { Color } from "./piece/piece";
 
 
 const board: Board = createStrategoBoard();
-console.log(board.display());
-const state = board.state();
-board.move(state[][]);
 
 console.log(board.display());
 
+let state = board.state();
+
+board.move(state[3][5], {x: 4, y: 5});
+console.log(board.display());
+
+state = board.state();
+board.move(state[4][5], {x: 5, y: 5});
+console.log(board.display());
+
+state = board.state();
+board.move(state[5][5], {x: 6, y: 5});
+console.log(board.display());

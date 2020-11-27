@@ -58,34 +58,40 @@ export class StrategoBoard implements Board {
     }
 
     move(c: Case, to: Coordinate): Result<Case[], StrategoError> {
-        const aimCase = this.board[to.x][to.y];
-        switch (aimCase.state) {
-            case CaseState.Empty: {
-                return Ok([this.placePiece(to.x, to.y, c.content)]);
-            }
-            case CaseState.Full: {
-                const result = attack(createCase(CaseState.Full, c.x, c.y, c.content), aimCase);
-                return Ok([result[0], result[1]]);
-            }
-            case CaseState.Unreachable: {
-                return Err(new MoveError(c, to));
-            }
-            default: {
-                return Err(new MoveError(c, to));
-            }
+      const aimCase = this.board[to.x][to.y];
+      switch (aimCase.state) {
+        case CaseState.Empty: {
+          let newCase = createCase(CaseState.Full, to.x, to.y, c.content);
+          this.board[to.x][to.y] = newCase;
+          this.board[c.x][c.y] = createEmpty(c.x, c.y);
+          return Ok([newCase]);
         }
-    }
-
-    private placePiece(x: number, y: number, p: Piece): Case {
-        const c = createCase(CaseState.Full, x, y, p);
-        this.board[x][y] = c;
-        return c;
+        case CaseState.Full: {
+          const result = attack(createCase(CaseState.Full, c.x, c.y, c.content), aimCase);
+          this.board[c.x][c.y] = result[0];
+          this.board[to.x][to.y] = result[1];
+          return Ok([result[0], result[1]]);
+        }
+        case CaseState.Unreachable: {
+          return Err(new MoveError(c, to));
+        }
+        default: {
+          return Err(new MoveError(c, to));
+        }
+      }
     }
 
     display(): string {
-        return this.board
-            .map(row => "|" + row.map(c => displayCase(c) + " | "))
-            .join('\n');
+      let display: string = " | ";
+      for(let i = 0; i < this.board.length; i++) {
+        display += "  " + i + "   |  ";
+      }
+      display += "\n";
+      for(let i = 0; i < this.board.length; i++) {
+        let row = this.board[i];
+        display += i + "| " + row.map(c => displayCase(c) + " | ") + "\n";
+      }
+      return display;
     }
 }
 

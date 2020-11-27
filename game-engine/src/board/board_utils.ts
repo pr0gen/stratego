@@ -32,14 +32,14 @@ export function createStrategoBoard(): Board {
                     CaseState.Full,
                     i,
                     j,
-                    { move: { min: 0, max: 1 }, rank: 1, color: Color.Blue }
+                    { move: { min: 0, max: 1 }, rank: 5, color: Color.Blue }
                 );
             } else if (i > 5) {
                 newBoard[i][j] = create(
                     CaseState.Full,
                     i,
                     j,
-                    { move: { min: 0, max: 1 }, rank: 1, color: Color.Red }
+                    { move: { min: 0, max: 1 }, rank: 3, color: Color.Red }
                 );
             } else {
                 newBoard[i][j] = createEmpty(i, j);
