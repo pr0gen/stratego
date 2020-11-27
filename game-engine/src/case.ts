@@ -16,16 +16,16 @@ export enum CaseState {
 
 export function display(c: Case): string {
     const content = c.content;
-    switch(c.state) {
-      case CaseState.Empty: {
-        return "     ";
-      }
-      case CaseState.Unreachable: {
-        return "XXXXX";
-      }
-      case CaseState.Full: {
-        return displayPiece(content);
-      }
+    switch (c.state) {
+        case CaseState.Empty: {
+            return "     ";
+        }
+        case CaseState.Unreachable: {
+            return "XXXXX";
+        }
+        case CaseState.Full: {
+            return displayPiece(content);
+        }
     }
 }
 

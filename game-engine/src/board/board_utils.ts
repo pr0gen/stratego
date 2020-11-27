@@ -3,19 +3,19 @@ import { Color } from '../piece/piece';
 import { Board, StrategoBoard } from './board';
 
 export function attack(from: Case, to: Case): [Case, Case] {
-  
-  const attacker = from.content;
-  const defenser = to.content;
 
-  if (attacker.rank > defenser.rank) {
-    return [createEmpty(from.x, from.y), create(CaseState.Full, to.x, to.y, from.content)];
-  }
-  
-  if (attacker.rank === defenser.rank) {
-    return [createEmpty(from.x, from.y), createEmpty(to.x, to.y)];
-  }
-  
-  return [create(CaseState.Full, from.x, from.y, to.content), createEmpty(to.x, to.y)];
+    const attacker = from.content;
+    const defenser = to.content;
+
+    if (attacker.rank > defenser.rank) {
+        return [createEmpty(from.x, from.y), create(CaseState.Full, to.x, to.y, from.content)];
+    }
+
+    if (attacker.rank === defenser.rank) {
+        return [createEmpty(from.x, from.y), createEmpty(to.x, to.y)];
+    }
+
+    return [create(CaseState.Full, from.x, from.y, to.content), createEmpty(to.x, to.y)];
 
 }
 

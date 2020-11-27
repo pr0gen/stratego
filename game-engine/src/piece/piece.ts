@@ -113,8 +113,8 @@ export function create(type: PieceType, color: Color): Piece {
 
 export function display(p: Piece): string {
     let msg = " R";
-    if(p.color === Color.Blue) {
-      msg = " B";
+    if (p.color === Color.Blue) {
+        msg = " B";
     }
     switch (p.rank) {
         case PieceType.Null:

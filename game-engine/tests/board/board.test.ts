@@ -87,21 +87,21 @@ test('Should move and capture', () => {
     let strategoBoard = new board.StrategoBoard(newBoard);
     let res = strategoBoard.move(createCase(CaseState.Full, 0, 0, lieutenant), { x: 0, y: 1 });
 
-    if(res.ok) {
-      let cases = res.val;
-      let previousCase = cases[0];
+    if (res.ok) {
+        let cases = res.val;
+        let previousCase = cases[0];
 
-      expect(previousCase.state).toBe(CaseState.Empty);
-        
-      let actualCase = cases[1];
-      expect(actualCase.state).toBe(CaseState.Full);
-      let piece = actualCase.content;
-      expect(piece.color).toBe(Color.Red);
-      expect(piece.rank).toBe(PieceType.Lieutenant);
+        expect(previousCase.state).toBe(CaseState.Empty);
+
+        let actualCase = cases[1];
+        expect(actualCase.state).toBe(CaseState.Full);
+        let piece = actualCase.content;
+        expect(piece.color).toBe(Color.Red);
+        expect(piece.rank).toBe(PieceType.Lieutenant);
 
     } else {
-      //If it fails we show it, should not happen
-      console.log(res.val);
-      expect(1).toBe(0);
+        //If it fails we show it, should not happen
+        console.log(res.val);
+        expect(1).toBe(0);
     }
 });
