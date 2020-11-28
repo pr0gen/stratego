@@ -40,7 +40,7 @@ test('Should move piece', () => {
 
     let strategoBoard = new board.StrategoBoard(newBoard);
 
-    let res = strategoBoard.move(createCase(CaseState.Full, 0, 0, general), { x: 1, y: 1 });
+    let res = strategoBoard.move(createCase(CaseState.Full, 0, 0, general), { x: 0, y: 1 });
     if (res.ok) {
         let p = res.val[0];
 
@@ -48,7 +48,7 @@ test('Should move piece', () => {
 
         let state = strategoBoard.state();
 
-        let actualCase = state[1][1];
+        let actualCase = state[0][1];
         let content = actualCase.content;
 
         expect(content.rank).toBe(PieceType.General);
@@ -56,7 +56,7 @@ test('Should move piece', () => {
         expect(content.color).toBe(Color.Blue);
 
         expect(actualCase.state).toBe(1);
-        expect(actualCase.x).toBe(1);
+        expect(actualCase.x).toBe(0);
         expect(actualCase.y).toBe(1);
     } else {
         //If it fails we show it, should not happen
@@ -105,3 +105,19 @@ test('Should move and capture', () => {
         expect(1).toBe(0);
     }
 });
+
+test('Should not move in diagonales', () => {
+    let general = createPiece(PieceType.General, Color.Blue);
+    let newBoard: Case[][] = [
+        [createCase(CaseState.Full, 0, 0, general), createEmpty(0, 1)],
+        [createEmpty(1, 0), createEmpty(1, 1)],
+    ];
+
+    let strategoBoard = new board.StrategoBoard(newBoard);
+
+    let res = strategoBoard.move(createCase(CaseState.Full, 0, 0, general), { x: 1, y: 1 });
+
+    expect(res.err).toBe(true);
+});
+
+

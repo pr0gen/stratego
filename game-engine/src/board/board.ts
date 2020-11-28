@@ -1,8 +1,8 @@
 import { Ok, Err, Result } from 'ts-results';
-import { Piece, PieceType, create as createPiece, Color } from '../piece/piece';
 import { Case, CaseState, createEmpty, create as createCase, display as displayCase, createUnreachable } from '../case';
-import { StrategoError, MoveError, PlacementError } from '../error/error';
-import { attack } from './board_utils';
+import { InitGameError, MoveError, StrategoError } from '../error/error';
+import { attack, checkPieceMove } from './board_utils';
+import { verifyBoardIntegrity } from '../engine_utils';
 
 export interface Coordinate {
     x: number,
@@ -26,6 +26,14 @@ export interface Board {
 export class StrategoBoard implements Board {
 
     board: Case[][];
+  
+    public static createStategoBoard(cases: Case[][]): Result<Board, StrategoError> {
+      const res = verifyBoardIntegrity(cases);
+      if(res.err) {
+        return new Err(new InitGameError("You board is illegal"));
+      }
+      return new Ok(new StrategoBoard(res.val));
+    }
 
     public static createEmptyStrategoBoard(): Board {
         const size = 10;
@@ -49,7 +57,7 @@ export class StrategoBoard implements Board {
         return new StrategoBoard(board);
     }
 
-    public constructor(board: Case[][]) {
+    constructor(board: Case[][]) {
         this.board = board;
     }
 
@@ -58,40 +66,44 @@ export class StrategoBoard implements Board {
     }
 
     move(c: Case, to: Coordinate): Result<Case[], StrategoError> {
-      const aimCase = this.board[to.x][to.y];
-      switch (aimCase.state) {
-        case CaseState.Empty: {
-          let newCase = createCase(CaseState.Full, to.x, to.y, c.content);
-          this.board[to.x][to.y] = newCase;
-          this.board[c.x][c.y] = createEmpty(c.x, c.y);
-          return Ok([newCase]);
+        if(!checkPieceMove(c, to)) {
+          return new Err(new MoveError("Your piece can not go there", c, to));
         }
-        case CaseState.Full: {
-          const result = attack(createCase(CaseState.Full, c.x, c.y, c.content), aimCase);
-          this.board[c.x][c.y] = result[0];
-          this.board[to.x][to.y] = result[1];
-          return Ok([result[0], result[1]]);
+        const piece = c.content;
+        const aimCase = this.board[to.x][to.y];
+        switch (aimCase.state) {
+            case CaseState.Empty: {
+                const newCase = createCase(CaseState.Full, to.x, to.y, piece);
+                this.board[to.x][to.y] = newCase;
+                this.board[c.x][c.y] = createEmpty(c.x, c.y);
+                return Ok([newCase]);
+            }
+            case CaseState.Full: {
+                const result = attack(createCase(CaseState.Full, c.x, c.y, piece), aimCase);
+                this.board[c.x][c.y] = result[0];
+                this.board[to.x][to.y] = result[1];
+                return Ok([result[0], result[1]]);
+            }
+            case CaseState.Unreachable: {
+                return Err(new MoveError("Case is Unreachable", c, to));
+            }
+            default: {
+                return Err(new MoveError("How can you possibly arrive there, you cheater ! ", c, to));
+            }
         }
-        case CaseState.Unreachable: {
-          return Err(new MoveError(c, to));
-        }
-        default: {
-          return Err(new MoveError(c, to));
-        }
-      }
     }
 
     display(): string {
-      let display: string = " | ";
-      for(let i = 0; i < this.board.length; i++) {
-        display += "  " + i + "   |  ";
-      }
-      display += "\n";
-      for(let i = 0; i < this.board.length; i++) {
-        let row = this.board[i];
-        display += i + "| " + row.map(c => displayCase(c) + " | ") + "\n";
-      }
-      return display;
+        let display: string = " | ";
+        for (let i = 0; i < this.board.length; i++) {
+            display += "  " + i + "   |  ";
+        }
+        display += "\n";
+        for (let i = 0; i < this.board.length; i++) {
+            let row = this.board[i];
+            display += i + "| " + row.map(c => displayCase(c) + " | ") + "\n";
+        }
+        return display;
     }
 }
 

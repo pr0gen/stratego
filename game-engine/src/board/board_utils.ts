@@ -1,6 +1,8 @@
+import { Result } from 'ts-results';
 import { Case, CaseState, create, createEmpty, createUnreachable } from '../case';
-import { Color } from '../piece/piece';
-import { Board, StrategoBoard } from './board';
+import { StrategoError } from '../error/error';
+import { Color, Piece, PieceType } from '../piece/piece';
+import { Board, Coordinate, StrategoBoard } from './board';
 
 export function attack(from: Case, to: Case): [Case, Case] {
 
@@ -19,9 +21,21 @@ export function attack(from: Case, to: Case): [Case, Case] {
 
 }
 
+export function checkPieceMove(c: Case, to: Coordinate): boolean {
+  const move = c.content.move;
+  const deltaX = Math.abs(to.x - c.x);
+  const deltaY = Math.abs(to.y - c.y);
+  if(deltaX <= move.max && deltaY == 0 ||
+     deltaX == 0 && deltaY <= move.max) {
+    return true;
+  }
+  return false;
+}
+
+
 
 //Only for testing the global engine
-export function createStrategoBoard(): Board {
+export function createStrategoBoard(): Result<Board, StrategoError> {
     let newBoard: Case[][] = new Array(10);
 
     for (let i = 0; i < 10; i++) {
@@ -56,5 +70,5 @@ export function createStrategoBoard(): Board {
     newBoard[5][6] = createUnreachable(5, 6);
     newBoard[5][7] = createUnreachable(7, 5);
 
-    return new StrategoBoard(newBoard);
+    return StrategoBoard.createStategoBoard(newBoard);
 }

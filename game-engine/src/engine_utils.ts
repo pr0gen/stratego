@@ -18,8 +18,8 @@ function canNotAttack(board: Board, player: Player): boolean {
     return true;
 }
 
-export function verifyBoardIntegrity(board: Board): Result<Case[][], StrategoError> {
-    let state: Case[][] = board.state();
+export function verifyBoardIntegrity(state: Case[][]): Result<Case[][], StrategoError> {
+    //let state: Case[][] = board.state();
 
     if (!checkBoardSize(state)) {
         return new Err(new InitGameError("Board is not official, GO OUT OF THERE !!"));
