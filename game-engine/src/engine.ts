@@ -23,7 +23,6 @@ export class GameEngine {
 
     private isOver(): boolean {
         return true;
-        //return gameIsOver(this.board);
     }
 
     public getBoard(): Board {

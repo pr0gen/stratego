@@ -15,7 +15,6 @@ export enum CaseState {
 }
 
 export function display(c: Case): string {
-    const content = c.content;
     switch (c.state) {
         case CaseState.Empty: {
             return "     ";
@@ -24,7 +23,7 @@ export function display(c: Case): string {
             return "XXXXX";
         }
         case CaseState.Full: {
-            return displayPiece(content);
+            return displayPiece(c.content);
         }
     }
 }
