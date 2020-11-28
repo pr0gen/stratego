@@ -11,6 +11,10 @@ export default function Join() {
         </Link>
       </div>
       <div>Join a game page </div>
+      <form action="" method="POST">
+        <label>Code de la partie</label>
+        <input type="text" id="gameCode" name="gameCode"/>
+      </form>
     </div>
   );
 }
