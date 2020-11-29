@@ -1,26 +1,9 @@
-import { Board } from './board/board';
-import { Player } from './player/player';
 import { Err, Ok, Result } from 'ts-results';
 import { InitGameError, StrategoError } from './error/error';
-import { PieceType, Color } from './piece/piece';
-import { Case, CaseState, display } from './case';
+import { Color } from './piece/piece';
+import { Case, CaseState } from './case';
 
-export function gameIsOver(board: Board, player: Player): boolean {
-    return canNotAttack(board, player) && canNotMove(board, player);
-}
-
-function canNotMove(board: Board, player: Player): boolean {
-    let actualBoard: Case[][] = board.state();
-    return true;
-}
-
-function canNotAttack(board: Board, player: Player): boolean {
-    return true;
-}
-
-export function verifyBoardIntegrity(board: Board): Result<Case[][], StrategoError> {
-    let state: Case[][] = board.state();
-
+export function verifyBoardIntegrity(state: Case[][]): Result<Case[][], StrategoError> {
     if (!checkBoardSize(state)) {
         return new Err(new InitGameError("Board is not official, GO OUT OF THERE !!"));
     }
@@ -70,9 +53,7 @@ function checkEmptyMiddle(cases: Case[][]): boolean {
 }
 
 function isSupposedToBeInTheMiddle(c: Case): boolean {
-    return c.state === CaseState.Unreachable
-        || c.state === CaseState.Empty;
-
+    return c.state !== CaseState.Full;
 }
 
 function checkBoardSize(cases: Case[][]): boolean {
@@ -85,7 +66,7 @@ function checkBoardSize(cases: Case[][]): boolean {
         return false;
     }
 
-    return true;
+    return res.length === 0;
 }
 
 function checkRowSize(row: Case[]): boolean {

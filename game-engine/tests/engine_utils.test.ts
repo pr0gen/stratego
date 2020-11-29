@@ -9,8 +9,7 @@ test('Should not verify board integrity cause to small', () => {
         [createEmpty(0, 0), createEmpty(0, 1)],
         [createEmpty(1, 0), createUnreachable(1, 1)]
     ];
-    let board: Board = new StrategoBoard(newBoard);
-    let res = Engine.verifyBoardIntegrity(board);
+    let res = Engine.verifyBoardIntegrity(newBoard);
 
     expect(res.err).toBe(true);
     expect(res.val).toStrictEqual(new InitGameError("Board is not official, GO OUT OF THERE !!"));
@@ -20,9 +19,8 @@ test('Should not verify board integrity cause lakes are empty', () => {
     let newBoard: Case[][] = createStrategoBoard();
 
     newBoard[4][2] = createCase(CaseState.Full, 4, 2, { move: { min: 0, max: 1 }, rank: 1, color: Color.Blue });
-    let board: Board = new StrategoBoard(newBoard);
 
-    let res = Engine.verifyBoardIntegrity(board);
+    let res = Engine.verifyBoardIntegrity(newBoard);
 
     expect(res.err).toBe(true);
     expect(res.val).toStrictEqual(new InitGameError("You can not place pieces in lakes, please check again"));
@@ -52,9 +50,8 @@ test('Should check only 2 rows in middle are empty', () => {
     newBoard[5][6] = createUnreachable(5, 6);
     newBoard[5][7] = createUnreachable(7, 5);
 
-    let board: Board = new StrategoBoard(newBoard);
     //console.log("2 rows\n" + board.display());
-    let res = Engine.verifyBoardIntegrity(board);
+    let res = Engine.verifyBoardIntegrity(newBoard);
 
     expect(res.err).toBe(true);
     expect(res.val).toStrictEqual(new InitGameError("The 2 rows in the middle must be empty, :("));
@@ -98,9 +95,8 @@ test('Should check players have placed theirs pieces in the 4 rows', () => {
     newBoard[5][6] = createUnreachable(5, 6);
     newBoard[5][7] = createUnreachable(7, 5);
 
-    let board: Board = new StrategoBoard(newBoard);
     //console.log("4 rows\n" + board.display());
-    let res = Engine.verifyBoardIntegrity(board);
+    let res = Engine.verifyBoardIntegrity(newBoard);
 
 
     expect(res.err).toBe(true);
@@ -109,8 +105,7 @@ test('Should check players have placed theirs pieces in the 4 rows', () => {
 });
 
 test('Should verify board integrity', () => {
-    let board: Board = new StrategoBoard(createStrategoBoard());
-    let res = Engine.verifyBoardIntegrity(board);
+    let res = Engine.verifyBoardIntegrity(createStrategoBoard());
 
     expect(res.ok).toBe(true);
 });
