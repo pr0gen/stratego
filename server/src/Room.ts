@@ -8,4 +8,10 @@ export class Room {
     state: RoomState
 
     constructor() {}
+
+    addSecondPlayer(secondPlayerId : string) {
+        this.secondPlayerId = secondPlayerId
+        this.state = RoomState.gameStarted
+    }
+
 }

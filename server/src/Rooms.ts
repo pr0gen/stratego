@@ -22,7 +22,18 @@ export class Rooms {
         }
 
         this.rooms = newRooms.rooms
+    }
 
+
+    getRoomByCode(code: string) :Room {
+
+        for (const room of this.rooms) {
+            if (room.code === code) {
+                return room
+            }
+        }
+
+        throw "Code doesn't found in Rooms"
     }
 
 }
