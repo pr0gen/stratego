@@ -12,7 +12,6 @@ const server = require('http').Server(app)
 const morgan = require('morgan')
 const io = socketio(server, { cors: { origin: '*' } })
 
-
 // Constante
 const port = process.env.PORT
 const devMode = process.env.NODE_ENV !== 'production' //bool
@@ -22,17 +21,12 @@ const options = {
     root: __dirname + './../views/'
 }
 
-
 // Middleware
 if (devMode) {
     app.use(morgan('dev'))
 }
 
 run(app,io,options)
-
-// Function
-
-
 
 // Start listening
 server.listen(port, () => {
