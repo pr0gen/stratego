@@ -11,4 +11,18 @@ export class Rooms {
         this.rooms.push(room)
     }
 
+    deleteRoomByFirstPlayerId(playerId : string) {
+
+        let newRooms = new Rooms()
+
+        for (const room of this.rooms) {
+            if (room.firstPlayerId != playerId) {
+                newRooms.addRoom(room)
+            }
+        }
+
+        this.rooms = newRooms.rooms
+
+    }
+
 }

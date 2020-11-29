@@ -6,3 +6,5 @@ game-engine/coverage/
 server/node_modules/
 
 server/dist/
+
+server/routes/socket/template.ts
