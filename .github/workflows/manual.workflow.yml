@@ -1,0 +1,28 @@
+name: Manual Workflow - Game Engine
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: build-game-engine
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: NPM ci
+      run: npm ci
+      working-directory: ./game-engine
+    - name: NPM build
+      run: npm run build --if-present
+      working-directory: ./game-engine
+    - name: NPM test
+      run: npm test
+      working-directory: ./game-engine

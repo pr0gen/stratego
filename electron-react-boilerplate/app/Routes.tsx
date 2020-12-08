@@ -5,9 +5,8 @@ import App from './containers/App';
 import HomePage from './containers/HomePage';
 
 // Lazily load routes and code split with webpack
-
-const LazyCreatePage = React.lazy(() =>
-  import(/* webpackChunkName: "CounterPage" */ './containers/CreatePage')
+const LazyCounterPage = React.lazy(() =>
+  import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
 );
 
 const LazyRulesPage = React.lazy(() =>
@@ -52,7 +51,7 @@ const JoinPage = (props: Record<string, any>) => (
 
 const QuitPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>
-    <LazyQuitPage {...props} />
+    <LazyCounterPage {...props} />
   </React.Suspense>
 );
 
