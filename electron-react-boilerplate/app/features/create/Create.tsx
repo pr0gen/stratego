@@ -11,7 +11,10 @@ export default function Create() {
           <i className="fa fa-arrow-left fa-3x" />
         </Link>
       </div>
-      <div>Test BIEN DANS CREATE</div>
+      <div>
+        <button>Create a game</button>
+        <button>Join a game</button>
+      </div>
     </div>
   );
 }

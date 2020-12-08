@@ -9,10 +9,6 @@ const LazyCounterPage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
 );
 
-const LazyCreatePage = React.lazy(() =>
-  import(/* webpackChunkName: "CounterPage" */ './containers/CreatePage')
-);
-
 const LazyRulesPage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/RulesPage')
 );
@@ -27,12 +23,6 @@ const LazyJoinPage = React.lazy(() =>
 
 const LazyQuitPage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/QuitPage')
-);
-
-const CounterPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
-    <LazyCounterPage {...props} />
-  </React.Suspense>
 );
 
 const CreatePage = (props: Record<string, any>) => (
@@ -61,7 +51,7 @@ const JoinPage = (props: Record<string, any>) => (
 
 const QuitPage = (props: Record<string, any>) => (
   <React.Suspense fallback={<h1>Loading...</h1>}>
-    <LazyQuitPage {...props} />
+    <LazyCounterPage {...props} />
   </React.Suspense>
 );
 
@@ -69,7 +59,6 @@ export default function Routes() {
   return (
     <App>
       <Switch>
-        <Route name="counterRouter" path="/counter" component={CounterPage} />
         <Route name="createRouteur" path="/create" component={CreatePage} />
         <Route name="rulesRouter" path="/rules" component={RulesPage} />
         <Route name="settingRouter" path="/settings" component={SettingsPage} />
