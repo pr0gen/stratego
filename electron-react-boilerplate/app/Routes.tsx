@@ -5,9 +5,6 @@ import App from './containers/App';
 import HomePage from './containers/HomePage';
 
 // Lazily load routes and code split with webpack
-const LazyCounterPage = React.lazy(() =>
-  import(/* webpackChunkName: "CounterPage" */ './containers/CounterPage')
-);
 
 const LazyCreatePage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/CreatePage')
@@ -27,12 +24,6 @@ const LazyJoinPage = React.lazy(() =>
 
 const LazyQuitPage = React.lazy(() =>
   import(/* webpackChunkName: "CounterPage" */ './containers/QuitPage')
-);
-
-const CounterPage = (props: Record<string, any>) => (
-  <React.Suspense fallback={<h1>Loading...</h1>}>
-    <LazyCounterPage {...props} />
-  </React.Suspense>
 );
 
 const CreatePage = (props: Record<string, any>) => (
@@ -69,7 +60,6 @@ export default function Routes() {
   return (
     <App>
       <Switch>
-        <Route name="counterRouter" path="/counter" component={CounterPage} />
         <Route name="createRouteur" path="/create" component={CreatePage} />
         <Route name="rulesRouter" path="/rules" component={RulesPage} />
         <Route name="settingRouter" path="/settings" component={SettingsPage} />
