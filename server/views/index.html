@@ -10,13 +10,21 @@
 
 <a href="#" class="create-game"> Création partie</a>
 <br>
-<p>code : </p> <p class="code">  </p>
+<p>code : </p>
+<p class="code"></p>
 
 <br>
 <br>
 <br>
 <a href="#" class="join-game"> Rejoindre une partie</a>
 <input type="text" class="code-join">
+
+
+<br>
+<br>
+<a href="#" class="leave-game"> Quitter partie</a>
+
+
 </body>
 </html>
 
@@ -34,6 +42,10 @@
         socket.emit('join-game', code)
     })
 
+    document.querySelector('.leave-game').addEventListener('click', () => {
+        socket.emit('leave-game')
+    })
+
     socket.on('response-create-game', (code) => {
         console.log('response : create game ' + code)
         document.querySelector('.code').innerHTML = code
@@ -46,7 +58,6 @@
     socket.on('player-found', () => {
         console.log("player found")
     })
-
 
 
 </script>

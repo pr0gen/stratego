@@ -1,5 +1,5 @@
 export enum RoomState {
 
-    waitingSecondPlayer,
-    gameStarted
+    WaitingSecondPlayer,
+    GameStarted
 }

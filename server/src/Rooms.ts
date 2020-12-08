@@ -3,9 +3,11 @@ import {Player} from "./Player";
 
 export class Rooms {
 
-    rooms :Room[] = [];
+    rooms :Room[];
 
-    constructor() {}
+    constructor() {
+        this.rooms = []
+    }
 
     addRoom(room: Room) {
         this.rooms.push(room)
@@ -33,7 +35,7 @@ export class Rooms {
             }
         }
 
-        throw "Code doesn't found in Rooms"
+        return null
     }
 
 }

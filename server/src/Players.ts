@@ -3,9 +3,11 @@ import {PlayerState} from "./PlayerState";
 
 export class Players {
 
-    players :Player[] = [];
+    players :Player[];
 
-    constructor() {}
+    constructor() {
+        this.players = []
+    }
 
     addPlayer(socketId:string, playerState : PlayerState ) {
         let player = new Player(socketId, playerState)
