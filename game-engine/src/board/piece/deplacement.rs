@@ -28,13 +28,13 @@ impl Move {
 
 #[cfg(test)]
 mod test {
-     use super::{AvailableMove, Move};
+    use super::{AvailableMove, Move};
 
     #[test]
     fn should_create_move() {
-        assert_eq!(Move(0, 0), Move::new(AvailableMove::Immovable)); 
-        assert_eq!(Move(0, 1), Move::new(AvailableMove::Normal)); 
-        assert_eq!(Move(0, 10), Move::new(AvailableMove::Scout)); 
+        assert_eq!(Move(0, 0), Move::new(AvailableMove::Immovable));
+        assert_eq!(Move(0, 1), Move::new(AvailableMove::Normal));
+        assert_eq!(Move(0, 10), Move::new(AvailableMove::Scout));
     }
 
     #[test]
@@ -43,6 +43,4 @@ mod test {
         assert_eq!(0, m.get_min());
         assert_eq!(0, m.get_max());
     }
-
 }
-

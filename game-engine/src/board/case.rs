@@ -42,7 +42,6 @@ pub fn create_empty_case(coordinate: Coordinate) -> Case {
 }
 
 impl Case {
-
     pub fn get_state(&self) -> &State {
         &self.state
     }
@@ -64,7 +63,6 @@ impl Case {
 }
 
 impl Coordinate {
-
     pub fn new(x: i16, y: i16) -> Self {
         Coordinate(x, y)
     }
@@ -93,7 +91,10 @@ mod test {
 
         assert_eq!(State::Full, case.state);
         assert_eq!(Coordinate(0, 0), case.coordinate);
-        assert_eq!(Piece::new(PieceType::Captain, Box::new(Color::Blue)), case.content);
+        assert_eq!(
+            Piece::new(PieceType::Captain, Box::new(Color::Blue)),
+            case.content
+        );
     }
 
     #[test]
@@ -102,7 +103,10 @@ mod test {
 
         assert_eq!(State::Empty, case.state);
         assert_eq!(Coordinate(0, 0), case.coordinate);
-        assert_eq!(Piece::new(PieceType::Null, Box::new(Color::None)), case.content);
+        assert_eq!(
+            Piece::new(PieceType::Null, Box::new(Color::None)),
+            case.content
+        );
     }
 
     #[test]
@@ -111,7 +115,10 @@ mod test {
 
         assert_eq!(State::Unreachable, case.state);
         assert_eq!(Coordinate(0, 0), case.coordinate);
-        assert_eq!(Piece::new(PieceType::Null, Box::new(Color::None)), case.content);
+        assert_eq!(
+            Piece::new(PieceType::Null, Box::new(Color::None)),
+            case.content
+        );
     }
 
     #[test]

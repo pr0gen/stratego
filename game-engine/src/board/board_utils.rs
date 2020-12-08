@@ -27,18 +27,19 @@ pub fn check_piece_move(case: &Case, to: &Coordinate) -> bool {
     let c_coord = case.get_coordinate();
     let delta_x = (to.get_x() - c_coord.get_x()).abs();
     let delta_y = (to.get_y() - c_coord.get_y()).abs();
-    if delta_x <= m.get_max() && delta_y == 0 || delta_x == 0 && delta_y <= m.get_max() {
-        return true;
+    if (delta_x <= m.get_max() && delta_y == 0) || (delta_x == 0 && delta_y <= m.get_max()) {
+        true
+    } else {
+        false
     }
-    return false;
 }
 
 #[cfg(test)]
 mod test {
 
-    use crate::board::case::{Coordinate, State, create_full_case};
-    use crate::board::piece::{PieceType, Piece, Color};
-    
+    use crate::board::case::{create_full_case, Coordinate, State};
+    use crate::board::piece::{Color, Piece, PieceType};
+
     use super::attack;
     use super::check_piece_move;
 
@@ -126,4 +127,3 @@ mod test {
         assert_eq!(check_piece_move(&case, &Coordinate::new(1, 1)), false);
     }
 }
-

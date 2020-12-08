@@ -3,7 +3,7 @@ use crate::board::piece::Piece;
 
 #[derive(Debug)]
 pub enum StrategoError {
-    MoveError(Case, Coordinate),
+    MoveError(String, Case, Coordinate),
     PlacementError(i16, i16, Piece),
     InitGameError(String),
 }
@@ -11,10 +11,11 @@ pub enum StrategoError {
 impl StrategoError {
     pub fn message(&self) -> String {
         match self {
-            StrategoError::MoveError(case, coordinate) => {
+            StrategoError::MoveError(string, case, coordinate) => {
                 let coord = case.get_coordinate();
                 format!(
-                    "Can not move piece {} ({}, {}) to ({}, {})",
+                    "{} | Can not move piece {} ({}, {}) to ({}, {})",
+                    string,
                     case.display(),
                     coord.get_x(),
                     coord.get_y(),
@@ -22,11 +23,13 @@ impl StrategoError {
                     coordinate.get_y()
                 )
             }
-            StrategoError::PlacementError(x, y, piece) => {
-                format!("Can not place piece {:?} to ({}, {})", piece.get_rank(), x, y)
-            }
+            StrategoError::PlacementError(x, y, piece) => format!(
+                "Can not place piece {:?} to ({}, {})",
+                piece.get_rank(),
+                x,
+                y
+            ),
             StrategoError::InitGameError(s) => s.to_owned(),
         }
     }
 }
-

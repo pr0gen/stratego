@@ -103,7 +103,6 @@ impl Piece {
                 color,
             },
         }
-
     }
 
     pub fn get_rank(&self) -> &PieceType {
