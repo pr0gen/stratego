@@ -8,14 +8,16 @@ export default function createGame(socket: Socket, rooms : Rooms) {
 
     socket.on('create-game', () => {
         const code = generateCode()
+        console.log("create game : " + code)
         let room = new Room();
 
         room.firstPlayerId = socket.id
         room.code = code.toString()
-        room.state = RoomState.waitingSecondPlayer
+        room.state = RoomState.WaitingSecondPlayer
 
         rooms.addRoom(room)
         socket.emit('response-create-game', code)
+        console.log(rooms)
     })
 
 
