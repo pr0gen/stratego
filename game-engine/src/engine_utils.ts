@@ -1,8 +1,42 @@
 import { Err, Ok, Result } from 'ts-results';
-import { InitGameError, StrategoError } from './error/error';
-import { Color } from './piece/piece';
+import { InitGameError, StrategoError, GameNotOverError } from './error/error';
+import { Color, PieceType } from './piece/piece';
 import { Case, CaseState } from './case';
+import { Board } from './board/board';
+import { AvailableMoves, equals } from './piece/move';
 
+export function gameIsOver(board: Board): Result<Color, StrategoError> {
+  let flattenState: Case[] = ([] as Case[]).concat(...board.state());
+  let blues = flattenState.filter(c => c.content.color === Color.Blue);
+  let reds = flattenState.filter(c => c.content.color === Color.Red);
+
+  //Check has Flag
+  let res = blues.filter(c => c.content.rank === PieceType.Flag);
+  if(0 === res.length) {
+    return new Ok(Color.Red);
+  }
+  res = reds.filter(c => c.content.rank === PieceType.Flag);
+  if(0 === res.length) {
+    return new Ok(Color.Blue);
+  }
+
+  //Check moveable pieces
+  res = blues.filter(c => c.content.rank !== PieceType.Flag)
+  .filter(c => !equals(c.content.move, AvailableMoves.Immovable));
+  if(0 === res.length) {
+    return new Ok(Color.Red);
+  }
+  res = reds.filter(c => c.content.rank !== PieceType.Flag)
+  .filter(c => !equals(c.content.move, AvailableMoves.Immovable));
+  if(0 === res.length) {
+    return new Ok(Color.Blue);
+  }
+
+  return new Err(new GameNotOverError());
+}
+
+
+//Verify the validity of the pieces e.g 1 F, 1 Spy
 export function verifyBoardIntegrity(state: Case[][]): Result<Case[][], StrategoError> {
     if (!checkBoardSize(state)) {
         return new Err(new InitGameError("Board is not official, GO OUT OF THERE !!"));

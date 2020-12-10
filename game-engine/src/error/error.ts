@@ -36,4 +36,10 @@ export class InitGameError extends StrategoError {
     }
 }
 
+export class GameNotOverError extends StrategoError {
+
+    constructor() {
+        super("Game is not over", "");
+    }
+}
 
