@@ -26,13 +26,13 @@ export interface Board {
 export class StrategoBoard implements Board {
 
     board: Case[][];
-  
+
     public static createStategoBoard(cases: Case[][]): Result<Board, StrategoError> {
-      const res = verifyBoardIntegrity(cases);
-      if(res.err) {
-        return new Err(new InitGameError("You board is illegal"));
-      }
-      return new Ok(new StrategoBoard(res.val));
+        const res = verifyBoardIntegrity(cases);
+        if (res.err) {
+            return new Err(new InitGameError("You board is illegal"));
+        }
+        return new Ok(new StrategoBoard(res.val));
     }
 
     public static createEmptyStrategoBoard(): Board {
@@ -66,8 +66,8 @@ export class StrategoBoard implements Board {
     }
 
     move(c: Case, to: Coordinate): Result<Case[], StrategoError> {
-        if(!checkPieceMove(c, to)) {
-          return new Err(new MoveError("Your piece can not go there", c, to));
+        if (!checkPieceMove(c, to)) {
+            return new Err(new MoveError("Your piece can not go there", c, to));
         }
         const piece = c.content;
         const aimCase = this.board[to.x][to.y];
