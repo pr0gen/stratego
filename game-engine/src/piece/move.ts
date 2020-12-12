@@ -9,6 +9,12 @@ export interface Move {
     max: number,
 }
 
+
+export function equals(m: Move, availableMove: AvailableMoves) {
+    let am = create(availableMove);
+    return am.min === m.min && am.max === m.max;
+}
+
 export function create(piece: AvailableMoves): Move {
     switch (piece) {
         case AvailableMoves.Immovable:

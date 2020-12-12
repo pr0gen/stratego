@@ -22,14 +22,14 @@ export function attack(from: Case, to: Case): [Case, Case] {
 }
 
 export function checkPieceMove(c: Case, to: Coordinate): boolean {
-  const move = c.content.move;
-  const deltaX = Math.abs(to.x - c.x);
-  const deltaY = Math.abs(to.y - c.y);
-  if(deltaX <= move.max && deltaY == 0 ||
-     deltaX == 0 && deltaY <= move.max) {
-    return true;
-  }
-  return false;
+    const move = c.content.move;
+    const deltaX = Math.abs(to.x - c.x);
+    const deltaY = Math.abs(to.y - c.y);
+    if (deltaX <= move.max && deltaY == 0 ||
+        deltaX == 0 && deltaY <= move.max) {
+        return true;
+    }
+    return false;
 }
 
 
