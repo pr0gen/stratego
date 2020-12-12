@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import styles from './Counter.css';
 import routes from '../../constants/routes.json';
 
 export default function Create({ socket }) {
   const [code, setCode] = useState('');
+  const [foundGame, setFoundGame] = useState(false);
+
 
   if (code === '') {
     // eslint-disable-next-line react/prop-types
@@ -15,12 +17,19 @@ export default function Create({ socket }) {
     setCode(code);
   });
 
+  socket.on('player-found', () => {
+    if (!foundGame) {
+      setFoundGame(true)
+    }
+  })
+
   const quitGame = () => {
     socket.emit('leave-game');
   };
 
   return (
     <div>
+      { foundGame ? <Redirect to='/settings' /> : null }
       <div className={styles.backButton} data-tid="backButton">
         <Link onClick={quitGame} to={routes.HOME}>
           <i className="fa fa-arrow-left fa-3x" />
