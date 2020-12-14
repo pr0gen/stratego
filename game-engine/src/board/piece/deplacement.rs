@@ -24,6 +24,11 @@ impl Move {
     pub fn get_max(&self) -> i16 {
         self.1
     }
+
+    pub fn equals(&self, available_move: AvailableMove) -> bool {
+        let to = Move::new(available_move);
+        to.0 == self.0 && to.1 == self.1
+    }
 }
 
 #[cfg(test)]

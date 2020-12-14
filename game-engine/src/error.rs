@@ -6,6 +6,7 @@ pub enum StrategoError {
     MoveError(String, Case, Coordinate),
     PlacementError(i16, i16, Piece),
     InitGameError(String),
+    GameNotOverError(),
 }
 
 impl StrategoError {
@@ -30,6 +31,8 @@ impl StrategoError {
                 y
             ),
             StrategoError::InitGameError(s) => s.to_owned(),
+            StrategoError::GameNotOverError() => String::from("Game is not over"),
         }
     }
 }
+
