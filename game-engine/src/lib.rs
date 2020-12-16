@@ -19,7 +19,7 @@ pub fn greet(name: &str) {
 
 #[wasm_bindgen]
 pub fn fibo(n: i32) {
-    alert(&format!("{}",fibonacci(n)));
+    alert(&format!("{}", fibonacci(n)));
 }
 
 fn fibonacci(n: i32) -> i32 {
@@ -29,4 +29,3 @@ fn fibonacci(n: i32) -> i32 {
         fibonacci(n - 1) + fibonacci(n - 2)
     }
 }
-

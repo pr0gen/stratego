@@ -7,7 +7,7 @@ use crate::player::Player;
 pub trait Engine {
     fn status(&self) -> &Vec<Vec<Case>>;
 
-    fn execute_move(&mut self, from: Case, to: Coordinate)-> Result<Vec<Case>, StrategoError>;
+    fn execute_move(&mut self, from: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError>;
 
     fn get_turn(&self) -> Color;
 
@@ -38,14 +38,17 @@ impl Engine for StrategoEngine {
     }
 
     fn execute_move(&mut self, from: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
-        //FIXME There will be bugs for sure
-        if let Color::Blue = self.turn {
-            self.turn = Color::Red;
-        } else {
-            self.turn = Color::Blue;
+        match self.board.moving(from, to) {
+            Ok(cases) => {
+                if Color::Blue == self.turn {
+                    self.turn = Color::Red;
+                } else {
+                    self.turn = Color::Blue;
+                }
+                Ok(cases)
+            }
+            Err(e) => Err(e),
         }
-
-        self.board.moving(from, to)
     }
 
     fn get_turn(&self) -> Color {

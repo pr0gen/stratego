@@ -6,9 +6,12 @@ pub fn attack(from: Case, to: Case) -> Result<(Case, Case), StrategoError> {
     let attacker = from.get_content();
     let defenser = to.get_content();
 
-
     if attacker.get_color() == defenser.get_color() {
-        Err(StrategoError::MoveError(String::from("Don't attack your self"), from, to.get_coordinate().to_owned()))
+        Err(StrategoError::MoveError(
+            String::from("Don't attack your self"),
+            from,
+            to.get_coordinate().to_owned(),
+        ))
     } else if attacker.get_rank() > defenser.get_rank() {
         Ok((
             create_empty_case(*from.get_coordinate()),

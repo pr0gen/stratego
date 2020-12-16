@@ -1,5 +1,5 @@
-use rand::thread_rng;
 use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 use crate::error::StrategoError;
 
@@ -7,9 +7,9 @@ use super::board_utils::{attack, check_piece_move};
 use super::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
-use super::Board;
 use super::piece::piece_utils::list_of_all_pieces;
 use super::piece::Color;
+use super::Board;
 
 #[derive(Debug)]
 pub struct StrategoBoard {
@@ -19,7 +19,7 @@ pub struct StrategoBoard {
 //to test
 pub fn create_stratego_board() -> Box<dyn Board> {
     let board = create_empty_stratego_board();
-   
+
     let mut cases = board.state().clone();
 
     let mut pieces = list_of_all_pieces(Color::Red);
@@ -32,7 +32,7 @@ pub fn create_stratego_board() -> Box<dyn Board> {
             cases[i][j] = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
         }
     }
-    
+
     let mut pieces = list_of_all_pieces(Color::Blue);
     pieces.shuffle(&mut thread_rng());
     let max = 10;
@@ -77,7 +77,11 @@ impl StrategoBoard {
 impl Board for StrategoBoard {
     fn moving(&mut self, case: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
         if !check_piece_move(&case, &to) {
-            return Err(StrategoError::MoveError(String::from("Illegal move"), case, to));
+            return Err(StrategoError::MoveError(
+                String::from("Illegal move"),
+                case,
+                to,
+            ));
         }
 
         let piece = case.get_content();
@@ -104,17 +108,20 @@ impl Board for StrategoBoard {
                     create_full_case(case_coord.to_owned(), piece.to_owned()),
                     aim_case.to_owned(),
                 ) {
-                   Ok(result) => {
-                       self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
-                           result.0.clone();
-                       self.cases[to_x as usize][to_y as usize] = result.1.clone();
-                       Ok(vec![result.0, result.1])
-                   }
-                   Err(e) => Err(e)
+                    Ok(result) => {
+                        self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
+                            result.0.clone();
+                        self.cases[to_x as usize][to_y as usize] = result.1.clone();
+                        Ok(vec![result.0, result.1])
+                    }
+                    Err(e) => Err(e),
                 }
-
             }
-            State::Unreachable => Err(StrategoError::MoveError(String::from("Unreachable"), case, to)),
+            State::Unreachable => Err(StrategoError::MoveError(
+                String::from("Unreachable"),
+                case,
+                to,
+            )),
         }
     }
 
@@ -149,7 +156,9 @@ impl Board for StrategoBoard {
 mod test {
 
     use super::StrategoBoard;
-    use super::{create_empty_case, create_empty_stratego_board, create_full_case, create_unreachable_case};
+    use super::{
+        create_empty_case, create_empty_stratego_board, create_full_case, create_unreachable_case,
+    };
     use crate::board::case::Coordinate;
     use crate::board::case::State;
     use crate::board::piece::deplacement::{AvailableMove, Move};
@@ -268,12 +277,10 @@ mod test {
         let sergeant = Piece::new(PieceType::Sergeant, Box::new(Color::Blue));
         let lieutenant = Piece::new(PieceType::Lieutenant, Box::new(Color::Red));
         let mut stratego_board = StrategoBoard {
-            cases: vec![
-                vec![
-                    create_full_case(Coordinate::new(0, 0), lieutenant.clone()),
-                    create_full_case(Coordinate::new(0, 0), sergeant.clone()),
-                ],
-            ],
+            cases: vec![vec![
+                create_full_case(Coordinate::new(0, 0), lieutenant.clone()),
+                create_full_case(Coordinate::new(0, 0), sergeant.clone()),
+            ]],
         };
 
         let result = stratego_board.moving(
@@ -282,16 +289,16 @@ mod test {
         );
 
         match result {
-            Ok(cases) =>  {
-               let previous_case = cases.get(0).unwrap(); 
-               assert_eq!(&State::Empty, previous_case.get_state());
+            Ok(cases) => {
+                let previous_case = cases.get(0).unwrap();
+                assert_eq!(&State::Empty, previous_case.get_state());
 
-               let actual_case = cases.get(1).unwrap();
-               assert_eq!(&State::Full, actual_case.get_state());
-               let piece = actual_case.get_content();
-               assert_eq!(&Color::Red, piece.get_color());
-               assert_eq!(&PieceType::Lieutenant, piece.get_rank());
-            },
+                let actual_case = cases.get(1).unwrap();
+                assert_eq!(&State::Full, actual_case.get_state());
+                let piece = actual_case.get_content();
+                assert_eq!(&Color::Red, piece.get_color());
+                assert_eq!(&PieceType::Lieutenant, piece.get_rank());
+            }
             Err(e) => panic!("{:?}", e),
         }
     }
@@ -311,7 +318,7 @@ mod test {
                 ],
             ],
         };
-        
+
         let result = stratego_board.moving(
             create_full_case(Coordinate::new(0, 0), general),
             Coordinate::new(1, 1),
@@ -323,4 +330,3 @@ mod test {
         }
     }
 }
-

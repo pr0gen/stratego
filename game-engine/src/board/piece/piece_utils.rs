@@ -17,9 +17,9 @@ pub fn list_all_pieces() -> HashMap<PieceType, i8> {
         (PieceType::Spy, 1),
         (PieceType::Flag, 1),
     ]
-        .iter()
-        .cloned()
-        .collect()
+    .iter()
+    .cloned()
+    .collect()
 }
 
 pub fn list_of_all_pieces(color: Color) -> Vec<Piece> {
