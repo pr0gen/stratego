@@ -1,3 +1,6 @@
+use rand::thread_rng;
+use rand::seq::SliceRandom;
+
 use crate::error::StrategoError;
 
 use super::board_utils::{attack, check_piece_move};
@@ -5,10 +8,42 @@ use super::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
 use super::Board;
+use super::piece::piece_utils::list_of_all_pieces;
+use super::piece::Color;
 
 #[derive(Debug)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
+}
+
+//to test
+pub fn create_stratego_board() -> Box<dyn Board> {
+    let board = create_empty_stratego_board();
+   
+    let mut cases = board.state().clone();
+
+    let mut pieces = list_of_all_pieces(Color::Red);
+    pieces.shuffle(&mut thread_rng());
+
+    let max = 4;
+    for i in 0..max {
+        for j in 0..10 {
+            let piece = pieces.pop();
+            cases[i][j] = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+        }
+    }
+    
+    let mut pieces = list_of_all_pieces(Color::Blue);
+    pieces.shuffle(&mut thread_rng());
+    let max = 10;
+    for i in 6..max {
+        for j in 0..10 {
+            let piece = pieces.pop();
+            cases[i][j] = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+        }
+    }
+
+    Box::new(StrategoBoard::new(cases.clone()))
 }
 
 pub fn create_empty_stratego_board() -> Box<dyn Board> {
@@ -65,14 +100,19 @@ impl Board for StrategoBoard {
             }
             State::Full => {
                 let case_coord = case.get_coordinate();
-                let result = attack(
+                match attack(
                     create_full_case(case_coord.to_owned(), piece.to_owned()),
                     aim_case.to_owned(),
-                );
-                self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
-                    result.0.clone();
-                self.cases[to_x as usize][to_y as usize] = result.1.clone();
-                Ok(vec![result.0, result.1])
+                ) {
+                   Ok(result) => {
+                       self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
+                           result.0.clone();
+                       self.cases[to_x as usize][to_y as usize] = result.1.clone();
+                       Ok(vec![result.0, result.1])
+                   }
+                   Err(e) => Err(e)
+                }
+
             }
             State::Unreachable => Err(StrategoError::MoveError(String::from("Unreachable"), case, to)),
         }

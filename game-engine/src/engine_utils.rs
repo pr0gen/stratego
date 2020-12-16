@@ -1,14 +1,28 @@
-use crate::board::case::{Case, State};
-use crate::board::piece::Color;
-use crate::board::Board;
+use std::collections::HashMap;
 
-use crate::board::piece::PieceType;
+use crate::board::case::{Case, Coordinate, State};
+use crate::board::piece::Color;
+
 use crate::board::piece::deplacement::AvailableMove;
+use crate::board::piece::piece_utils::list_all_pieces;
+use crate::board::piece::PieceType;
 use crate::error::StrategoError;
 use crate::error::StrategoError::InitGameError;
+use crate::player::Player;
 
-pub fn game_is_over(board: Box<dyn Board>) -> Result<Color, StrategoError> {
-    let flatten_state: Vec<_> = board.state().iter().flatten().collect();
+pub fn ask_next_move(player: &Box<dyn Player>, cases: &Vec<Vec<Case>>) -> (Case, Coordinate) {
+    let (from, to) = player.ask_next_move();
+    let case = cases
+        .get(from.get_x() as usize)
+        .unwrap()
+        .get(from.get_y() as usize)
+        .unwrap();
+
+    (case.clone(), to)
+}
+
+pub fn game_is_over(cases: &Vec<Vec<Case>>) -> Result<Color, StrategoError> {
+    let flatten_state: Vec<_> = cases.iter().flatten().collect();
 
     let blues: Vec<_> = flatten_state
         .iter()
@@ -81,9 +95,45 @@ pub fn verify_board_integrity(state: Vec<Vec<Case>>) -> Result<Vec<Vec<Case>>, S
         Err(InitGameError(String::from(
             "Players must place theirs pieces in the right place !",
         )))
+    } else if !check_player_has_correct_pieces(&state) && !check_player_has_correct_pieces(&state) {
+        Err(InitGameError(String::from(
+            "You need to start with the right pieces",
+        )))
     } else {
         Ok(state)
     }
+}
+
+fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
+    let piece_types: Vec<&PieceType> = cases
+        .iter()
+        .flatten()
+        .map(|case| case.get_content().get_rank())
+        .collect();
+
+    let piece_types_2 = Vec::from(piece_types.clone());
+
+    let pieces: HashMap<_, _> = piece_types
+        .iter()
+        .map(|&x| {
+            (
+                x.clone(),
+                piece_types_2.iter().filter(|&y| y == &x).count() as i8,
+            )
+        })
+        .collect::<Vec<_>>()
+        .iter()
+        .cloned()
+        .collect();
+
+    let all_pieces = list_all_pieces();
+    for (key, value) in pieces.iter() {
+        if all_pieces.get(key) != Some(value) {
+            return false;
+        }
+    }
+
+    true
 }
 
 fn check_player_has_piece_in_the_for_rows_of_his_color(cases: &[Vec<Case>], color: &Color) -> bool {
@@ -183,9 +233,7 @@ mod test {
             Piece::new(PieceType::General, Box::new(Color::Blue)),
         );
 
-        let board = StrategoBoard::new(cases);
-
-        let res = game_is_over(Box::new(board));
+        let res = game_is_over(&cases);
         match res {
             Ok(val) => {
                 assert_eq!(Color::Red, val);
@@ -213,9 +261,7 @@ mod test {
             Piece::new(PieceType::Flag, Box::new(Color::Blue)),
         );
 
-        let board = StrategoBoard::new(cases);
-
-        let res = game_is_over(Box::new(board));
+        let res = game_is_over(&cases);
         match res {
             Ok(val) => {
                 assert_eq!(Color::Red, val);
@@ -248,9 +294,7 @@ mod test {
             Piece::new(PieceType::General, Box::new(Color::Blue)),
         );
 
-        let board = StrategoBoard::new(cases);
-
-        let res = game_is_over(Box::new(board));
+        let res = game_is_over(&cases);
         match res {
             Ok(_) => panic!("Should not happen"),
             Err(e) => {
@@ -366,6 +410,25 @@ mod test {
                 assert_eq!(
                     e.message(),
                     String::from("Players must place theirs pieces in the right place !")
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn should_check_players_have_the_right_pieces() {
+        let cases = create_statego_board();
+        //let board = StrategoBoard::new(cases);
+        //console.log(board.display());
+        let res = verify_board_integrity(cases);
+
+        match res {
+            Ok(_) => panic!("Should not happen"),
+            Err(e) => {
+                assert!(true);
+                assert_eq!(
+                    e.message(),
+                    String::from("You need to start with the right pieces")
                 );
             }
         }

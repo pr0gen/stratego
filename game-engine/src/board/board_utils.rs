@@ -1,24 +1,29 @@
+use crate::error::StrategoError;
+
 use super::case::{create_empty_case, create_full_case, Case, Coordinate};
 
-pub fn attack(from: Case, to: Case) -> (Case, Case) {
+pub fn attack(from: Case, to: Case) -> Result<(Case, Case), StrategoError> {
     let attacker = from.get_content();
     let defenser = to.get_content();
 
-    if attacker.get_rank() > defenser.get_rank() {
-        (
+
+    if attacker.get_color() == defenser.get_color() {
+        Err(StrategoError::MoveError(String::from("Don't attack your self"), from, to.get_coordinate().to_owned()))
+    } else if attacker.get_rank() > defenser.get_rank() {
+        Ok((
             create_empty_case(*from.get_coordinate()),
             create_full_case(*to.get_coordinate(), from.get_content().clone()),
-        )
+        ))
     } else if attacker.get_rank() == defenser.get_rank() {
-        (
+        Ok((
             create_empty_case(*from.get_coordinate()),
             create_empty_case(*to.get_coordinate()),
-        )
+        ))
     } else {
-        (
+        Ok((
             create_full_case(*from.get_coordinate(), to.get_content().clone()),
             create_empty_case(*to.get_coordinate()),
-        )
+        ))
     }
 }
 
@@ -53,7 +58,7 @@ mod test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Lieutenant, Box::new(Color::Red)),
         );
-        let res = attack(attacker, defenser);
+        let res = attack(attacker, defenser).unwrap();
 
         assert_eq!(res.0.get_state(), &State::Empty);
 
@@ -72,7 +77,7 @@ mod test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Colonel, Box::new(Color::Red)),
         );
-        let res = attack(attacker, defenser);
+        let res = attack(attacker, defenser).unwrap();
 
         assert_eq!(res.1.get_state(), &State::Empty);
 
@@ -91,7 +96,7 @@ mod test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Colonel, Box::new(Color::Red)),
         );
-        let res = attack(attacker, defenser);
+        let res = attack(attacker, defenser).unwrap();
 
         assert_eq!(res.0.get_state(), &State::Empty);
         assert_eq!(res.1.get_state(), &State::Empty);

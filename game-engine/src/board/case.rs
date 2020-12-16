@@ -1,16 +1,16 @@
 use super::piece::{Color, Piece, PieceType};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialOrd, PartialEq)]
 pub struct Case {
     state: State,
     coordinate: Coordinate,
     content: Piece,
 }
 
-#[derive(Debug, Eq, PartialEq, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
 pub struct Coordinate(i16, i16);
 
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
 pub enum State {
     Unreachable,
     Empty,

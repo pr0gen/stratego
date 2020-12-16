@@ -3,21 +3,21 @@ pub mod piece_utils;
 
 use self::deplacement::{AvailableMove, Move};
 
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, PartialOrd, Clone)]
 pub struct Piece {
     m: Move,
     rank: PieceType,
     color: Box<Color>,
 }
 
-#[derive(Debug, Eq, PartialEq, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
 pub enum Color {
     None,
     Red,
     Blue,
 }
 
-#[derive(Debug, Eq, PartialEq, PartialOrd, Clone)]
+#[derive(Debug, Eq, PartialEq, PartialOrd, Clone, Hash)]
 pub enum PieceType {
     Null = -10,
     Bomb = -2,
