@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use std::collections::HashMap;
 
 use crate::board::case::{Case, Coordinate, State};
@@ -105,25 +106,20 @@ pub fn verify_board_integrity(state: Vec<Vec<Case>>) -> Result<Vec<Vec<Case>>, S
 }
 
 fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
-    let piece_types: Vec<&PieceType> = cases
+    let piece_types: Vec<PieceType> = cases
         .iter()
         .flatten()
-        .map(|case| case.get_content().get_rank())
+        .map(|case| case.get_content().get_rank().clone())
         .collect();
 
-    let piece_types_2 = Vec::from(piece_types.clone());
-
-    let pieces: HashMap<_, _> = piece_types
+    let pieces: Vec<(PieceType, i8)> = piece_types
         .iter()
-        .map(|&x| {
+        .map(|x| {
             (
                 x.clone(),
-                piece_types_2.iter().filter(|&y| y == &x).count() as i8,
+                piece_types.iter().filter(|&y| y == x).count() as i8,
             )
         })
-        .collect::<Vec<_>>()
-        .iter()
-        .cloned()
         .collect();
 
     let all_pieces = list_all_pieces();
