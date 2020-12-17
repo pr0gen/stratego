@@ -34,7 +34,7 @@ impl Player for HumanPlayer {
             .map(|s| s.parse::<i16>().unwrap())
             .collect();
 
-        println!("{:?}|{:?}", from, to);
+        //println!("{:?}|{:?}", from, to);
 
         (
             Coordinate::new(from.get(0).unwrap().clone(), from.get(1).unwrap().clone()),

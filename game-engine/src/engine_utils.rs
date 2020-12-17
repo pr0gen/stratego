@@ -1,14 +1,8 @@
-use itertools::Itertools;
-use std::collections::HashMap;
-
 use crate::board::case::{Case, Coordinate, State};
-use crate::board::piece::Color;
-
 use crate::board::piece::deplacement::AvailableMove;
 use crate::board::piece::piece_utils::list_all_pieces;
-use crate::board::piece::PieceType;
-use crate::error::StrategoError;
-use crate::error::StrategoError::InitGameError;
+use crate::board::piece::{Color, PieceType};
+use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
 
 pub fn ask_next_move(player: &Box<dyn Player>, cases: &Vec<Vec<Case>>) -> (Case, Coordinate) {

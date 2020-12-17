@@ -2,7 +2,6 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 
 use crate::error::StrategoError;
-
 use super::board_utils::{attack, check_piece_move};
 use super::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
@@ -132,17 +131,17 @@ impl Board for StrategoBoard {
     fn display(&self) -> String {
         let mut display = String::from(" | ");
         for i in 0..self.cases.len() {
-            display.push_str(format!("  {}   |  ", i).as_str());
+            display.push_str(format!("  {}   | ", i).as_str());
         }
         display.push('\n');
         for i in 0..self.cases.len() {
             let row = self.cases.get(i).unwrap();
             display.push_str(
                 format!(
-                    "{}|{}\n",
+                    "{}| {}\n",
                     i,
                     row.iter()
-                        .map(|case| format!(" {} | ", case.display()))
+                        .map(|case| format!("{} | ", case.display()))
                         .collect::<String>()
                 )
                 .as_str(),
@@ -181,7 +180,7 @@ mod test {
             cases: vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]],
         };
 
-        assert_eq!(" |   0   |  \n0|  B  B | \n", stratego_board.display());
+        assert_eq!(" |   0   | \n0|  B  B | \n", stratego_board.display());
     }
 
     #[test]
@@ -218,6 +217,8 @@ mod test {
                 ],
             ],
         };
+
+        println!("{}", stratego_board.display());
 
         let result = stratego_board.moving(
             create_full_case(Coordinate::new(0, 0), general),
