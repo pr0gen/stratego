@@ -19,14 +19,14 @@ pub struct HumanPlayer {
 impl Player for HumanPlayer {
     fn ask_next_move(&self) -> (Coordinate, Coordinate) {
         println!("{:?} is playing", self.color);
-        println!("from ? (split with , e.g 1,2)");
+        println!("from ? (y/x) (split with , e.g 1,2)");
         let from: Vec<i16> = read_from_input()
             .unwrap()
             .split(',')
             .map(|s| s.parse::<i16>().unwrap())
             .collect();
 
-        println!("to ? (split with , e.g 1,2)");
+        println!("to ? (y/x) (split with , e.g 1,2)");
 
         let to: Vec<i16> = read_from_input()
             .unwrap()

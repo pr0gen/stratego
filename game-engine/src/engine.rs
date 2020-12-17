@@ -30,6 +30,14 @@ impl StrategoEngine {
             turn: Color::Red,
         }
     }
+
+    fn flip_color(&mut self) {
+        if Color::Blue == self.turn {
+            self.turn = Color::Red;
+        } else {
+            self.turn = Color::Blue;
+        }
+    }
 }
 
 impl Engine for StrategoEngine {
@@ -40,11 +48,7 @@ impl Engine for StrategoEngine {
     fn execute_move(&mut self, from: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
         match self.board.moving(from, to) {
             Ok(cases) => {
-                if Color::Blue == self.turn {
-                    self.turn = Color::Red;
-                } else {
-                    self.turn = Color::Blue;
-                }
+                self.flip_color();
                 Ok(cases)
             }
             Err(e) => Err(e),

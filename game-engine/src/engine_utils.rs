@@ -207,7 +207,6 @@ mod test {
     use crate::board::case::{
         create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate,
     };
-    use crate::board::classic_board::StrategoBoard;
     use crate::board::piece::{Color, Piece, PieceType};
 
     use super::game_is_over;
