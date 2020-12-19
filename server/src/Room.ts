@@ -7,7 +7,12 @@ export class Room {
     code: string
     state: RoomState
 
-    constructor() {}
+    constructor() {
+        this.firstPlayerId = ''
+        this.secondPlayerId = ''
+        this.code = ''
+        this.state = RoomState.Waiting
+    }
 
     addSecondPlayer(secondPlayerId : string) {
         this.secondPlayerId = secondPlayerId

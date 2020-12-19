@@ -27,15 +27,8 @@ export class Rooms {
     }
 
 
-    getRoomByCode(code: string) :Room {
-
-        for (const room of this.rooms) {
-            if (room.code === code) {
-                return room
-            }
-        }
-
-        return null
+    getRoomByCode(code: string) :Room|undefined{
+        return this.rooms.find(room => room.code === code)
     }
 
 }

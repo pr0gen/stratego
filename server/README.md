@@ -30,8 +30,13 @@ Complete the **.env** file
 npm install
 ```
 
-### Dev mode
+### Start Server
 
+```
+npm run start
+```
+
+### Dev mode
 
 ```
 npm run dev
