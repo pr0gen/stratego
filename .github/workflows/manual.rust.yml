@@ -19,7 +19,7 @@ jobs:
       - name: Run cargo test
         run: |
           RUST_BACKTRACE=1 cargo test -- --nocapture
-clippy:
+  clippy:
     name: Clippy
     runs-on: ubuntu-latest
     steps:
