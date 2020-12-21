@@ -6,6 +6,7 @@ export default function leaveGame(socket: Socket, rooms : Rooms) {
 
     socket.on('leave-game', () => {
         rooms.deleteRoomByFirstPlayerId(socket.id)
+        console.log(rooms)
     })
 
 }

@@ -11,7 +11,7 @@ export class Room {
 
     addSecondPlayer(secondPlayerId : string) {
         this.secondPlayerId = secondPlayerId
-        this.state = RoomState.gameStarted
+        this.state = RoomState.GameStarted
     }
 
 }
