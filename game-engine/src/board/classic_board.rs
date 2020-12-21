@@ -1,7 +1,6 @@
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
-use crate::error::StrategoError;
 use super::board_utils::{attack, check_piece_move};
 use super::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
@@ -9,6 +8,7 @@ use super::case::{
 use super::piece::piece_utils::list_of_all_pieces;
 use super::piece::Color;
 use super::Board;
+use crate::error::StrategoError;
 
 #[derive(Debug)]
 pub struct StrategoBoard {
@@ -129,26 +129,29 @@ impl Board for StrategoBoard {
     }
 
     fn display(&self) -> String {
-        let mut display = String::from(" | ");
-        for i in 0..self.cases.len() {
-            display.push_str(format!("  {}   | ", i).as_str());
-        }
+        let mut display = String::from(" |");
+        let size = self.cases.len();
+        display.push_str(get_header(size).as_str());
         display.push('\n');
-        for i in 0..self.cases.len() {
+        for i in 0..size {
             let row = self.cases.get(i).unwrap();
-            display.push_str(
-                format!(
-                    "{}| {}\n",
-                    i,
-                    row.iter()
-                        .map(|case| format!("{} | ", case.display()))
-                        .collect::<String>()
-                )
-                .as_str(),
-            );
+            display.push_str(format!("{}| {}\n", i, parse_row(row)).as_str());
         }
         display
     }
+}
+
+fn get_header(length: usize) -> String {
+    let columns = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let char: Vec<_> = columns[0..length].chars().collect();
+
+    char.iter().map(|c| format!("   {}   |", c)).collect()
+}
+
+fn parse_row(row: &Vec<Case>) -> String {
+    row.iter()
+        .map(|case| format!("{} | ", case.display()))
+        .collect::<String>()
 }
 
 #[cfg(test)]
@@ -180,7 +183,7 @@ mod test {
             cases: vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]],
         };
 
-        assert_eq!(" |   0   | \n0|  B  B | \n", stratego_board.display());
+        assert_eq!(" |   A   |\n0|  B  B | \n", stratego_board.display());
     }
 
     #[test]

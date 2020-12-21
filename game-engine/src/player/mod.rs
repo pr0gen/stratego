@@ -19,27 +19,15 @@ pub struct HumanPlayer {
 impl Player for HumanPlayer {
     fn ask_next_move(&self) -> (Coordinate, Coordinate) {
         println!("{:?} is playing", self.color);
-        println!("from ? (y/x) (split with , e.g 1,2)");
-        let from: Vec<i16> = read_from_input()
-            .unwrap()
-            .split(',')
-            .map(|s| s.parse::<i16>().unwrap())
-            .collect();
+        println!("from ? (e.g 0A)");
+        let from: (i16, i16) = parse_input(read_from_input().unwrap().as_str());
 
-        println!("to ? (y/x) (split with , e.g 1,2)");
+        println!("to ? (e.g 0A)");
 
-        let to: Vec<i16> = read_from_input()
-            .unwrap()
-            .split(',')
-            .map(|s| s.parse::<i16>().unwrap())
-            .collect();
-
+        let to: (i16, i16) = parse_input(read_from_input().unwrap().as_str());
         //println!("{:?}|{:?}", from, to);
 
-        (
-            Coordinate::new(from.get(0).unwrap().clone(), from.get(1).unwrap().clone()),
-            Coordinate::new(to.get(0).unwrap().clone(), to.get(1).unwrap().clone()),
-        )
+        (Coordinate::new(from.0, from.1), Coordinate::new(to.0, to.1))
     }
 
     fn get_color(&self) -> &Color {
@@ -63,6 +51,26 @@ fn read_from_input() -> io::Result<String> {
 
     input.pop();
     Ok(input)
+}
+
+fn parse_input(input: &str) -> (i16, i16) {
+    let (number, letter) = input.split_at(1);
+    (parse_str_to_i16(number), parse_letter_to_i16(letter))
+}
+
+fn parse_letter_to_i16(letter: &str) -> i16 {
+    letter.as_bytes()[0] as i16 - 65
+}
+
+fn parse_str_to_i16(s: &str) -> i16 {
+    s.parse::<i16>().unwrap()
+}
+
+#[test]
+fn should_parse_input() {
+    assert_eq!((0, 0), parse_input("A0"));
+    assert_eq!((1, 4), parse_input("B4"));
+    assert_eq!((7, 3), parse_input("H3"));
 }
 
 #[cfg(test)]
