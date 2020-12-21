@@ -129,13 +129,13 @@ impl Board for StrategoBoard {
     }
 
     fn display(&self) -> String {
-        let mut display = String::from(" |");
+        let mut display = String::from("   |");
         let size = self.cases.len();
         display.push_str(get_header(size).as_str());
         display.push('\n');
         for i in 0..size {
             let row = self.cases.get(i).unwrap();
-            display.push_str(format!("{}| {}\n", i, parse_row(row)).as_str());
+            display.push_str(format!(" {} | {}\n", i, parse_row(row)).as_str());
         }
         display
     }
@@ -143,15 +143,16 @@ impl Board for StrategoBoard {
 
 fn get_header(length: usize) -> String {
     let columns = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let char: Vec<_> = columns[0..length].chars().collect();
-
-    char.iter().map(|c| format!("   {}   |", c)).collect()
+    columns[0..length]
+        .chars()
+        .map(|c| format!("   {}   |", c))
+        .collect()
 }
 
 fn parse_row(row: &Vec<Case>) -> String {
     row.iter()
         .map(|case| format!("{} | ", case.display()))
-        .collect::<String>()
+        .collect()
 }
 
 #[cfg(test)]

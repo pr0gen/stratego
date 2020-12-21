@@ -1,5 +1,5 @@
-use crate::error::StrategoError;
 use super::case::{create_empty_case, create_full_case, Case, Coordinate};
+use crate::error::StrategoError;
 
 pub fn attack(from: Case, to: Case) -> Result<(Case, Case), StrategoError> {
     let attacker = from.get_content();
@@ -44,9 +44,9 @@ pub fn check_piece_move(case: &Case, to: &Coordinate) -> bool {
 #[cfg(test)]
 mod test {
 
+    use super::{attack, check_piece_move};
     use crate::board::case::{create_full_case, Coordinate, State};
     use crate::board::piece::{Color, Piece, PieceType};
-    use super::{attack, check_piece_move};
 
     #[test]
     fn attacker_should_win() {
