@@ -68,9 +68,9 @@ fn parse_str_to_i16(s: &str) -> i16 {
 
 #[test]
 fn should_parse_input() {
-    assert_eq!((0, 0), parse_input("A0"));
-    assert_eq!((1, 4), parse_input("B4"));
-    assert_eq!((7, 3), parse_input("H3"));
+    assert_eq!((0, 0), parse_input("0A"));
+    assert_eq!((4, 1), parse_input("4B"));
+    assert_eq!((3, 7), parse_input("3H"));
 }
 
 #[cfg(test)]

@@ -184,7 +184,7 @@ mod test {
             cases: vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]],
         };
 
-        assert_eq!(" |   A   |\n0|  B  B | \n", stratego_board.display());
+        assert_eq!("   |   A   |\n 0 |  B  B | \n", stratego_board.display());
     }
 
     #[test]

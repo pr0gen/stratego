@@ -37,32 +37,32 @@ test('Both should loose', () => {
     expect(res[1].state).toBe(CaseState.Empty);
 });
 
-test('Should enable move',() => {
+test('Should enable move', () => {
     let piece: Piece = createPiece(PieceType.General, Color.Blue);
-    let c: Case = createCase(CaseState.Full, 0, 0, piece); 
-    expect(checkPieceMove(c, {x: 0, y:1})).toBe(true);
-    
+    let c: Case = createCase(CaseState.Full, 0, 0, piece);
+    expect(checkPieceMove(c, { x: 0, y: 1 })).toBe(true);
+
     piece = createPiece(PieceType.Scout, Color.Blue);
-    c = createCase(CaseState.Full, 0, 0, piece); 
-    expect(checkPieceMove(c, {x: 0, y:9})).toBe(true);
+    c = createCase(CaseState.Full, 0, 0, piece);
+    expect(checkPieceMove(c, { x: 0, y: 9 })).toBe(true);
 
     piece = createPiece(PieceType.General, Color.Blue);
-    c= createCase(CaseState.Full, 0, 0, piece); 
-    expect(checkPieceMove(c, {x: 1, y:0})).toBe(true);
+    c = createCase(CaseState.Full, 0, 0, piece);
+    expect(checkPieceMove(c, { x: 1, y: 0 })).toBe(true);
 });
 
 test('Shouldnt enable move', () => {
     let piece: Piece = createPiece(PieceType.General, Color.Blue);
-    let c: Case = createCase(CaseState.Full, 0, 0, piece); 
-    expect(checkPieceMove(c, {x: 0, y:2})).toBe(false);
+    let c: Case = createCase(CaseState.Full, 0, 0, piece);
+    expect(checkPieceMove(c, { x: 0, y: 2 })).toBe(false);
 
     piece = createPiece(PieceType.Bomb, Color.Blue);
-    c = createCase(CaseState.Full, 0, 0, piece); 
-    expect(checkPieceMove(c, {x: 0, y:2})).toBe(false);
+    c = createCase(CaseState.Full, 0, 0, piece);
+    expect(checkPieceMove(c, { x: 0, y: 2 })).toBe(false);
 
     piece = createPiece(PieceType.General, Color.Blue);
-    c = createCase(CaseState.Full, 0, 0, piece); 
-    expect(checkPieceMove(c, {x: 1, y:1})).toBe(false);
-  
+    c = createCase(CaseState.Full, 0, 0, piece);
+    expect(checkPieceMove(c, { x: 1, y: 1 })).toBe(false);
+
 
 });

@@ -1,5 +1,4 @@
 import { Board } from './board/board';
-import { createPiecesForNormalGame } from './piece/infra/piece_utils';
 import { Player } from './player/player';
 import * as engine from './engine_utils';
 
