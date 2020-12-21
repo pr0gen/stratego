@@ -7,7 +7,7 @@ test('Should init game', () => {
     let p1 = { name: "Ephrimes" };
     let p2 = { name: "Rolfie" };
 
-    let engine = new GameEngine(p1, p2, StrategoBoard.createEmptyStrategoBoard(10));
+    let engine = new GameEngine(p1, p2, StrategoBoard.createEmptyStrategoBoard());
 
     let state: Case[][] = engine.getBoard()
         .state();

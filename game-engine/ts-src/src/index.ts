@@ -1,12 +1,26 @@
 import { Board, StrategoBoard } from "./board/board";
+import { createStrategoBoard } from "./board/board_utils";
 import { Case, CaseState, create, createEmpty, createUnreachable } from "./case";
 import { Color } from "./piece/piece";
 
-let newBoard: Case[][] = [
-    [create(CaseState.Full, 0, 0, { move: { min: 0, max: 1 }, rank: 17, color: Color.Blue }), createEmpty(0, 1)],
-    [createEmpty(1, 0), create(CaseState.Full, 0, 0, { move: { min: 0, max: 1 }, rank: 4, color: Color.Blue })]
-];
 
-let board: Board = new StrategoBoard(newBoard);
+const res = createStrategoBoard();
 
-console.log(board.display());
+if(res.ok) {
+  const board = res.val;
+
+  console.log(board.display());
+
+  let state = board.state();
+
+  board.move(state[3][5], { x: 4, y: 5 });
+  console.log(board.display());
+
+  state = board.state();
+  board.move(state[4][5], { x: 5, y: 5 });
+  console.log(board.display());
+
+  state = board.state();
+  board.move(state[5][5], { x: 6, y: 5 });
+  console.log(board.display());
+}

@@ -16,8 +16,8 @@ export class StrategoError implements Error {
 
 export class MoveError extends StrategoError {
 
-    constructor(c: Case, coo: Coordinate) {
-        super("move", "Can not move piece " + c.content.rank + "{" + c.x + "," + c.y + "} " + "to {" + coo.x + ", " + coo.y + ")");
+    constructor(message: string, c: Case, coo: Coordinate) {
+        super("move", "Can not move piece " + c.content.rank + "{" + c.x + "," + c.y + "} " + "to {" + coo.x + ", " + coo.y + ") " + message);
     }
 
 }
