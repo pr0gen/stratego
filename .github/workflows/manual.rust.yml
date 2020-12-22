@@ -19,6 +19,7 @@ jobs:
       - name: Run cargo test
         run: |
           RUST_BACKTRACE=1 cargo test -- --nocapture
+        working-directory: ./game-engine
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
@@ -40,4 +41,5 @@ jobs:
         with:
           command: clippy
           args: -- -D warnings
+        working-directory: ./game-engine
 
