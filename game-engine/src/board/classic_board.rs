@@ -25,24 +25,31 @@ pub fn create_stratego_board() -> Box<dyn Board> {
     pieces.shuffle(&mut thread_rng());
 
     let max = 4;
-    for i in 0..max {
-        for j in 0..10 {
+    //for i in 0..max {
+        //for j in 0..10 {
+            //let piece = pieces.pop();
+            //cases[i][j] = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+        //}
+    //}
+    for (i, row) in cases.iter_mut().enumerate().take(max) {
+        for (j, case) in row.iter_mut().enumerate() {
             let piece = pieces.pop();
-            cases[i][j] = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+            *case = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
         }
     }
+
 
     let mut pieces = list_of_all_pieces(Color::Blue);
     pieces.shuffle(&mut thread_rng());
     let max = 10;
-    for i in 6..max {
-        for j in 0..10 {
+    for (i, row) in cases.iter_mut().enumerate().take(max).skip(6) {
+        for (j, case) in row.iter_mut().enumerate() {
             let piece = pieces.pop();
-            cases[i][j] = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+            *case = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
         }
     }
 
-    Box::new(StrategoBoard::new(cases.clone()))
+    Box::new(StrategoBoard::new(cases))
 }
 
 pub fn create_empty_stratego_board() -> Box<dyn Board> {
@@ -94,7 +101,7 @@ impl Board for StrategoBoard {
             .unwrap_or_else(|| panic!("Failed to get from row"));
         match aim_case.get_state() {
             State::Empty => {
-                let new_case = create_full_case(to.clone(), piece.to_owned());
+                let new_case = create_full_case(to, piece.to_owned());
                 self.cases[to_x as usize][to_y as usize] = new_case.clone();
                 let case_coord = case.get_coordinate();
                 self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
@@ -149,7 +156,7 @@ fn get_header(length: usize) -> String {
         .collect()
 }
 
-fn parse_row(row: &Vec<Case>) -> String {
+fn parse_row(row: &[Case]) -> String {
     row.iter()
         .map(|case| format!("{} | ", case.display()))
         .collect()

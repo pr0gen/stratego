@@ -5,7 +5,7 @@ use crate::board::piece::{Color, PieceType};
 use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
 
-pub fn ask_next_move(player: &Box<dyn Player>, cases: &Vec<Vec<Case>>) -> (Case, Coordinate) {
+pub fn ask_next_move(player: &dyn Player, cases: &[Vec<Case>]) -> (Case, Coordinate) {
     let (from, to) = player.ask_next_move();
     let case = cases
         .get(from.get_x() as usize)
@@ -16,7 +16,7 @@ pub fn ask_next_move(player: &Box<dyn Player>, cases: &Vec<Vec<Case>>) -> (Case,
     (case.clone(), to)
 }
 
-pub fn game_is_over(cases: &Vec<Vec<Case>>) -> Result<Color, StrategoError> {
+pub fn game_is_over(cases: &[Vec<Case>]) -> Result<Color, StrategoError> {
     let flatten_state: Vec<_> = cases.iter().flatten().collect();
 
     let blues: Vec<_> = flatten_state
@@ -138,7 +138,7 @@ fn check_player_has_piece_in_the_for_rows_of_his_color(cases: &[Vec<Case>], colo
     true
 }
 
-fn check_empty_middle(cases: &Vec<Vec<Case>>) -> bool {
+fn check_empty_middle(cases: &[Vec<Case>]) -> bool {
     let forth_row: Vec<_> = cases
         .get(4)
         .unwrap()
@@ -160,23 +160,22 @@ fn is_supposed_to_be_in_the_middle(c: &Case) -> bool {
     &State::Full != c.get_state()
 }
 
-fn check_board_size(cases: &Vec<Vec<Case>>) -> bool {
+fn check_board_size(cases: &[Vec<Case>]) -> bool {
     if 10 != cases.len() {
         false
     } else {
         cases
             .iter()
-            .filter(|row| !check_row_size(row))
-            .collect::<Vec<_>>()
-            .is_empty()
+            .find(|row| !check_row_size(row))
+            .is_none()
     }
 }
 
-fn check_row_size(row: &Vec<Case>) -> bool {
+fn check_row_size(row: &[Case]) -> bool {
     10 == row.len()
 }
 
-fn check_empty_lakes(cases: &Vec<Vec<Case>>) -> bool {
+fn check_empty_lakes(cases: &[Vec<Case>]) -> bool {
     check_lake(cases.get(4).unwrap().get(2).unwrap())
         && check_lake(cases.get(4).unwrap().get(3).unwrap())
         && check_lake(cases.get(5).unwrap().get(2).unwrap())

@@ -34,11 +34,7 @@ pub fn check_piece_move(case: &Case, to: &Coordinate) -> bool {
     let c_coord = case.get_coordinate();
     let delta_x = (to.get_x() - c_coord.get_x()).abs();
     let delta_y = (to.get_y() - c_coord.get_y()).abs();
-    if (delta_x <= m.get_max() && delta_y == 0) || (delta_x == 0 && delta_y <= m.get_max()) {
-        true
-    } else {
-        false
-    }
+    (delta_x <= m.get_max() && delta_y == 0) || (delta_x == 0 && delta_y <= m.get_max())
 }
 
 #[cfg(test)]

@@ -124,7 +124,7 @@ impl Piece {
         }
 
         match self.rank {
-            PieceType::Null => format!("     "),
+            PieceType::Null => "     ".to_string(),
             PieceType::Bomb => format!(" B {}", msg),
             PieceType::Marshal => format!("Mar{}", msg),
             PieceType::General => format!(" G {}", msg),

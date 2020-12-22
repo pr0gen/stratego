@@ -11,7 +11,7 @@ pub trait Engine {
 
     fn get_turn(&self) -> Color;
 
-    fn get_player_from_color(&self) -> &Box<dyn Player>;
+    fn get_player_from_color(&self) -> &dyn Player;
 
     fn display(&self) -> String;
 }
@@ -59,11 +59,11 @@ impl Engine for StrategoEngine {
         self.turn
     }
 
-    fn get_player_from_color(&self) -> &Box<dyn Player> {
+    fn get_player_from_color(&self) -> &dyn Player {
         if Color::Red == self.turn {
-            &self.players.0
+            &*self.players.0
         } else {
-            &self.players.1
+            &*self.players.1
         }
     }
 
