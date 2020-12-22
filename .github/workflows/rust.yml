@@ -39,8 +39,8 @@ jobs:
           override: true
           components: clippy
 
+      - uses: actions-rs/cargo@v1
       - name: Run cargo clippy
-        uses: actions-rs/cargo@v1
         continue-on-error: false
         run: cargo clippy -- -D warnings
         working-directory: ./game-engine
