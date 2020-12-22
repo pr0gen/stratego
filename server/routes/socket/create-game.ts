@@ -1,10 +1,10 @@
 import generateCode from "../../utils/generateCode";
-import {Socket} from "socket.io";
+import socketio, {Socket} from "socket.io";
 import {Room} from "../../src/Room";
 import {Rooms} from "../../src/Rooms";
 import {RoomState} from "../../src/RoomState";
 
-export default function createGame(socket: Socket, rooms : Rooms) {
+export default function createGame( socket :socketio.Socket, rooms: Rooms) {
 
     socket.on('create-game', () => {
         const code = generateCode()

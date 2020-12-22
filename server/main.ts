@@ -5,17 +5,21 @@ import run from './app'
 dotenv()
 
 // Require
-const express = require('express')
-const socketio = require('socket.io')
+import express from 'express'
+import socketio from 'socket.io'
 const app = express()
-const server = require('http').Server(app)
-const morgan = require('morgan')
+import { Server } from 'http'
+import morgan from 'morgan'
+
+const server = new Server(app)
+
+// @ts-ignore
 const io = socketio(server, { cors: { origin: '*' } })
 
 // Constante
 const port = process.env.PORT
 const devMode = process.env.NODE_ENV !== 'production' //bool
-io.set('origins', '*:*');
+//io.set('origins', '*:*');
 
 const options = {
     root: __dirname + './../views/'

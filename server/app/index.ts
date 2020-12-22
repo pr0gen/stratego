@@ -2,9 +2,11 @@ import {PlayerState} from "../src/PlayerState";
 import {Rooms} from "../src/Rooms";
 import {Players} from "../src/Players";
 import startSockets from "../routes/socket";
+import express from 'express'
+import socketio from "socket.io";
 
 
-export default function run(app, io, options): void {
+export default function run(app: express.Express, io: socketio.Server, options: {root:string}): void {
 
 // Express
 
