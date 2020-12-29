@@ -114,11 +114,11 @@ impl Board for StrategoBoard {
                     create_full_case(case_coord.to_owned(), piece.to_owned()),
                     aim_case.to_owned(),
                 ) {
-                    Ok(result) => {
+                    Ok((from, to)) => {
                         self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
-                            result.0.clone();
-                        self.cases[to_x as usize][to_y as usize] = result.1.clone();
-                        Ok(vec![result.0, result.1])
+                            from.clone();
+                        self.cases[to_x as usize][to_y as usize] = to.clone();
+                        Ok(vec![from, to])
                     }
                     Err(e) => Err(e),
                 }

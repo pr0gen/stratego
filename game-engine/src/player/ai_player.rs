@@ -72,6 +72,7 @@ fn ask_ai_next_move(py: Python, name: &str) -> Result<(Coordinate, Coordinate), 
 }
 
 #[test]
+#[ignore]
 fn should_ask_next_move_to_test_ai() {
     let gil = Python::acquire_gil();
     let player = AIPlayer::new(Color::Blue, String::from("test"), &gil);
