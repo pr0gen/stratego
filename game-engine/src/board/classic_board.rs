@@ -8,6 +8,7 @@ use super::case::{
 use super::piece::piece_utils::list_of_all_pieces;
 use super::piece::Color;
 use super::Board;
+use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
 #[derive(Debug)]
@@ -21,16 +22,10 @@ pub fn create_stratego_board() -> Box<dyn Board> {
 
     let mut cases = board.state().clone();
 
-    let mut pieces = list_of_all_pieces(Color::Red);
+    let mut pieces = list_of_all_pieces(Color::Blue);
     pieces.shuffle(&mut thread_rng());
 
     let max = 4;
-    //for i in 0..max {
-        //for j in 0..10 {
-            //let piece = pieces.pop();
-            //cases[i][j] = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
-        //}
-    //}
     for (i, row) in cases.iter_mut().enumerate().take(max) {
         for (j, case) in row.iter_mut().enumerate() {
             let piece = pieces.pop();
@@ -39,7 +34,7 @@ pub fn create_stratego_board() -> Box<dyn Board> {
     }
 
 
-    let mut pieces = list_of_all_pieces(Color::Blue);
+    let mut pieces = list_of_all_pieces(Color::Red);
     pieces.shuffle(&mut thread_rng());
     let max = 10;
     for (i, row) in cases.iter_mut().enumerate().take(max).skip(6) {
@@ -48,6 +43,9 @@ pub fn create_stratego_board() -> Box<dyn Board> {
             *case = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
         }
     }
+
+    let cases = verify_board_integrity(cases)
+        .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e));
 
     Box::new(StrategoBoard::new(cases))
 }

@@ -30,30 +30,39 @@ pub fn list_of_all_pieces(color: Color) -> Vec<Piece> {
         Piece::new(PieceType::Bomb, Box::new(color)),
         Piece::new(PieceType::Bomb, Box::new(color)),
         Piece::new(PieceType::Bomb, Box::new(color)),
+
         Piece::new(PieceType::Marshal, Box::new(color)),
+
         Piece::new(PieceType::General, Box::new(color)),
+
         Piece::new(PieceType::Colonel, Box::new(color)),
         Piece::new(PieceType::Colonel, Box::new(color)),
+
         Piece::new(PieceType::Major, Box::new(color)),
         Piece::new(PieceType::Major, Box::new(color)),
         Piece::new(PieceType::Major, Box::new(color)),
+
         Piece::new(PieceType::Captain, Box::new(color)),
         Piece::new(PieceType::Captain, Box::new(color)),
         Piece::new(PieceType::Captain, Box::new(color)),
         Piece::new(PieceType::Captain, Box::new(color)),
+
         Piece::new(PieceType::Lieutenant, Box::new(color)),
         Piece::new(PieceType::Lieutenant, Box::new(color)),
         Piece::new(PieceType::Lieutenant, Box::new(color)),
         Piece::new(PieceType::Lieutenant, Box::new(color)),
+
         Piece::new(PieceType::Sergeant, Box::new(color)),
         Piece::new(PieceType::Sergeant, Box::new(color)),
         Piece::new(PieceType::Sergeant, Box::new(color)),
         Piece::new(PieceType::Sergeant, Box::new(color)),
+
         Piece::new(PieceType::Miner, Box::new(color)),
         Piece::new(PieceType::Miner, Box::new(color)),
         Piece::new(PieceType::Miner, Box::new(color)),
         Piece::new(PieceType::Miner, Box::new(color)),
         Piece::new(PieceType::Miner, Box::new(color)),
+
         Piece::new(PieceType::Scout, Box::new(color)),
         Piece::new(PieceType::Scout, Box::new(color)),
         Piece::new(PieceType::Scout, Box::new(color)),
@@ -62,7 +71,9 @@ pub fn list_of_all_pieces(color: Color) -> Vec<Piece> {
         Piece::new(PieceType::Scout, Box::new(color)),
         Piece::new(PieceType::Scout, Box::new(color)),
         Piece::new(PieceType::Scout, Box::new(color)),
+
         Piece::new(PieceType::Spy, Box::new(color)),
+
         Piece::new(PieceType::Flag, Box::new(color)),
     ];
 }

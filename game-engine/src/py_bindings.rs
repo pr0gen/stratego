@@ -55,19 +55,6 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
 }
 
 //#[pyfunction]
-//fn init_game(player_name_1: String, player_name_2: String) -> PyResult<String> {
-//let mut engine: Box<dyn Engine> = Box::new(StrategoEngine::new(
-//create_stratego_board(),
-//(
-//Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
-//Box::new(HumanPlayer::new(Color::Blue, String::from("Cassiopee"))),
-//),
-//));
-
-//Ok(String::from("erer"))
-//}
-
-//#[pyfunction]
 //fn moving() {
 
 //}
@@ -80,7 +67,6 @@ fn hello_world() -> PyResult<String> {
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(hello_world))?;
-    //m.add_wrapped(wrap_pyfunction!(init_game))?;
     Ok(())
 }
 
