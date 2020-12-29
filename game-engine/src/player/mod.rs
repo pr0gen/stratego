@@ -3,6 +3,8 @@ use std::io;
 use crate::board::case::Coordinate;
 use crate::board::piece::Color;
 
+pub mod ai_player;
+
 pub trait Player {
     fn ask_next_move(&self) -> (Coordinate, Coordinate);
 
