@@ -40,7 +40,12 @@ impl<'p> Player for AIPlayer<'p> {
 
 
 fn ask_ai_next_move(py: Python, name: &str) -> Result<(Coordinate, Coordinate), StrategoError> {
-    load_stratego_ai_module(&py).unwrap();
+    load_stratego_ai_module(&py)
+        .unwrap_or_else(|_| {
+            panic!(StrategoError::AILoadingError(String::from(
+                "Failed to load ai module"
+            )))
+        });
 
     let next_move = py
         .import(AI_STRATEGO_INIT_FILE)
