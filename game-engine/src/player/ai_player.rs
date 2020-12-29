@@ -2,6 +2,7 @@ use pyo3::prelude::*;
 
 use crate::error::StrategoError;
 use crate::player::*;
+use crate::py_bindings::{PyCoords, get_to_coord};
 use crate::py_bindings::load_stratego_ai_module;
 
 const AI_STRATEGO_INIT_FILE: &'static str = "__init__";
@@ -37,6 +38,7 @@ impl<'p> Player for AIPlayer<'p> {
     }
 }
 
+
 fn ask_ai_next_move(py: Python, name: &str) -> Result<(Coordinate, Coordinate), StrategoError> {
     load_stratego_ai_module(&py).unwrap();
 
@@ -60,20 +62,20 @@ fn ask_ai_next_move(py: Python, name: &str) -> Result<(Coordinate, Coordinate), 
             )))
         });
 
-    let next_move: Coords = next_move.extract().unwrap();
-    Ok(next_move.get_to_coord())
+    let next_move: PyCoords = next_move.extract().unwrap();
+    Ok(get_to_coord(next_move))
 }
 
-#[pyclass]
-#[derive(Clone, Copy)]
-pub struct Coords {
-    from: Coordinate,
-    to: Coordinate,
-}
+#[test]
+fn should_ask_next_move_to_test_ai() {
+    let gil = Python::acquire_gil();
+    let player = AIPlayer::new(Color::Blue, String::from("test"), &gil);
 
-impl Coords {
-    fn get_to_coord(&self) -> (Coordinate, Coordinate) {
-        (self.from, self.to)
-    }
+    assert_eq!(
+        (
+            Coordinate::new(0, 0),
+            Coordinate::new(0, 1)
+        ),
+        player.ask_next_move()
+    );
 }
-

@@ -3,35 +3,45 @@ use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 use std::env::current_dir;
 
+use crate::board::case::Coordinate;
 use crate::error::StrategoError;
 use crate::player::*;
 
 const AI_STRATEGO_PYTHON_MODULE: &'static str = "ai-python";
+
+pub type PyCoords = ((i16, i16), (i16, i16));
+
+pub fn get_to_coord(co: PyCoords) -> (Coordinate, Coordinate) {
+    (
+        Coordinate::new(co.0 .0, co.0 .1),
+        Coordinate::new(co.1 .0, co.1 .1),
+    )
+}
 
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     let syspath: &PyList = py
         .import("sys")
         .unwrap_or_else(|_| {
             panic!(StrategoError::AILoadingError(String::from(
-                "Failed to find sys python module"
+                        "Failed to find sys python module"
             )))
         })
-        .get("path")
+    .get("path")
         .unwrap_or_else(|_| {
             panic!(StrategoError::AILoadingError(String::from(
-                "Failed to find path function in sys python module"
+                        "Failed to find path function in sys python module"
             )))
         })
-        .try_into()
+    .try_into()
         .unwrap_or_else(|_| {
             panic!(StrategoError::AILoadingError(String::from(
-                "Failed to get result from path function in sys python module"
+                        "Failed to get result from path function in sys python module"
             )))
         });
 
     let cur = current_dir().unwrap_or_else(|_| {
         panic!(StrategoError::AILoadingError(String::from(
-            "Failed to find pwd"
+                    "Failed to find pwd"
         )))
     });
 
@@ -39,7 +49,7 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     match syspath.insert(0, format!("{}/{}", pwd, AI_STRATEGO_PYTHON_MODULE)) {
         Ok(_) => Ok(()),
         Err(_) => panic!(StrategoError::AILoadingError(String::from(
-            "Failed to load ai for stratego"
+                    "Failed to load ai for stratego"
         ))),
     }
 }
