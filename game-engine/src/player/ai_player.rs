@@ -5,8 +5,8 @@ use crate::player::*;
 use crate::py_bindings::{PyCoords, get_to_coord};
 use crate::py_bindings::load_stratego_ai_module;
 
-const AI_STRATEGO_INIT_FILE: &'static str = "__init__";
-const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &'static str = "ask_next_move";
+const AI_STRATEGO_INIT_FILE: &str = "__init__";
+const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
 
 pub struct AIPlayer<'p> {
     color: Color,

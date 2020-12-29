@@ -1,4 +1,4 @@
-use pyo3::Python;
+use player::HumanPlayer;
 
 use crate::board::case::Case;
 
@@ -17,29 +17,29 @@ pub mod py_bindings;
 
 fn main() {
 
-    //let mut engine: Box<dyn Engine> = Box::new(StrategoEngine::new(
-        //create_stratego_board(),
-        //(
-            //Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
-            //Box::new(HumanPlayer::new(Color::Blue, String::from("Cassiopee"))),
-        //),
-    //));
+    let mut engine: Box<dyn Engine> = Box::new(StrategoEngine::new(
+        create_stratego_board(),
+        (
+            Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
+            Box::new(HumanPlayer::new(Color::Blue, String::from("Cassiopee"))),
+        ),
+    ));
 
-    //println!("{}", engine.display());
-    //loop {
-        //let cases = engine.status();
-        //match game_is_over(cases) {
-            //Ok(Color::Red) => {
-                //println!("Red wins");
-                //break;
-            //}
-            //Ok(Color::Blue) => {
-                //println!("Blue wins");
-                //break;
-            //}
-            //_ => moving(cases.clone(), &mut engine),
-        //}
-    //}
+    println!("{}", engine.display());
+    loop {
+        let cases = engine.status();
+        match game_is_over(cases) {
+            Ok(Color::Red) => {
+                println!("Red wins");
+                break;
+            }
+            Ok(Color::Blue) => {
+                println!("Blue wins");
+                break;
+            }
+            _ => moving(cases.clone(), &mut engine),
+        }
+    }
 }
 
 fn moving(cases: Vec<Vec<Case>>, engine: &mut Box<dyn Engine>) {
