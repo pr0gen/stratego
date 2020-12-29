@@ -16,8 +16,7 @@ class TestStrategoAI(StrategoAI):
         return ((0,0), (0,1))
 
 
-#exposed functions to Rust
-#functions as to be nammed : ask_next_move_ + ai name (ask_next_move_test)
+#exposed functions to Rust see README
 def ask_next_move_test() -> Tuple[Tuple[int, int], Tuple[int, int]]:
     p = TestStrategoAI()
     return p.ask_next_move()
