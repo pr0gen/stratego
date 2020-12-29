@@ -23,8 +23,8 @@ pub fn attack(from: Case, to: Case) -> Result<(Case, Case), StrategoError> {
         ))
     } else {
         Ok((
-            create_full_case(*from.get_coordinate(), to.get_content().clone()),
-            create_empty_case(*to.get_coordinate()),
+            create_empty_case(*from.get_coordinate()),
+            create_full_case(*to.get_coordinate(), to.get_content().clone()),
         ))
     }
 }
@@ -75,9 +75,9 @@ mod test {
         );
         let res = attack(attacker, defenser).unwrap();
 
-        assert_eq!(res.1.get_state(), &State::Empty);
+        assert_eq!(res.0.get_state(), &State::Empty);
 
-        let defenser2 = res.0;
+        let defenser2 = res.1;
         assert_eq!(defenser2.get_state(), &State::Full);
         assert_eq!(defenser2.get_content().get_color(), &Color::Red);
     }

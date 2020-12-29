@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::board::case::{Case, Coordinate, State};
 use crate::board::piece::deplacement::AvailableMove;
 use crate::board::piece::piece_utils::list_all_pieces;
@@ -90,7 +92,9 @@ pub fn verify_board_integrity(state: Vec<Vec<Case>>) -> Result<Vec<Vec<Case>>, S
         Err(InitGameError(String::from(
             "Players must place theirs pieces in the right place !",
         )))
-    } else if !check_player_has_correct_pieces(&state) && !check_player_has_correct_pieces(&state) {
+    } else if !check_player_has_correct_pieces(&state[0..=3])
+        && !check_player_has_correct_pieces(&state[6..=9])
+    {
         Err(InitGameError(String::from(
             "You need to start with the right pieces",
         )))
@@ -106,7 +110,8 @@ fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
         .map(|case| case.get_content().get_rank().clone())
         .collect();
 
-    let pieces: Vec<(PieceType, i8)> = piece_types
+    //eprintln!("{:?}", piece_types);
+    let pieces: HashSet<(PieceType, i8)> = piece_types
         .iter()
         .map(|x| {
             (
@@ -116,9 +121,18 @@ fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
         })
         .collect();
 
+    //eprintln!("{:?}", pieces);
     let all_pieces = list_all_pieces();
     for (key, value) in pieces.iter() {
         if all_pieces.get(key) != Some(value) {
+            //let color = cases
+            //.first()
+            //.unwrap()
+            //.get(0)
+            //.unwrap()
+            //.get_content()
+            //.get_color();
+            //eprintln!("Error with {:?} {:?}", key, color);
             return false;
         }
     }
@@ -164,10 +178,7 @@ fn check_board_size(cases: &[Vec<Case>]) -> bool {
     if 10 != cases.len() {
         false
     } else {
-        cases
-            .iter()
-            .find(|row| !check_row_size(row))
-            .is_none()
+        cases.iter().find(|row| !check_row_size(row)).is_none()
     }
 }
 

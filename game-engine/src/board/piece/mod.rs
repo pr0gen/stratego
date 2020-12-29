@@ -84,7 +84,7 @@ impl Piece {
             },
             PieceType::Miner => Piece {
                 m: Move::new(AvailableMove::Normal),
-                rank: PieceType::Major,
+                rank: PieceType::Miner,
                 color,
             },
             PieceType::Scout => Piece {
