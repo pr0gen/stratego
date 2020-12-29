@@ -5,16 +5,20 @@ use std::env::current_dir;
 
 use crate::board::case::Coordinate;
 use crate::error::StrategoError;
+use crate::parse;
 //use crate::player::*;
 
 const AI_STRATEGO_PYTHON_MODULE: &str = "ai-python";
 
-pub type PyCoords = ((i16, i16), (i16, i16));
+pub type PyCoords = ((i16, String), (i16, String));
 
 pub fn get_to_coord(co: PyCoords) -> (Coordinate, Coordinate) {
+    let co_0 = co.0;
+    let co_1 = co.1;
+
     (
-        Coordinate::new(co.0 .0, co.0 .1),
-        Coordinate::new(co.1 .0, co.1 .1),
+        Coordinate::new(co_0.0, parse::parse_letter_to_i16(co_0.1.as_str())),
+        Coordinate::new(co_1.0, parse::parse_letter_to_i16(co_1.1.as_str())),
     )
 }
 

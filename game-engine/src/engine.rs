@@ -6,7 +6,6 @@ use crate::error::StrategoError;
 use crate::player::Player;
 
 pub trait Engine {
-    
     fn status(&self) -> &Vec<Vec<Case>>;
 
     fn moving(&mut self) -> Result<(), StrategoError>;
@@ -59,7 +58,6 @@ impl StrategoEngine {
 }
 
 impl Engine for StrategoEngine {
-
     fn status(&self) -> &Vec<Vec<Case>> {
         self.board.state()
     }
@@ -95,7 +93,6 @@ impl Engine for StrategoEngine {
         self.board.display()
     }
 }
-
 
 #[cfg(test)]
 mod test {

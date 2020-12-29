@@ -126,12 +126,12 @@ fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
     for (key, value) in pieces.iter() {
         if all_pieces.get(key) != Some(value) {
             //let color = cases
-                //.first()
-                //.unwrap()
-                //.get(0)
-                //.unwrap()
-                //.get_content()
-                //.get_color();
+            //.first()
+            //.unwrap()
+            //.get(0)
+            //.unwrap()
+            //.get_content()
+            //.get_color();
             //eprintln!("Error with {:?} {:?}", key, color);
             return false;
         }

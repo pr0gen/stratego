@@ -33,7 +33,6 @@ pub fn create_stratego_board() -> Box<dyn Board> {
         }
     }
 
-
     let mut pieces = list_of_all_pieces(Color::Red);
     pieces.shuffle(&mut thread_rng());
     let max = 10;
