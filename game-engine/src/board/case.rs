@@ -2,6 +2,7 @@ use pyo3::prelude::pyclass;
 
 use super::piece::{Color, Piece, PieceType};
 
+#[pyclass]
 #[derive(Debug, Clone, PartialOrd, PartialEq)]
 pub struct Case {
     state: State,
@@ -64,6 +65,15 @@ impl Case {
         match self.state {
             State::Unreachable => String::from("XXXXX"),
             State::Full | State::Empty => self.content.display(),
+        }
+    }
+
+    pub fn display_by_color(&self, color: &Color) -> String {
+        let content_color = self.content.get_color();
+        if content_color == &Color::None || content_color == color {
+            self.display()
+        } else {
+            String::from("-----")
         }
     }
 }

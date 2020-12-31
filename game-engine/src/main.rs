@@ -36,7 +36,7 @@ fn main() {
         ),
     ));
 
-    println!("{}", engine.display());
+    println!("{}", engine.display_by_color(&engine.get_turn()));
     loop {
         let cases = engine.status();
         match game_is_over(cases) {

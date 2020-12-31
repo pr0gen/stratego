@@ -3,7 +3,8 @@ use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 use std::env::current_dir;
 
-use crate::board::case::Coordinate;
+use crate::board::case::{Coordinate, Case};
+use crate::board::piece::Color;
 use crate::error::StrategoError;
 use crate::parse;
 //use crate::player::*;
@@ -58,10 +59,13 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     }
 }
 
-//#[pyfunction]
-//fn moving() {
+#[pyfunction]
+fn get_state(color: String) -> PyResult<Vec<Vec<Case>>> {
+    let _color = convert_color(color.as_str());
 
-//}
+    unimplemented!();
+}
+
 
 #[pyfunction]
 fn hello_world() -> PyResult<String> {
@@ -71,9 +75,26 @@ fn hello_world() -> PyResult<String> {
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(hello_world))?;
+    m.add_wrapped(wrap_pyfunction!(get_state))?;
     Ok(())
 }
 
-//struct Game {
-//players: (Box<dyn Player>, Box<dyn Player>),
-//}
+fn convert_color(color: &str) -> Result<Color, StrategoError> {
+    match color {
+        "Red" => Ok(Color::Red),
+        "Blue" => Ok(Color::Blue),
+        _ => Err(StrategoError::AILoadingError(format!("Failed to interprete color {}", color))),
+    }
+}
+
+#[test]
+fn should_convert_color() {
+    assert_eq!(Color::Red, convert_color("Red").unwrap());
+    assert_eq!(Color::Blue, convert_color("Blue").unwrap());
+
+    let res = convert_color("Bluee");
+    if let Err(e) = res {
+        assert_eq!("Failed to interprete color Bluee", e.message().as_str());
+    }
+}
+

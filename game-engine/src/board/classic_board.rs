@@ -143,6 +143,18 @@ impl Board for StrategoBoard {
         }
         display
     }
+
+    fn display_by_color(&self, color: &Color) -> String {
+        let mut display = String::from("   |");
+        let size = self.cases.len();
+        display.push_str(get_header(size).as_str());
+        display.push('\n');
+        for i in 0..size {
+            let row = self.cases.get(i).unwrap();
+            display.push_str(format!(" {} | {}\n", i, parse_row_by_color(row, color)).as_str());
+        }
+        display
+    }
 }
 
 fn get_header(length: usize) -> String {
@@ -156,6 +168,12 @@ fn get_header(length: usize) -> String {
 fn parse_row(row: &[Case]) -> String {
     row.iter()
         .map(|case| format!("{} | ", case.display()))
+        .collect()
+}
+
+fn parse_row_by_color(row: &[Case], color: &Color) -> String {
+    row.iter()
+        .map(|case| format!("{} | ", case.display_by_color(color)))
         .collect()
 }
 
