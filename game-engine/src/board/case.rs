@@ -2,7 +2,8 @@ use pyo3::prelude::pyclass;
 
 use super::piece::{Color, Piece, PieceType};
 
-#[derive(Debug, Clone, PartialOrd, PartialEq)]
+#[pyclass]
+#[derive(Hash, Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
 pub struct Case {
     state: State,
     coordinate: Coordinate,
@@ -10,13 +11,13 @@ pub struct Case {
 }
 
 #[pyclass]
-#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub struct Coordinate {
     x: i16,
     y: i16,
 }
 
-#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub enum State {
     Unreachable,
     Empty,

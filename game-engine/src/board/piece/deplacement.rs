@@ -5,7 +5,7 @@ pub enum AvailableMove {
     Scout,
 }
 
-#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub struct Move(i16, i16);
 
 impl Move {

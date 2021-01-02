@@ -7,21 +7,21 @@ use crate::py_bindings::{get_to_coord, PyCoords};
 const AI_STRATEGO_INIT_FILE: &str = "__init__";
 const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
 
+#[derive(Hash, Clone, Eq, PartialEq)]
 pub struct AIPlayer {
     color: Color,
     name: String,
-    gil: GILGuard,
 }
 
 impl AIPlayer {
-    pub fn new(color: Color, name: String, gil: GILGuard) -> Self {
-        AIPlayer { color, name, gil }
+    pub fn new(color: Color, name: String, ) -> Self {
+        AIPlayer { color, name, }
     }
 }
 
 impl<'p> Player for AIPlayer {
     fn ask_next_move(&self) -> (Coordinate, Coordinate) {
-        ask_ai_next_move(self.gil.python(), self.name.as_str()).unwrap()
+        ask_ai_next_move(Python::acquire_gil().python(), self.name.as_str()).unwrap()
     }
 
     fn get_color(&self) -> &Color {
@@ -63,8 +63,7 @@ fn ask_ai_next_move(py: Python, name: &str) -> Result<(Coordinate, Coordinate), 
 #[test]
 #[ignore]
 fn should_ask_next_move_to_test_ai() {
-    let gil = Python::acquire_gil();
-    let player = AIPlayer::new(Color::Blue, String::from("test"), gil);
+    let player = AIPlayer::new(Color::Blue, String::from("test"), );
 
     assert_eq!(
         (Coordinate::new(3, 0), Coordinate::new(4, 0)),

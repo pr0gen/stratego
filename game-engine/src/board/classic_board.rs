@@ -11,13 +11,13 @@ use super::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
-#[derive(Debug)]
+#[derive(Hash, Clone,  Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
 }
 
 //to test
-pub fn create_stratego_board() -> Box<dyn Board> {
+pub fn create_stratego_board() -> impl Board {
     let board = create_empty_stratego_board();
 
     let mut cases = board.state().clone();
@@ -46,10 +46,10 @@ pub fn create_stratego_board() -> Box<dyn Board> {
     let cases = verify_board_integrity(cases)
         .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e));
 
-    Box::new(StrategoBoard::new(cases))
+    StrategoBoard::new(cases)
 }
 
-pub fn create_empty_stratego_board() -> Box<dyn Board> {
+pub fn create_empty_stratego_board() -> impl Board {
     let size = 10;
     let mut board: Vec<Vec<Case>> = Vec::with_capacity(size);
     for i in 0..size {
@@ -68,7 +68,7 @@ pub fn create_empty_stratego_board() -> Box<dyn Board> {
     board[5][6] = create_unreachable_case(Coordinate::new(5, 6));
     board[5][7] = create_unreachable_case(Coordinate::new(7, 5));
 
-    Box::new(StrategoBoard { cases: board })
+    StrategoBoard::new(board)
 }
 
 impl StrategoBoard {

@@ -17,6 +17,7 @@ pub mod error;
 pub mod parse;
 pub mod player;
 pub mod py_bindings;
+pub mod game_pool;
 
 fn main() {
     let gil: GILGuard = Python::acquire_gil();
@@ -27,14 +28,14 @@ fn main() {
         )))
     });
 
-    let mut engine: Box<dyn Engine> = Box::new(StrategoEngine::new(
+    let mut engine = StrategoEngine::new(
         create_stratego_board(),
         (
-            Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
-            //Box::new(HumanPlayer::new(Color::Blue, String::from("Cassiopee"))),
-            Box::new(AIPlayer::new(Color::Blue, String::from("test"), gil)),
+            HumanPlayer::new(Color::Red, String::from("Tigran")),
+            HumanPlayer::new(Color::Blue, String::from("Cassiopee")),
+            //AIPlayer::new(Color::Blue, String::from("test"),) ,
         ),
-    ));
+    );
 
     println!("{}", engine.display());
     loop {

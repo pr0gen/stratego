@@ -1,10 +1,12 @@
+use std::hash::Hash;
+
 use crate::board::case::Coordinate;
 use crate::board::piece::Color;
 use crate::parse;
 
 pub mod ai_player;
 
-pub trait Player {
+pub trait Player { 
     fn ask_next_move(&self) -> (Coordinate, Coordinate);
 
     fn get_color(&self) -> &Color;
@@ -12,6 +14,7 @@ pub trait Player {
     fn get_name(&self) -> &str;
 }
 
+#[derive(Debug, Hash, Clone, Eq, PartialEq)]
 pub struct HumanPlayer {
     color: Color,
     name: String,
