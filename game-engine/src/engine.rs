@@ -77,7 +77,7 @@ where
 
     fn moving(&mut self) -> Result<(), StrategoError> {
         let player = self.get_player_from_color();
-        let color = player.get_color().clone();
+        let color = *player.get_color();
         let (c, to) = engine_utils::ask_next_move(player, self.status());
         if c.get_content().get_color() != &color {
             println!("You should move a piece of your color !");

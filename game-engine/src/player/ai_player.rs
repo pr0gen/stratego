@@ -39,7 +39,7 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
             let py = gil_holder.get().python();
 
             let import = py.import(AI_STRATEGO_INIT_FILE);
-            if let Err(_) = import {
+            if import.is_err() {
                 return Err(StrategoError::AILoadingError(String::from(
                     "Failed to import stratego ai init file",
                 )));
@@ -48,14 +48,14 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
             let function = import
                 .unwrap()
                 .get(format!("{}_{}", AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION, name).as_str());
-            if let Err(_) = function {
+            if function.is_err() {
                 return Err(StrategoError::AILoadingError(String::from(
                     "Failed to load AI function",
                 )));
             }
 
             let call = function.unwrap().call0();
-            if let Err(_) = call {
+            if call.is_err() {
                 return Err(StrategoError::AILoadingError(String::from(
                     "Failed to call AI function",
                 )));
@@ -76,7 +76,7 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
 }
 
 #[test]
-#[ignore]
+//#[ignore]
 fn should_ask_next_move_to_test_ai() {
     let player = AIPlayer::new(Color::Blue, String::from("test"));
 
