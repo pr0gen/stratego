@@ -17,7 +17,7 @@ pub struct StrategoBoard {
 }
 
 //to test
-pub fn create_stratego_board() -> impl Board {
+pub fn create_stratego_board() -> StrategoBoard {
     let board = create_empty_stratego_board();
 
     let mut cases = board.state().clone();
@@ -49,7 +49,7 @@ pub fn create_stratego_board() -> impl Board {
     StrategoBoard::new(cases)
 }
 
-pub fn create_empty_stratego_board() -> impl Board {
+pub fn create_empty_stratego_board() ->  StrategoBoard {
     let size = 10;
     let mut board: Vec<Vec<Case>> = Vec::with_capacity(size);
     for i in 0..size {

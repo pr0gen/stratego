@@ -63,6 +63,11 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
 
 //}
 
+//#[pyfunction]
+//fn register_game() {
+//}
+
+
 #[pyfunction]
 fn hello_world() -> PyResult<String> {
     Ok(String::from("hello world"))

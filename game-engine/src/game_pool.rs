@@ -1,8 +1,14 @@
 use std::collections::HashSet;
 use std::hash::Hash;
 
-use crate::engine::Engine;
+use crate::board::classic_board::StrategoBoard;
+use crate::engine::{Engine, StrategoEngine};
 use crate::error::StrategoError;
+use crate::player::HumanPlayer;
+use crate::player::ai_player::AIPlayer;
+
+pub type HumamAIEngine = StrategoEngine<StrategoBoard, HumanPlayer, AIPlayer>;
+pub type HumanAIGamePool = GamePool<HumamAIEngine>;
 
 pub struct GamePool<E: Engine> {
     games: HashSet<Game<E>>,

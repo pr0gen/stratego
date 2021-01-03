@@ -1,31 +1,48 @@
 use board::classic_board::create_stratego_board;
 use board::piece::Color;
-use engine::Engine;
-use engine::StrategoEngine;
+use engine::{Engine, StrategoEngine};
 use engine_utils::game_is_over;
+use error::StrategoError;
+use game_pool::{Game, GamePool, HumamAIEngine, HumanAIGamePool};
 use player::ai_player::AIPlayer;
 use player::HumanPlayer;
+
+use std::sync::Mutex;
 
 pub mod board;
 pub mod engine;
 pub mod engine_utils;
 pub mod error;
+pub mod game_pool;
 pub mod parse;
 pub mod player;
 pub mod py_bindings;
-pub mod game_pool;
 pub mod utils;
 
+#[macro_use]
+extern crate lazy_static;
+
+lazy_static! {
+    pub(crate) static ref GAME_POOL: Mutex<HumanAIGamePool> = Mutex::new(GamePool::new());
+}
+
 fn main() {
-    let mut engine = StrategoEngine::new(
+    let engine = StrategoEngine::new(
         create_stratego_board(),
         (
             HumanPlayer::new(Color::Red, String::from("Tigran")),
             //HumanPlayer::new(Color::Blue, String::from("Cassiopee")),
-            AIPlayer::new(Color::Blue, String::from("test"),) ,
+            AIPlayer::new(Color::Blue, String::from("test")),
         ),
     );
 
+    let game = Game::new(0, engine);
+
+    register_to_pool(game).unwrap();
+    let pool = GAME_POOL.lock().unwrap();
+    let game = pool.find_game_by_id(0).unwrap();
+
+    let mut engine = game.get_engine().clone();
     println!("{}", engine.display());
     loop {
         let cases = engine.status();
@@ -46,3 +63,9 @@ fn main() {
         }
     }
 }
+
+pub fn register_to_pool(game: Game<HumamAIEngine>) -> Result<(), StrategoError> {
+    GAME_POOL.lock().unwrap().register(game)
+}
+
+

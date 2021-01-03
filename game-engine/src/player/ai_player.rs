@@ -6,7 +6,7 @@ use crate::utils;
 const AI_STRATEGO_INIT_FILE: &str = "__init__";
 const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
 
-#[derive(Hash, Clone, Eq, PartialEq)]
+#[derive(Debug, Hash, Clone, Eq, PartialEq)]
 pub struct AIPlayer {
     color: Color,
     name: String,
