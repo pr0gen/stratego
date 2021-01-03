@@ -76,7 +76,7 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
 }
 
 #[test]
-//#[ignore]
+#[ignore]
 fn should_ask_next_move_to_test_ai() {
     let player = AIPlayer::new(Color::Blue, String::from("test"));
 
