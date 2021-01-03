@@ -4,7 +4,6 @@ use pyo3::wrap_pyfunction;
 use std::env::current_dir;
 
 use crate::board::case::Coordinate;
-use crate::engine::StrategoEngine;
 use crate::error::StrategoError;
 use crate::parse;
 //use crate::player::*;

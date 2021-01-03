@@ -14,6 +14,16 @@ pub struct Game<E: Engine> {
     engine: E,
 }
 
+impl<E> Default for GamePool<E> 
+where
+    E: Engine + Hash + Eq + Clone,
+{
+     fn default() -> Self {
+         Self::new()
+
+     }
+ }
+
 impl<E> GamePool<E>
 where
     E: Engine + Hash + Eq + Clone,

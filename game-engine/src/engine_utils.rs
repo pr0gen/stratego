@@ -7,7 +7,7 @@ use crate::board::piece::{Color, PieceType};
 use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
 
-pub fn ask_next_move(player: Box<&dyn Player>, cases: &[Vec<Case>]) -> (Case, Coordinate) {
+pub fn ask_next_move(player: &dyn Player, cases: &[Vec<Case>]) -> (Case, Coordinate) {
     let (from, to) = player.ask_next_move();
     let case = cases
         .get(from.get_x() as usize)

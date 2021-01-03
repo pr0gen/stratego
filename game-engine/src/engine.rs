@@ -56,11 +56,11 @@ where
         }
     }
 
-    fn get_player_from_color(&self) -> Box<&dyn Player> {
+    fn get_player_from_color(&self) -> &dyn Player {
         if Color::Red == self.turn {
-            Box::new(&self.players.0)
+            &self.players.0
         } else {
-            Box::new(&self.players.1)
+            &self.players.1
         }
     }
 }

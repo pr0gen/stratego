@@ -2,7 +2,6 @@ import abc
 from typing import Tuple
 
 from stratego_engine import hello_world
-from stratego_engine import StrategoEngine
 
 def hello_world_2(): 
     return "hello world 2"
@@ -22,4 +21,3 @@ def ask_next_move_test() -> Tuple[Tuple[int, str], Tuple[int, str]]:
     p = TestStrategoAI()
     return p.ask_next_move()
 
-e = StrategoEngine()

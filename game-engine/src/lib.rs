@@ -6,6 +6,7 @@ pub mod parse;
 pub mod player;
 pub mod py_bindings;
 pub mod game_pool;
+pub mod utils;
 
 extern crate wasm_bindgen;
 use wasm_bindgen::prelude::*;
