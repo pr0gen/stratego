@@ -1,6 +1,7 @@
 pub mod deplacement;
 pub mod piece_utils;
 
+
 use self::deplacement::{AvailableMove, Move};
 
 #[derive(Debug, Eq, PartialEq, PartialOrd, Clone)]

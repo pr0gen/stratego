@@ -13,6 +13,8 @@ pub trait Engine {
     fn get_turn(&self) -> Color;
 
     fn display(&self) -> String;
+
+    fn display_by_color(&self, color: &Color) -> String;
 }
 
 pub struct StrategoEngine {
@@ -71,7 +73,7 @@ impl Engine for StrategoEngine {
         } else {
             match self.execute_move(c, to) {
                 Ok(_) => {
-                    println!("{}", self.display());
+                    println!("{}", self.display_by_color(&self.turn));
                     Ok(())
                 }
                 Err(StrategoError::MoveError(message, _, _)) => {
@@ -91,6 +93,10 @@ impl Engine for StrategoEngine {
 
     fn display(&self) -> String {
         self.board.display()
+    }
+
+    fn display_by_color(&self, color: &Color) -> String {
+        self.board.display_by_color(color)
     }
 }
 
