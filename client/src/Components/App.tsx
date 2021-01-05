@@ -1,4 +1,8 @@
 import React from "react";
+import CreateGame from './Pages/CreateGame';
+import Home from './Pages/Home';
+import JoinGame from './Pages/JoinGame';
+import Rules from './Pages/Rules';
 import {
     BrowserRouter as Router,
     Switch,
@@ -28,10 +32,10 @@ export default function App() {
                 </nav>
 
                 <Switch>
-                    <Route path="/">
+                    <Route exact={true} path="/">
                         <Home />
                     </Route>
-                    <Route path="/create-game">
+                    <Route path="/create-game" component={CreateGame}>
                         <CreateGame />
                     </Route>
                     <Route path="/join-game">
@@ -44,20 +48,4 @@ export default function App() {
             </div>
         </Router>
     );
-}
-
-function Home() {
-    return <h2>Home</h2>;
-}
-
-function CreateGame() {
-    return <h2>CreateGame</h2>;
-}
-
-function JoinGame() {
-    return <h2>JoinGame</h2>;
-}
-
-function Rules() {
-    return <h2>Rules</h2>;
 }
