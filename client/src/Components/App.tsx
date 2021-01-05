@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import io from 'socket.io-client'
-
+import './../styles/style.scss'
 
 const socket: SocketIOClient.Socket = io('http://localhost:3001');
 
