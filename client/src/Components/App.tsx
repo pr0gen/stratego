@@ -6,7 +6,17 @@ import {
     Link
 } from "react-router-dom";
 
+import io from 'socket.io-client'
+
+
+const socket: SocketIOClient.Socket = io('http://localhost:3001');
+
+socket.emit('create-game')
+
+
 export default function App() {
+
+
     return (
         <Router>
             <div>
