@@ -1,12 +1,17 @@
 import React, {Component} from "react";
 
 
-const CreateGame = () => {
-    return (
-        <div className="create-game" >
-            <h2>Create game</h2>
-        </div>
-    );
+class CreateGame extends Component {
+    render() {
+        return (
+            <div className="create-game" >
+                <h2>Join Game</h2>
+                <div className="content">
+                    <p>Votre code est le : #code</p>
+                </div>
+            </div>
+        )
+    }
 }
 
 
