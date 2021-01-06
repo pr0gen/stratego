@@ -35,3 +35,10 @@ pub fn parse_i16_to_str(x: i16) -> String {
     String::from(xbis.unwrap())
 }
 
+#[test]
+fn should_parse_i16_to_str() {
+    assert_eq!("\u{0}A", parse_i16_to_str(65));
+    assert_eq!("\u{0}B", parse_i16_to_str(66));
+    assert_eq!("\u{0}K", parse_i16_to_str(75));
+}
+

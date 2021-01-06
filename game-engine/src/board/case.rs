@@ -1,9 +1,8 @@
 use pyo3::prelude::pyclass;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
-use crate::parse;
 use super::piece::{Color, Piece, PieceType};
-
+use crate::parse;
 
 pub type PyCoord = (i16, String);
 pub type PyCoords = (PyCoord, PyCoord);
@@ -29,7 +28,6 @@ pub enum State {
     Empty,
     Full,
 }
-
 
 pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
     let co_0 = co.0;
@@ -103,8 +101,24 @@ impl Coordinate {
 #[cfg(test)]
 mod test {
 
-    use super::{create_empty_case, create_full_case, create_unreachable_case, Coordinate, State};
+    use super::{
+        create_empty_case, create_full_case, create_unreachable_case, into, Coordinate, State,
+    };
     use crate::board::piece::{Color, Piece, PieceType};
+
+    #[test]
+    fn should_parse_py_coord() {
+        let py_coords = ((0, String::from("B")), (1, String::from("C")));
+        assert_eq!(
+            (Coordinate::new(0, 1), Coordinate::new(1, 2)),
+            into(py_coords)
+        );
+        let py_coords = ((3, String::from("E")), (2, String::from("D")));
+        assert_eq!(
+            (Coordinate::new(3, 4), Coordinate::new(2, 3)),
+            into(py_coords)
+        );
+    }
 
     #[test]
     fn should_create_full_case() {
