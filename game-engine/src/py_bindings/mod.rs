@@ -90,7 +90,7 @@ fn register_game(player1: String, player2: String) -> PyResult<i128> {
     if game_pool::register_to_pool(game).is_ok() {
         Ok(gi)
     } else {
-        panic!("Failed to create game {}",);
+        panic!("Failed to create game {}", game_id);
     }
 }
 
