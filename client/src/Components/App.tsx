@@ -14,14 +14,14 @@ import './../styles/App.css'
 import io from 'socket.io-client'
 import './../styles/style.scss'
 
-const socket: SocketIOClient.Socket = io('http://localhost:3001');
 
-socket.emit('create-game')
+const socket: SocketIOClient.Socket = io('http://localhost:3001');
 
 
 export default function App() {
 
 
+    // @ts-ignore
     return (
         <Router>
             <div>
@@ -48,12 +48,8 @@ export default function App() {
                     <Route exact={true} path="/">
                         <Home />
                     </Route>
-                    <Route path="/create-game" component={CreateGame}>
-                        <CreateGame />
-                    </Route>
-                    <Route path="/join-game">
-                        <JoinGame />
-                    </Route>
+                    <Route path="/create-game" component={() => <CreateGame socket={socket}></CreateGame>} ></Route>
+                    <Route path="/join-game" component={() => <JoinGame socket={socket}></JoinGame>}></Route>
                     <Route path="/rules">
                         <Rules />
                     </Route>
