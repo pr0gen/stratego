@@ -10,7 +10,9 @@ export class Players {
     }
 
     addPlayer(socketId:string, playerState : PlayerState ) {
-        let player = new Player(socketId, playerState)
+        let player = new Player()
+        player.id = socketId
+        player.state = playerState
         this.players.push(player)
     }
 

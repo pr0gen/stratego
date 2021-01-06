@@ -11,7 +11,7 @@ export default function createGame( socket :socketio.Socket, rooms: Rooms) {
         console.log("create game : " + code)
         let room = new Room();
 
-        room.firstPlayerId = socket.id
+        room.firstPlayer.id = socket.id
         room.code = code.toString()
         room.state = RoomState.WaitingSecondPlayer
 

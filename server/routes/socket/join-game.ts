@@ -13,7 +13,7 @@ export default function joinGame(socket: socketio.Socket, rooms: Rooms) {
             socket.emit('response-join-game', {
                 'valid': true
             })
-            socket.to(room.firstPlayerId).emit('player-found')
+            socket.to(room.firstPlayer.id).emit('player-found')
         } else {
             console.log('game not found : ' + code)
         }
