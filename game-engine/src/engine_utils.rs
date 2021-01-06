@@ -22,7 +22,7 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)
                 if y == 0 && x == 0 {
                     // It's a corner (upper left)
                     moves.append(&mut check_cases(
-                        &vec![
+                        &[
                             cases.get(x + 1).unwrap().get(y).unwrap(),
                             cases.get(x).unwrap().get(y + 1).unwrap(),
                         ],
@@ -31,7 +31,7 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)
                 } else if y == row_len && x == col_len {
                     // It's a corner (lower right)
                     moves.append(&mut check_cases(
-                        &vec![
+                        &[
                             cases.get(x - 1).unwrap().get(y).unwrap(),
                             cases.get(x).unwrap().get(y - 1).unwrap(),
                         ],
@@ -40,7 +40,7 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)
                 } else if x == 0 && y == col_len {
                     // It's a corner (lower left)
                     moves.append(&mut check_cases(
-                        &vec![
+                        &[
                             cases.get(x).unwrap().get(y - 1).unwrap(),
                             cases.get(x + 1).unwrap().get(y).unwrap(),
                         ],
@@ -49,7 +49,7 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)
                 } else if x == col_len && y == 0 {
                     // It's a corner (upper right)
                     moves.append(&mut check_cases(
-                        &vec![
+                        &[
                             cases.get(x - 1).unwrap().get(y).unwrap(),
                             cases.get(x).unwrap().get(y + 1).unwrap(),
                         ],
@@ -59,6 +59,8 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)
                     //It's just a normal side
                     moves.append(&mut check_side(&cases, &case));
                 }
+            } else {
+                // It's a random case in the middle
             }
         }
     }
@@ -78,7 +80,7 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate)> {
         let coord_from = case.get_coordinate();
         cases.iter().for_each(|case| {
             if let Some(coord_to) = check_case(case) {
-                moves.push((coord_from.clone(), coord_to));
+                moves.push((*coord_from, coord_to));
             }
         });
         moves
@@ -87,7 +89,7 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate)> {
 
 fn check_case(case: &Case) -> Option<Coordinate> {
     if case.get_state() == &State::Empty {
-        Some(case.get_coordinate().clone())
+        Some(*case.get_coordinate())
     } else {
         None
     }
@@ -99,43 +101,50 @@ fn check_side(cases: &[Vec<Case>], case: &Case) -> Vec<(Coordinate, Coordinate)>
     let coord_case = case.get_coordinate();
     let x = coord_case.get_x() as usize;
     let y = coord_case.get_y() as usize;
-    
-    if x == 0 { // left
+
+    if x == 0 {
+        // left
         check_cases(
-            &vec![
-            cases.get(x).unwrap().get(y - 1).unwrap(),
-            cases.get(x).unwrap().get(y + 1).unwrap(),
-            cases.get(x + 1).unwrap().get(y).unwrap(),
-        ], 
-        case)
-    } else if x == col_len { // right
+            &[
+                cases.get(x).unwrap().get(y - 1).unwrap(),
+                cases.get(x).unwrap().get(y + 1).unwrap(),
+                cases.get(x + 1).unwrap().get(y).unwrap(),
+            ],
+            case,
+        )
+    } else if x == col_len {
+        // right
         check_cases(
-            &vec![
-            cases.get(x).unwrap().get(y - 1).unwrap(),
-            cases.get(x).unwrap().get(y + 1).unwrap(),
-            cases.get(x - 1).unwrap().get(y).unwrap(),
-        ], 
-        case)
-    } else if y == 0 { // upper
+            &[
+                cases.get(x).unwrap().get(y - 1).unwrap(),
+                cases.get(x).unwrap().get(y + 1).unwrap(),
+                cases.get(x - 1).unwrap().get(y).unwrap(),
+            ],
+            case,
+        )
+    } else if y == 0 {
+        // upper
         check_cases(
-            &vec![
-            cases.get(x - 1).unwrap().get(y).unwrap(),
-            cases.get(x + 1).unwrap().get(y).unwrap(),
-            cases.get(x).unwrap().get(y + 1).unwrap(),
-        ], 
-        case)
-    } else if y == row_len { // lower
+            &[
+                cases.get(x - 1).unwrap().get(y).unwrap(),
+                cases.get(x + 1).unwrap().get(y).unwrap(),
+                cases.get(x).unwrap().get(y + 1).unwrap(),
+            ],
+            case,
+        )
+    } else if y == row_len {
+        // lower
         check_cases(
-            &vec![
-            cases.get(x - 1).unwrap().get(y).unwrap(),
-            cases.get(x + 1).unwrap().get(y).unwrap(),
-            cases.get(x).unwrap().get(y - 1).unwrap(),
-        ], 
-        case)
+            &[
+                cases.get(x - 1).unwrap().get(y).unwrap(),
+                cases.get(x + 1).unwrap().get(y).unwrap(),
+                cases.get(x).unwrap().get(y - 1).unwrap(),
+            ],
+            case,
+        )
     } else {
         panic!("Should not happen, impossible to process case"); // TODO
     }
-    
 }
 
 pub fn ask_next_move(player: &dyn Player, cases: &[Vec<Case>]) -> (Case, Coordinate) {
