@@ -24,6 +24,7 @@ extern crate lazy_static;
 
 lazy_static! {
     pub(crate) static ref GAME_POOL: Mutex<HumanAIGamePool> = Mutex::new(GamePool::new());
+    pub(crate) static ref GAME_POOL_ID: Mutex<i128> = Mutex::new(0);
 }
 
 fn main() {
@@ -36,7 +37,8 @@ fn main() {
         ),
     );
 
-    let game = Game::new(0, engine);
+    let game = Game::new(*GAME_POOL_ID.lock().unwrap(), engine);
+    *GAME_POOL_ID.lock().unwrap() += 1;
 
     register_to_pool(game).unwrap();
     let pool = GAME_POOL.lock().unwrap();

@@ -63,9 +63,15 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
 
 //}
 
-//#[pyfunction]
-//fn register_game() {
-//}
+#[pyfunction]
+fn get_available_moves(game_id: i128) -> PyResult<Vec<(PyCoords, PyCoords)>> {
+    unimplemented!();
+}
+
+#[pyfunction]
+fn register_game() {
+    unimplemented!();
+}
 
 
 #[pyfunction]
@@ -76,5 +82,7 @@ fn hello_world() -> PyResult<String> {
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(hello_world))?;
+    m.add_wrapped(wrap_pyfunction!(register_game))?;
+    m.add_wrapped(wrap_pyfunction!(get_available_moves))?;
     Ok(())
 }
