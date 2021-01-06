@@ -1,24 +1,49 @@
 import React, {Component, useEffect, useState} from "react";
+import Case from "../Case";
+import Line from "../Line";
 
 
 function Game({boardAPI}: any) {
 
-    const board : string [][] = boardAPI;
-    const boardHTML : string = "<Board />";
+    const [board, setBoard] = useState([
+        ['1', '1', '1', '1'],
+        ['2', '1', '1', '1', '1'],
+        ['3'],
+        ['4'],
+        ['5'],
+        ['6'],
+        ['7'],
+        ['8'],
+        ['9'],
+        ['10'],
+    ])
 
-
-    for (let row of board) {
-        for (let column of row) {
-
-        }
+    const update = () => {
+        setBoard([
+            ['2', '1', '1', '1', '1'],
+            ['2', '2', '1', '1', '1'],
+            ['2', '1', '3', '1', '1'],
+            ['2', '1', '4', '1', '1'],
+            ['2', '1', '1', '5', '1'],
+            ['2', '1', '1', '1', '6'],
+            ['2', '1', '1', '7', '1'],
+            ['2', '1', '8', '1', '1'],
+            ['2', '9', '1', '1', '1'],
+            ['2', '3', '4', '1', '1'],
+        ])
     }
+
+
+    console.log(board)
+    //const boardHTML : string = "<Board />";
 
     return (
         <div className="game">
             <h2>Plateau</h2>
             <div className="board-container">
-                {board}
+                {board.map(line => <Line line={line}/> )}
             </div>
+            <button onClick={update}> Update </button>
         </div>
     )
 
