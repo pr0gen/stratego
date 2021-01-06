@@ -9,27 +9,30 @@ import {
     Route,
     Link
 } from "react-router-dom";
+import './../styles/App.css'
 
 export default function App() {
     return (
         <Router>
             <div>
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/create-game">Create Game</Link>
-                        </li>
-                        <li>
-                            <Link to="/join-game">Join Game</Link>
-                        </li>
-                        <li>
-                            <Link to="/rules">Rules</Link>
-                        </li>
-                    </ul>
-                </nav>
+                <Route path={['/create-game' , '/join-game' , '/rules']}>
+                    <nav>
+                        <ul>
+                            <li>
+                                <Link className="nav-items" to="/">Home</Link>
+                            </li>
+                            <li>
+                                <Link className="nav-items" to="/create-game">Create Game</Link>
+                            </li>
+                            <li>
+                                <Link className="nav-items" to="/join-game">Join Game</Link>
+                            </li>
+                            <li>
+                                <Link className="nav-items" to="/rules">Rules</Link>
+                            </li>
+                        </ul>
+                    </nav>
+                </Route>
 
                 <Switch>
                     <Route exact={true} path="/">
