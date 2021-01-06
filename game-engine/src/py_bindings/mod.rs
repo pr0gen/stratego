@@ -98,7 +98,7 @@ fn get_available_moves(game_id: i128) -> PyResult<Vec<(PyCoord, PyCoord, PyColor
                 (into_py_coord(from), into_py_coord(to), into_py_color(m.2))
             })
         .collect();
-        Ok(moves)
+       Ok(moves)
     } else {
         panic!("Failed to find game {}", game_id);
     }
@@ -114,12 +114,13 @@ fn register_game(player1: String, player2: String) -> PyResult<i128> {
         ),
     );
 
-    let game_id = GAME_POOL_ID.lock().unwrap();
+    let mut game_id = GAME_POOL_ID.lock().unwrap();
+    let gi = game_id.clone();
     let game = Game::new(*game_id, engine);
-    *GAME_POOL_ID.lock().unwrap() += 1;
+    *game_id += 1;
 
-    if let Ok(_) = game_pool::register_to_pool(game) {
-        Ok(*game_id)
+    if game_pool::register_to_pool(game).is_ok() {
+        Ok(gi)
     } else {
         panic!("Failed to create game{}",);
     }

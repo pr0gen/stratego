@@ -17,6 +17,7 @@ pub struct StrategoBoard {
 }
 
 //to test
+//TODO Load board from player
 pub fn create_stratego_board() -> StrategoBoard {
     let board = create_empty_stratego_board();
 

@@ -13,9 +13,9 @@ class StrategoAI(abc.ABC):
 
 class TestStrategoAI(StrategoAI):
     def ask_next_move(self) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-        game_id = register_game("Tigran", "test2")
-        prin('HJello')
-        print(get_available_moves(game_id))
+        # game_id = register_game("Tigran", "test2")
+        # moves = get_available_moves(game_id) 
+        # print(moves)
         return ((3, "A"), (4, "A"))
 
 
