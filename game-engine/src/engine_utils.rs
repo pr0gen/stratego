@@ -7,9 +7,9 @@ use crate::board::piece::{Color, PieceType};
 use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
 
-pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)> {
+pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate, Color)> {
     let col_len = cases.len() - 1;
-    let mut moves: Vec<(Coordinate, Coordinate)> = Vec::with_capacity(col_len);
+    let mut moves: Vec<(Coordinate, Coordinate, Color)> = Vec::with_capacity(col_len);
 
     // x -> col
     // y -> row
@@ -61,6 +61,15 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)
                 }
             } else {
                 // It's a random case in the middle
+                moves.append(&mut check_cases(
+                        &[
+                            cases.get(x - 1).unwrap().get(y).unwrap(),
+                            cases.get(x + 1).unwrap().get(y).unwrap(),
+                            cases.get(x).unwrap().get(y + 1).unwrap(),
+                            cases.get(x).unwrap().get(y - 1).unwrap(),
+                        ] ,
+                        &case,
+                ));
             }
         }
     }
@@ -68,19 +77,20 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate)
     moves
 }
 
-fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate)> {
-    if !case
+fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Color)> {
+    if case
         .get_content()
         .get_move()
         .equals(AvailableMove::Immovable)
     {
         Vec::new()
     } else {
-        let mut moves: Vec<(Coordinate, Coordinate)> = Vec::new();
+        let mut moves = Vec::new();
         let coord_from = case.get_coordinate();
+        let color = case.get_content().get_color();
         cases.iter().for_each(|case| {
             if let Some(coord_to) = check_case(case) {
-                moves.push((*coord_from, coord_to));
+                moves.push((*coord_from, coord_to, *color));
             }
         });
         moves
@@ -95,7 +105,7 @@ fn check_case(case: &Case) -> Option<Coordinate> {
     }
 }
 
-fn check_side(cases: &[Vec<Case>], case: &Case) -> Vec<(Coordinate, Coordinate)> {
+fn check_side(cases: &[Vec<Case>], case: &Case) -> Vec<(Coordinate, Coordinate, Color)> {
     let col_len = cases.len() - 1;
     let row_len = cases.get(0).unwrap().len() - 1;
     let coord_case = case.get_coordinate();
@@ -347,21 +357,22 @@ mod test {
     use crate::board::case::{
         create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate,
     };
-    use crate::board::classic_board::StrategoBoard;
     use crate::board::piece::{Color, Piece, PieceType};
-    use crate::board::Board;
 
     use super::{game_is_over, get_availables_moves, verify_board_integrity};
 
     #[test]
-    fn should_retrieve_available_moves() {
+    fn should_retrieve_available_moves_3x3() {
         let cases = create_3_x_3_stratego_board();
-        let board = StrategoBoard::new(cases.clone());
-        println!("{}", board.display());
         let res = get_availables_moves(&cases);
-        //println!("BOARD\n");
-        println!("{:?}", res);
         assert_eq!(4, res.len());
+    }
+
+    #[test]
+    fn should_retrieve_available_moves_4x4() {
+        let cases = create_4_x_4_stratego_board();
+        let res = get_availables_moves(&cases);
+        assert_eq!(6, res.len());
     }
 
     #[test]
@@ -593,6 +604,58 @@ mod test {
     //Err(_) => panic!("Should not happen"),
     //}
     //}
+    fn create_4_x_4_stratego_board() -> Vec<Vec<Case>> {
+        vec![
+            vec![
+                create_full_case(
+                    Coordinate::new(0, 0),
+                    Piece::new(PieceType::Flag, Box::new(Color::Blue)),
+                ),
+                create_full_case(
+                    Coordinate::new(0, 1),
+                    Piece::new(PieceType::Major, Box::new(Color::Blue)),
+                ),
+                create_full_case(
+                    Coordinate::new(0, 2),
+                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                ),
+                create_full_case(
+                    Coordinate::new(0, 3),
+                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                ),
+            ],
+            vec![
+                create_empty_case(Coordinate::new(1, 0)),
+                create_empty_case(Coordinate::new(1, 1)),
+                create_empty_case(Coordinate::new(1, 2)),
+                create_empty_case(Coordinate::new(1, 3)),
+            ],
+            vec![
+                create_empty_case(Coordinate::new(2, 0)),
+                create_empty_case(Coordinate::new(2, 1)),
+                create_empty_case(Coordinate::new(2, 2)),
+                create_empty_case(Coordinate::new(2, 3)),
+            ],
+            vec![
+                create_full_case(
+                    Coordinate::new(3, 0),
+                    Piece::new(PieceType::Flag, Box::new(Color::Red)),
+                ),
+                create_full_case(
+                    Coordinate::new(3, 1),
+                    Piece::new(PieceType::Major, Box::new(Color::Red)),
+                ),
+                create_full_case(
+                    Coordinate::new(3, 2),
+                    Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                ),
+                create_full_case(
+                    Coordinate::new(3, 3),
+                    Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                ),
+            ],
+        ]
+    }
 
     fn create_3_x_3_stratego_board() -> Vec<Vec<Case>> {
         vec![

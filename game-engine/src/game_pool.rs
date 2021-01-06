@@ -6,15 +6,28 @@ use crate::engine::{Engine, StrategoEngine};
 use crate::error::StrategoError;
 use crate::player::HumanPlayer;
 use crate::player::ai_player::AIPlayer;
+use crate::GAME_POOL;
 
 pub type HumamAIEngine = StrategoEngine<StrategoBoard, HumanPlayer, AIPlayer>;
 pub type HumanAIGamePool = GamePool<HumamAIEngine>;
+
+pub fn register_to_pool(game: Game<HumamAIEngine>) -> Result<(), StrategoError> {
+    GAME_POOL.lock().unwrap().register(game)
+}
+
+pub fn find_game_by_id(game_id: i128) -> Option<Game<HumamAIEngine>> {
+    if let Some(game) = GAME_POOL.lock().unwrap().find_game_by_id(game_id) {
+        Some(game.clone())
+    } else {
+        None
+    }
+}
 
 pub struct GamePool<E: Engine> {
     games: HashSet<Game<E>>,
 }
 
-#[derive(Hash, Eq, PartialEq, Debug)]
+#[derive(Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct Game<E: Engine> {
     id: i128,
     engine: E,

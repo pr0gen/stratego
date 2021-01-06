@@ -4,13 +4,23 @@ use pyo3::wrap_pyfunction;
 use std::env::current_dir;
 
 use crate::board::case::Coordinate;
+use crate::board::piece::Color;
+use crate::engine::{Engine, StrategoEngine};
+use crate::engine_utils;
 use crate::error::StrategoError;
+use crate::game_pool;
 use crate::parse;
-//use crate::player::*;
+use crate::player::ai_player::AIPlayer;
+use crate::player::HumanPlayer;
+use crate::board::classic_board::create_stratego_board;
+use crate::game_pool::Game;
+use crate::GAME_POOL_ID;
 
 const AI_STRATEGO_PYTHON_MODULE: &str = "ai-python";
 
-pub type PyCoords = ((i16, String), (i16, String));
+pub type PyCoord = (i16, String);
+pub type PyCoords = (PyCoord, PyCoord);
+pub type PyColor = String;
 
 pub fn get_to_coord(co: PyCoords) -> (Coordinate, Coordinate) {
     let co_0 = co.0;
@@ -20,6 +30,18 @@ pub fn get_to_coord(co: PyCoords) -> (Coordinate, Coordinate) {
         Coordinate::new(co_0.0, parse::parse_letter_to_i16(co_0.1.as_str())),
         Coordinate::new(co_1.0, parse::parse_letter_to_i16(co_1.1.as_str())),
     )
+}
+
+pub fn into_py_coord(coordinate: Coordinate) -> PyCoord {
+    (coordinate.get_x(), parse::parse_i16_to_str(coordinate.get_y() + 65))
+}
+
+pub fn into_py_color(color: Color) -> PyColor {
+    match color {
+        Color::Blue => String::from("Blue"),
+        Color::Red => String::from("Red"),
+        Color::None => String::from("None"),
+    }
 }
 
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
@@ -63,16 +85,45 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
 
 //}
 
-#[pyfunction]
-fn get_available_moves(game_id: i128) -> PyResult<Vec<(PyCoords, PyCoords)>> {
-    unimplemented!();
+#[pyfunction] //TODO make this works
+fn get_available_moves(game_id: i128) -> PyResult<Vec<(PyCoord, PyCoord, PyColor)>> {
+    if let Some(game) = game_pool::find_game_by_id(game_id) {
+        let engine = game.get_engine();
+        let moves = engine_utils::get_availables_moves(engine.status());
+
+        let moves = moves.iter()
+            .map(|m| {
+                let from = m.0;
+                let to = m.1;
+                (into_py_coord(from), into_py_coord(to), into_py_color(m.2))
+            })
+        .collect();
+        Ok(moves)
+    } else {
+        panic!("Failed to find game {}", game_id);
+    }
 }
 
 #[pyfunction]
-fn register_game() {
-    unimplemented!();
-}
+fn register_game(player1: String, player2: String) -> PyResult<i128> {
+    let engine = StrategoEngine::new(
+        create_stratego_board(),
+        (
+            HumanPlayer::new(Color::Red, player1),
+            AIPlayer::new(Color::Blue, player2),
+        ),
+    );
 
+    let game_id = GAME_POOL_ID.lock().unwrap();
+    let game = Game::new(*game_id, engine);
+    *GAME_POOL_ID.lock().unwrap() += 1;
+
+    if let Ok(_) = game_pool::register_to_pool(game) {
+        Ok(*game_id)
+    } else {
+        panic!("Failed to create game{}",);
+    }
+}
 
 #[pyfunction]
 fn hello_world() -> PyResult<String> {

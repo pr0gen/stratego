@@ -10,7 +10,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 log = "0.4"
-wasm-bindgen = "0.2"
 itertools = "0.9.0"
 rand = "0.7.3"
 pyo3 = "0.13.0"

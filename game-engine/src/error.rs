@@ -10,6 +10,7 @@ pub enum StrategoError {
     ParsingError(String),
     AIExecuteError(String),
     AILoadingError(String),
+    GamePoolError(String),
 }
 
 impl StrategoError {
@@ -33,11 +34,12 @@ impl StrategoError {
                 x,
                 y
             ),
-            StrategoError::InitGameError(s) => s.to_owned(),
+            StrategoError::InitGameError(s)
+            | StrategoError::GamePoolError(s)
+            | StrategoError::ParsingError(s)
+            | StrategoError::AILoadingError(s) => s.to_owned(),
             StrategoError::GameNotOverError() => String::from("Game is not over"),
-            StrategoError::ParsingError(s) => s.to_owned(),
             StrategoError::AIExecuteError(s) => format!("Failed to execute ai : {}", s),
-            StrategoError::AILoadingError(s) => s.to_owned(),
         }
     }
 }

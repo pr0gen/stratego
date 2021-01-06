@@ -1,13 +1,14 @@
-use board::classic_board::create_stratego_board;
 use board::piece::Color;
 use engine::{Engine, StrategoEngine};
 use engine_utils::game_is_over;
-use error::StrategoError;
-use game_pool::{Game, GamePool, HumamAIEngine, HumanAIGamePool};
+use game_pool::{Game, GamePool, HumanAIGamePool};
 use player::ai_player::AIPlayer;
 use player::HumanPlayer;
+use board::classic_board::create_stratego_board;
 
 use std::sync::Mutex;
+
+#[macro_use] extern crate lazy_static;
 
 pub mod board;
 pub mod engine;
@@ -18,9 +19,6 @@ pub mod parse;
 pub mod player;
 pub mod py_bindings;
 pub mod utils;
-
-#[macro_use]
-extern crate lazy_static;
 
 lazy_static! {
     pub(crate) static ref GAME_POOL: Mutex<HumanAIGamePool> = Mutex::new(GamePool::new());
@@ -40,7 +38,7 @@ fn main() {
     let game = Game::new(*GAME_POOL_ID.lock().unwrap(), engine);
     *GAME_POOL_ID.lock().unwrap() += 1;
 
-    register_to_pool(game).unwrap();
+    game_pool::register_to_pool(game).unwrap();
     let pool = GAME_POOL.lock().unwrap();
     let game = pool.find_game_by_id(0).unwrap();
 
@@ -65,9 +63,4 @@ fn main() {
         }
     }
 }
-
-pub fn register_to_pool(game: Game<HumamAIEngine>) -> Result<(), StrategoError> {
-    GAME_POOL.lock().unwrap().register(game)
-}
-
 
