@@ -43,7 +43,7 @@ fn main() {
     let game = pool.find_game_by_id(0).unwrap();
 
     let mut engine = game.get_engine().clone();
-    println!("{}", engine.display());
+    println!("{}", engine.display_by_color(&engine.get_turn()));
     loop {
         let cases = engine.status();
         match game_is_over(cases) {
@@ -63,4 +63,3 @@ fn main() {
         }
     }
 }
-

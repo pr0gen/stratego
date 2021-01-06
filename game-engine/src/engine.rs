@@ -15,6 +15,8 @@ pub trait Engine: Hash {
     fn get_turn(&self) -> Color;
 
     fn display(&self) -> String;
+
+    fn display_by_color(&self, color: &Color) -> String;
 }
 
 #[derive(Debug, Hash, Eq, PartialEq, Clone)]
@@ -85,7 +87,7 @@ where
         } else {
             match self.execute_move(c, to) {
                 Ok(_) => {
-                    println!("{}", self.display());
+                    println!("{}", self.display_by_color(&self.turn));
                     Ok(())
                 }
                 Err(StrategoError::MoveError(message, _, _)) => {
@@ -105,6 +107,10 @@ where
 
     fn display(&self) -> String {
         self.board.display()
+    }
+
+    fn display_by_color(&self, color: &Color) -> String {
+        self.board.display_by_color(color)
     }
 }
 

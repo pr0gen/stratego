@@ -82,6 +82,15 @@ impl Case {
             State::Full | State::Empty => self.content.display(),
         }
     }
+
+    pub fn display_by_color(&self, color: &Color) -> String {
+        let content_color = self.content.get_color();
+        if content_color == &Color::None || content_color == color {
+            self.display()
+        } else {
+            String::from("-----")
+        }
+    }
 }
 
 impl Coordinate {

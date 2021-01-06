@@ -4,6 +4,7 @@ use serde::{Serialize, Deserialize};
 pub mod deplacement;
 pub mod piece_utils;
 
+
 use self::deplacement::{AvailableMove, Move};
 
 #[pyclass]

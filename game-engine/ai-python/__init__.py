@@ -14,11 +14,11 @@ class StrategoAI(abc.ABC):
 class TestStrategoAI(StrategoAI):
     def ask_next_move(self) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         game_id = register_game("Tigran", "test2")
-        # moves = get_available_moves(game_id) 
-        # print(moves)
-        # state = get_game_state(game_id)
-        # case = state[0][0]
-        # print(case)
+        moves = get_available_moves(game_id) 
+        print(moves)
+        state = get_game_state(game_id)
+        case = state[0][0]
+        print(case)
         # print(case.coordinate) //TODO fix that one
 
         return ((3, "A"), (4, "A"))
