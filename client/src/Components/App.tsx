@@ -3,6 +3,7 @@ import CreateGame from './Pages/CreateGame';
 import Home from './Pages/Home';
 import JoinGame from './Pages/JoinGame';
 import Rules from './Pages/Rules';
+import Game from './Pages/Game';
 import {
     BrowserRouter as Router,
     Switch,
@@ -25,7 +26,7 @@ export default function App() {
     return (
         <Router>
             <div>
-                <Route path={['/create-game' , '/join-game' , '/rules']}>
+                <Route path={['/create-game' , '/join-game' , '/rules', '/game']}>
                     <nav>
                         <ul>
                             <li>
@@ -52,6 +53,9 @@ export default function App() {
                     <Route path="/join-game" component={() => <JoinGame socket={socket}></JoinGame>}></Route>
                     <Route path="/rules">
                         <Rules />
+                    </Route>
+                    <Route path="/game">
+                        <Game />
                     </Route>
                 </Switch>
             </div>
