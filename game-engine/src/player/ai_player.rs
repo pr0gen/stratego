@@ -1,7 +1,7 @@
 use crate::error::StrategoError;
 use crate::player::*;
-use crate::py_bindings;
 use crate::utils;
+use crate::board::case;
 
 const AI_STRATEGO_INIT_FILE: &str = "__init__";
 const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
@@ -64,7 +64,7 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
             let next_move = call.unwrap().extract();
             if let Ok(next_move) = next_move {
                 println!("AI {} is playing", name);
-                Ok(py_bindings::get_to_coord(next_move))
+                Ok(case::into(next_move))
             } else {
                 Err(StrategoError::AILoadingError(String::from(
                     "Failed to extract result",

@@ -1,9 +1,15 @@
 use pyo3::prelude::pyclass;
+use serde::{Serialize, Deserialize};
 
+use crate::parse;
 use super::piece::{Color, Piece, PieceType};
 
+
+pub type PyCoord = (i16, String);
+pub type PyCoords = (PyCoord, PyCoord);
+
 #[pyclass]
-#[derive(Hash, Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
+#[derive(Serialize, Deserialize, Hash, Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
 pub struct Case {
     state: State,
     coordinate: Coordinate,
@@ -11,17 +17,28 @@ pub struct Case {
 }
 
 #[pyclass]
-#[derive(Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub struct Coordinate {
     x: i16,
     y: i16,
 }
 
-#[derive(Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub enum State {
     Unreachable,
     Empty,
     Full,
+}
+
+
+pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
+    let co_0 = co.0;
+    let co_1 = co.1;
+
+    (
+        Coordinate::new(co_0.0, parse::parse_letter_to_i16(co_0.1.as_str())),
+        Coordinate::new(co_1.0, parse::parse_letter_to_i16(co_1.1.as_str())),
+    )
 }
 
 pub fn create_full_case(coordinate: Coordinate, content: Piece) -> Case {
