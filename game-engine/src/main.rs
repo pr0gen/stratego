@@ -1,41 +1,48 @@
-use pyo3::{GILGuard, Python};
-
-use board::classic_board::create_stratego_board;
 use board::piece::Color;
-use engine::Engine;
-use engine::StrategoEngine;
+use engine::{Engine, StrategoEngine};
 use engine_utils::game_is_over;
-use error::StrategoError;
+use game_pool::{Game, GamePool, HumanAIGamePool};
 use player::ai_player::AIPlayer;
 use player::HumanPlayer;
-use py_bindings::load_stratego_ai_module;
+use board::classic_board::create_stratego_board;
+
+use std::sync::Mutex;
+
+#[macro_use] extern crate lazy_static;
 
 pub mod board;
 pub mod engine;
 pub mod engine_utils;
 pub mod error;
+pub mod game_pool;
 pub mod parse;
 pub mod player;
 pub mod py_bindings;
+pub mod utils;
+
+lazy_static! {
+    pub(crate) static ref GAME_POOL: Mutex<HumanAIGamePool> = Mutex::new(GamePool::new());
+    pub(crate) static ref GAME_POOL_ID: Mutex<i128> = Mutex::new(0);
+}
 
 fn main() {
-    let gil: GILGuard = Python::acquire_gil();
-
-    load_stratego_ai_module(&gil.python()).unwrap_or_else(|_| {
-        panic!(StrategoError::AILoadingError(String::from(
-            "Failed to load ai module"
-        )))
-    });
-
-    let mut engine: Box<dyn Engine> = Box::new(StrategoEngine::new(
+    let engine = StrategoEngine::new(
         create_stratego_board(),
         (
-            Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
-            //Box::new(HumanPlayer::new(Color::Blue, String::from("Cassiopee"))),
-            Box::new(AIPlayer::new(Color::Blue, String::from("test"), gil)),
+            HumanPlayer::new(Color::Red, String::from("Tigran")),
+            //HumanPlayer::new(Color::Blue, String::from("Cassiopee")),
+            AIPlayer::new(Color::Blue, String::from("test")),
         ),
-    ));
+    );
 
+    let game = Game::new(*GAME_POOL_ID.lock().unwrap(), engine);
+    *GAME_POOL_ID.lock().unwrap() += 1;
+
+    game_pool::register_to_pool(game).unwrap();
+    let pool = GAME_POOL.lock().unwrap();
+    let game = pool.find_game_by_id(0).unwrap();
+
+    let mut engine = game.get_engine().clone();
     println!("{}", engine.display_by_color(&engine.get_turn()));
     loop {
         let cases = engine.status();

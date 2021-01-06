@@ -1,33 +1,19 @@
 pub mod board;
 pub mod engine;
 pub mod engine_utils;
+pub mod game_pool;
 pub mod error;
 pub mod parse;
 pub mod player;
 pub mod py_bindings;
+pub mod utils;
 
-extern crate wasm_bindgen;
-use wasm_bindgen::prelude::*;
+use std::sync::Mutex;
+use game_pool::{GamePool, HumanAIGamePool};
 
-#[wasm_bindgen]
-extern "C" {
-    fn alert(s: &str);
-}
+#[macro_use] extern crate lazy_static;
 
-#[wasm_bindgen]
-pub fn greet(name: &str) {
-    alert(&format!("Hello, {}!", name));
-}
-
-#[wasm_bindgen]
-pub fn fibo(n: i32) {
-    alert(&format!("{}", fibonacci(n)));
-}
-
-fn fibonacci(n: i32) -> i32 {
-    if n < 2 {
-        1
-    } else {
-        fibonacci(n - 1) + fibonacci(n - 2)
-    }
+lazy_static! {
+    pub(crate) static ref GAME_POOL: Mutex<HumanAIGamePool> = Mutex::new(GamePool::new());
+    pub(crate) static ref GAME_POOL_ID: Mutex<i128> = Mutex::new(0);
 }

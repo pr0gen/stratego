@@ -1,9 +1,14 @@
 use pyo3::prelude::pyclass;
+use serde::{Deserialize, Serialize};
 
 use super::piece::{Color, Piece, PieceType};
+use crate::parse;
+
+pub type PyCoord = (i16, String);
+pub type PyCoords = (PyCoord, PyCoord);
 
 #[pyclass]
-#[derive(Debug, Clone, PartialOrd, PartialEq)]
+#[derive(Serialize, Deserialize, Hash, Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
 pub struct Case {
     state: State,
     coordinate: Coordinate,
@@ -11,17 +16,27 @@ pub struct Case {
 }
 
 #[pyclass]
-#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub struct Coordinate {
     x: i16,
     y: i16,
 }
 
-#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub enum State {
     Unreachable,
     Empty,
     Full,
+}
+
+pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
+    let co_0 = co.0;
+    let co_1 = co.1;
+
+    (
+        Coordinate::new(co_0.0, parse::parse_letter_to_i16(co_0.1.as_str())),
+        Coordinate::new(co_1.0, parse::parse_letter_to_i16(co_1.1.as_str())),
+    )
 }
 
 pub fn create_full_case(coordinate: Coordinate, content: Piece) -> Case {
@@ -95,8 +110,24 @@ impl Coordinate {
 #[cfg(test)]
 mod test {
 
-    use super::{create_empty_case, create_full_case, create_unreachable_case, Coordinate, State};
+    use super::{
+        create_empty_case, create_full_case, create_unreachable_case, into, Coordinate, State,
+    };
     use crate::board::piece::{Color, Piece, PieceType};
+
+    #[test]
+    fn should_parse_py_coord() {
+        let py_coords = ((0, String::from("B")), (1, String::from("C")));
+        assert_eq!(
+            (Coordinate::new(0, 1), Coordinate::new(1, 2)),
+            into(py_coords)
+        );
+        let py_coords = ((3, String::from("E")), (2, String::from("D")));
+        assert_eq!(
+            (Coordinate::new(3, 4), Coordinate::new(2, 3)),
+            into(py_coords)
+        );
+    }
 
     #[test]
     fn should_create_full_case() {

@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 use crate::board::case::{Case, Coordinate};
 use crate::board::piece::Color;
 use crate::board::Board;
@@ -5,7 +7,7 @@ use crate::engine_utils;
 use crate::error::StrategoError;
 use crate::player::Player;
 
-pub trait Engine {
+pub trait Engine: Hash {
     fn status(&self) -> &Vec<Vec<Case>>;
 
     fn moving(&mut self) -> Result<(), StrategoError>;
@@ -17,14 +19,20 @@ pub trait Engine {
     fn display_by_color(&self, color: &Color) -> String;
 }
 
-pub struct StrategoEngine {
-    board: Box<dyn Board>,
-    players: (Box<dyn Player>, Box<dyn Player>),
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
+pub struct StrategoEngine<B: Board, P1: Player + Hash, P2: Player + Hash> {
+    board: B,
+    players: (P1, P2),
     turn: Color,
 }
 
-impl StrategoEngine {
-    pub fn new(board: Box<dyn Board>, players: (Box<dyn Player>, Box<dyn Player>)) -> Self {
+impl<B, P1, P2> StrategoEngine<B, P1, P2>
+where
+    B: Board,
+    P1: 'static + Player + Hash + Eq + Clone,
+    P2: 'static + Player + Hash + Eq + Clone,
+{
+    pub fn new(board: B, players: (P1, P2)) -> Self {
         StrategoEngine {
             board,
             players,
@@ -52,22 +60,28 @@ impl StrategoEngine {
 
     fn get_player_from_color(&self) -> &dyn Player {
         if Color::Red == self.turn {
-            &*self.players.0
+            &self.players.0
         } else {
-            &*self.players.1
+            &self.players.1
         }
     }
 }
 
-impl Engine for StrategoEngine {
+impl<B, P1, P2> Engine for StrategoEngine<B, P1, P2>
+where
+    B: Board,
+    P1: 'static + Player + Hash + Eq + Clone,
+    P2: 'static + Player + Hash + Eq + Clone,
+{              
     fn status(&self) -> &Vec<Vec<Case>> {
         self.board.state()
     }
 
     fn moving(&mut self) -> Result<(), StrategoError> {
         let player = self.get_player_from_color();
+        let color = *player.get_color();
         let (c, to) = engine_utils::ask_next_move(player, self.status());
-        if c.get_content().get_color() != player.get_color() {
+        if c.get_content().get_color() != &color {
             println!("You should move a piece of your color !");
             self.moving()
         } else {
@@ -110,13 +124,13 @@ mod test {
 
     #[test]
     fn should_create_and_get_status() {
-        let engine: Box<dyn Engine> = Box::new(StrategoEngine::new(
+        let engine = StrategoEngine::new(
             create_empty_stratego_board(),
             (
-                Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
-                Box::new(HumanPlayer::new(Color::Blue, String::from("Emma"))),
+                HumanPlayer::new(Color::Red, String::from("Tigran")),
+                HumanPlayer::new(Color::Blue, String::from("Emma")),
             ),
-        ));
+        );
 
         let state = engine.status();
 

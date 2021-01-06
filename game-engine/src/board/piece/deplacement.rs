@@ -1,3 +1,5 @@
+use serde::{Serialize, Deserialize};
+
 #[derive(Debug, Eq, PartialEq)]
 pub enum AvailableMove {
     Immovable,
@@ -5,7 +7,7 @@ pub enum AvailableMove {
     Scout,
 }
 
-#[derive(Debug, Eq, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
 pub struct Move(i16, i16);
 
 impl Move {

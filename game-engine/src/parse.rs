@@ -1,4 +1,5 @@
 use std::io;
+use std::str;
 
 pub fn read_from_input() -> io::Result<String> {
     let mut input = String::new();
@@ -27,3 +28,17 @@ fn should_parse_input() {
     assert_eq!((4, 1), parse_input("4B"));
     assert_eq!((3, 7), parse_input("3H"));
 }
+
+pub fn parse_i16_to_str(x: i16) -> String {
+    let x = x.to_be_bytes();
+    let xbis = str::from_utf8(&x);
+    String::from(xbis.unwrap())
+}
+
+#[test]
+fn should_parse_i16_to_str() {
+    assert_eq!("\u{0}A", parse_i16_to_str(65));
+    assert_eq!("\u{0}B", parse_i16_to_str(66));
+    assert_eq!("\u{0}K", parse_i16_to_str(75));
+}
+
