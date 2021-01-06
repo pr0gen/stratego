@@ -1,0 +1,13 @@
+h1 {
+    margin: 150px auto;
+    text-align: center;
+
+}
+
+.home {
+    width: 100%;
+}
+
+.home-nav {
+    list-style-type: none;
+}
