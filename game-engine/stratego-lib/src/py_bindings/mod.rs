@@ -21,43 +21,39 @@ const AI_STRATEGO_PYTHON_MODULE: &str = "ai-python";
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     let syspath: &PyList = py
         .import("sys")
-        .unwrap_or_else(|_| {
-            panic!(StrategoError::AILoadingError(String::from(
-                "Failed to find sys python module"
+        .unwrap_or_else(|e| {
+            panic!(StrategoError::AILoadingError(format!(
+                "Failed to find sys python module, {}", e
             )))
         })
         .get("path")
-        .unwrap_or_else(|_| {
-            panic!(StrategoError::AILoadingError(String::from(
-                "Failed to find path function in sys python module"
+        .unwrap_or_else(|e| {
+            panic!(StrategoError::AILoadingError(format!(
+                "Failed to find path function in sys python module, {}", e
             )))
         })
         .try_into()
-        .unwrap_or_else(|_| {
-            panic!(StrategoError::AILoadingError(String::from(
-                "Failed to get result from path function in sys python module"
+        .unwrap_or_else(|e| {
+            panic!(StrategoError::AILoadingError(format!(
+                "Failed to get result from path function in sys python module, {}", e
             )))
         });
 
-    let cur = current_dir().unwrap_or_else(|_| {
-        panic!(StrategoError::AILoadingError(String::from(
-            "Failed to find pwd"
+    let cur = current_dir().unwrap_or_else(|e| {
+        panic!(StrategoError::AILoadingError(format!(
+            "Failed to find pwd, {}", e
         )))
     });
 
     let pwd = cur.as_path().as_os_str().to_str().unwrap();
     match syspath.insert(0, format!("{}/{}", pwd, AI_STRATEGO_PYTHON_MODULE)) {
         Ok(_) => Ok(()),
-        Err(_) => panic!(StrategoError::AILoadingError(String::from(
-            "Failed to load ai for stratego"
+        Err(e) => panic!(StrategoError::AILoadingError(format!(
+            "Failed to load ai for stratego, {}", e
         ))),
     }
 }
 
-//#[pyfunction]
-//fn moving() {
-
-//}
 
 #[pyfunction] 
 fn get_available_moves(game_id: i128) -> PyResult<Py<PyAny>> {

@@ -161,9 +161,9 @@ pub fn ask_next_move(player: &dyn Player, cases: &[Vec<Case>]) -> (Case, Coordin
     let (from, to) = player.ask_next_move();
     let case = cases
         .get(from.get_x() as usize)
-        .unwrap()
+        .unwrap_or_else(|| panic!("you need to provide a correct x"))
         .get(from.get_y() as usize)
-        .unwrap();
+        .unwrap_or_else(|| panic!("you need to provide a correct y"));
 
     (case.clone(), to)
 }

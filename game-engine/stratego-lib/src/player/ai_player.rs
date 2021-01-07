@@ -8,8 +8,7 @@ const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
 
 #[derive(Debug, Hash, Clone, Eq, PartialEq)]
 pub struct AIPlayer {
-    color: Color,
-    name: String,
+    color: Color, name: String,
 }
 
 impl AIPlayer {
@@ -40,8 +39,8 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
 
             let import = py.import(AI_STRATEGO_INIT_FILE);
             if import.is_err() {
-                return Err(StrategoError::AILoadingError(String::from(
-                    "Failed to import stratego ai init file",
+                return Err(StrategoError::AILoadingError(format!(
+                    "Failed to import stratego ai init file, {}", import.unwrap(),
                 )));
             }
 
@@ -49,15 +48,15 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
                 .unwrap()
                 .get(format!("{}_{}", AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION, name).as_str());
             if function.is_err() {
-                return Err(StrategoError::AILoadingError(String::from(
-                    "Failed to load AI function",
+                return Err(StrategoError::AILoadingError(format!(
+                    "Failed to load AI function, {}", function.unwrap()
                 )));
             }
 
             let call = function.unwrap().call0();
             if call.is_err() {
-                return Err(StrategoError::AILoadingError(String::from(
-                    "Failed to call AI function",
+                return Err(StrategoError::AILoadingError(format!(
+                    "Failed to call AI function, {}", call.unwrap()
                 )));
             }
 
