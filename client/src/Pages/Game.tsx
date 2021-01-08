@@ -6,50 +6,45 @@ import {Socket} from "../Utils/Socket";
 
 function Game() {
 
-    console.log(Socket.getSocket)
+    const socket = Socket.getSocket()
+
     const [board, setBoard] = useState([
-        ['1', '1', '1', '1'],
-        ['2', '1', '1', '1', '1'],
-        ['3'],
-        ['4'],
-        ['5'],
-        ['6'],
-        ['7'],
-        ['8'],
-        ['9'],
-        ['10'],
+        [null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,'B',null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,'S',null,null,null],
+        [null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null,null,null]
     ])
 
-    const update = () => {
-        setBoard([
-            ['2', '1', '1', '1', '1'],
-            ['2', '2', '1', '1', '1'],
-            ['2', '1', '3', '1', '1'],
-            ['2', '1', '4', '1', '1'],
-            ['2', '1', '1', '5', '1'],
-            ['2', '1', '1', '1', '6'],
-            ['2', '1', '1', '7', '1'],
-            ['2', '1', '8', '1', '1'],
-            ['2', '9', '1', '1', '1'],
-            ['2', '3', '4', '1', '1'],
-        ])
-    }
+    const [pieces, setPieces] = useState([])
 
+    useEffect(() => {
+        socket.emit('get-all-cases');
+    }, []);
 
-    console.log(board)
-    //const boardHTML : string = "<Board />";
+    socket.on('response-get-all-cases', (pieces:any) => {
+        setPieces(pieces)
+    })
 
     return (
         <div className="game">
-            <h2>Plateau</h2>
+            <h2>Plateau de jeux</h2>
             <div className="board-container">
                 {board.map(line => <Line line={line}/> )}
             </div>
-            <button onClick={update}> Update </button>
+
+            <h2>Liste des Pièces</h2>
+            <div className="board-container">
+                {pieces.map(piece => <Case type={piece}/> )}
+            </div>
         </div>
     )
 
 }
-
 
 export default Game;

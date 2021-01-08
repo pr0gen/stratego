@@ -5,6 +5,7 @@ export default function getAllCases( socket :socketio.Socket) {
 
     socket.on('get-all-cases', () => {
         const cases = GameEngine.initGame()
+        console.log('send cases')
         socket.emit('response-get-all-cases', cases)
     })
 
