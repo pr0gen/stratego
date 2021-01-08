@@ -23,6 +23,7 @@ pub fn find_game_by_id(game_id: i128) -> Option<Game<HumamAIEngine>> {
     }
 }
 
+#[derive(Debug)]
 pub struct GamePool<E: Engine> {
     games: HashSet<Game<E>>,
 }
@@ -54,9 +55,11 @@ where
     }
 
     pub fn register(&mut self, game: Game<E>) -> Result<(), StrategoError> {
+        let game_id = *game.get_id();
         if !self.games.insert(game) {
             Err(StrategoError::InitGameError(String::from( "Failed to register game into pool")))
         } else {
+            println!("Game has been registered {}", game_id);
             Ok(())
         }
     }
@@ -82,6 +85,10 @@ where
 
     pub fn get_engine(&self) -> &E {
         &self.engine
+    }
+    
+    pub fn get_id(&self) -> &i128 {
+        &self.id
     }
 }
 
