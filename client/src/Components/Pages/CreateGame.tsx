@@ -31,7 +31,7 @@ function CreateGame({socket}:any) {
 
     return (
         <div className="create-game">
-            {foundGame ? <Redirect to={"/rules"} /> : null}
+            {foundGame ? <Redirect to={"/game"} /> : null}
             <h2>Create Game</h2>
             <div className="content">
                 <p>Votre code est le : {code}</p>

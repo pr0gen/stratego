@@ -27,7 +27,7 @@ function JoinGame({socket}: any) {
     return (
 
         <div className="join-game">
-            {foundGame ? <Redirect to={"/rules"} /> : null}
+            {foundGame ? <Redirect to={"/game"} /> : null}
 
             <h2>Join Game</h2>
             <div className="content">
