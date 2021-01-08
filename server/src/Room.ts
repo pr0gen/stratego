@@ -1,21 +1,22 @@
 import {RoomState} from "./RoomState";
+import {Player} from "./Player";
 
 export class Room {
 
-    firstPlayerId: string
-    secondPlayerId: string
+    firstPlayer: Player
+    secondPlayer: Player
     code: string
     state: RoomState
 
     constructor() {
-        this.firstPlayerId = ''
-        this.secondPlayerId = ''
+        this.firstPlayer = new Player()
+        this.secondPlayer = new Player()
         this.code = ''
         this.state = RoomState.Waiting
     }
 
     addSecondPlayer(secondPlayerId : string) {
-        this.secondPlayerId = secondPlayerId
+        this.secondPlayer.id = secondPlayerId
         this.state = RoomState.GameStarted
     }
 

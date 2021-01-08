@@ -18,7 +18,7 @@ export class Rooms {
         let newRooms = new Rooms()
 
         for (const room of this.rooms) {
-            if (room.firstPlayerId != playerId) {
+            if (room.firstPlayer.id != playerId) {
                 newRooms.addRoom(room)
             }
         }
