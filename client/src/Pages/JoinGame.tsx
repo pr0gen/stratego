@@ -1,10 +1,11 @@
 import React, {Component, useState} from "react";
 import {Redirect} from "react-router-dom"
+import {Socket} from "../Utils/Socket";
 
 
-function JoinGame({socket}: any) {
+function JoinGame() {
 
-
+    const socket = Socket.getSocket()
     const [code, setCode] = useState('');
     const [foundGame, setFoundGame] = useState(false);
 
@@ -32,7 +33,7 @@ function JoinGame({socket}: any) {
             <h2>Join Game</h2>
             <div className="content">
                 <label>Code de la partie :</label>
-                <input className="join-game-input" value={code} onChange={handleChangeCode}></input>
+                <input className="join-game-input" value={code} onChange={handleChangeCode}/>
                 <button className="join-game-btn" onClick={checkCode}>Rejoindre</button>
             </div>
         </div>

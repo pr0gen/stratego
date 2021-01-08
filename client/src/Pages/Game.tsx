@@ -1,10 +1,12 @@
 import React, {Component, useEffect, useState} from "react";
-import Case from "../Case";
-import Line from "../Line";
+import Case from "../Components/Case";
+import Line from "../Components/Line";
+import {Socket} from "../Utils/Socket";
 
 
-function Game({boardAPI}: any) {
+function Game() {
 
+    console.log(Socket.getSocket)
     const [board, setBoard] = useState([
         ['1', '1', '1', '1'],
         ['2', '1', '1', '1', '1'],
