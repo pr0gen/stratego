@@ -373,7 +373,7 @@ mod test {
         let mut cases = create_3_x_3_stratego_board();
         cases[1][1] = create_full_case(
             Coordinate::new(1, 1),
-            Piece::new(PieceType::Sergeant, Box::new(Color::Red)),
+            Piece::new(PieceType::Sergeant, Color::Red),
         );
 
         let res = get_availables_moves(&StrategoBoard::new(cases));
@@ -387,17 +387,17 @@ mod test {
         //Red
         cases[0][0] = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Flag, Box::new(Color::Red)),
+            Piece::new(PieceType::Flag, Color::Red),
         );
         cases[0][1] = create_full_case(
             Coordinate::new(0, 1),
-            Piece::new(PieceType::General, Box::new(Color::Red)),
+            Piece::new(PieceType::General, Color::Red),
         );
 
         //Blue
         cases[9][1] = create_full_case(
             Coordinate::new(9, 1),
-            Piece::new(PieceType::General, Box::new(Color::Blue)),
+            Piece::new(PieceType::General, Color::Blue),
         );
 
         let res = game_is_over(&cases);
@@ -415,17 +415,17 @@ mod test {
         //Red
         cases[0][0] = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Flag, Box::new(Color::Red)),
+            Piece::new(PieceType::Flag, Color::Red),
         );
         cases[0][1] = create_full_case(
             Coordinate::new(0, 1),
-            Piece::new(PieceType::General, Box::new(Color::Red)),
+            Piece::new(PieceType::General, Color::Red),
         );
 
         //Blue
         cases[9][0] = create_full_case(
             Coordinate::new(9, 0),
-            Piece::new(PieceType::Flag, Box::new(Color::Blue)),
+            Piece::new(PieceType::Flag, Color::Blue),
         );
 
         let res = game_is_over(&cases);
@@ -444,21 +444,21 @@ mod test {
         //Red
         cases[0][0] = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Flag, Box::new(Color::Red)),
+            Piece::new(PieceType::Flag, Color::Red),
         );
         cases[0][1] = create_full_case(
             Coordinate::new(0, 1),
-            Piece::new(PieceType::General, Box::new(Color::Red)),
+            Piece::new(PieceType::General, Color::Red),
         );
 
         //Blue
         cases[9][0] = create_full_case(
             Coordinate::new(9, 0),
-            Piece::new(PieceType::Flag, Box::new(Color::Blue)),
+            Piece::new(PieceType::Flag, Color::Blue),
         );
         cases[9][1] = create_full_case(
             Coordinate::new(9, 1),
-            Piece::new(PieceType::General, Box::new(Color::Blue)),
+            Piece::new(PieceType::General, Color::Blue),
         );
 
         let res = game_is_over(&cases);
@@ -505,7 +505,7 @@ mod test {
 
         new_board[4][2] = create_full_case(
             Coordinate::new(4, 2),
-            Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+            Piece::new(PieceType::Spy, Color::Blue),
         );
 
         use crate::board::classic_board::StrategoBoard;
@@ -535,7 +535,7 @@ mod test {
             for j in 0..10 {
                 new_board[i].push(create_full_case(
                     Coordinate::new(i as i16, j as i16),
-                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Spy, Color::Blue),
                 ));
             }
         }
@@ -567,7 +567,7 @@ mod test {
         let mut new_board = create_statego_board();
         new_board[0][4] = create_full_case(
             Coordinate::new(0, 4),
-            Piece::new(PieceType::Spy, Box::new(Color::Red)),
+            Piece::new(PieceType::Spy, Color::Red),
         );
         let res = verify_board_integrity(StrategoBoard::new(new_board));
         match res {
@@ -614,19 +614,19 @@ mod test {
             vec![
                 create_full_case(
                     Coordinate::new(0, 0),
-                    Piece::new(PieceType::Flag, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Flag, Color::Blue),
                 ),
                 create_full_case(
                     Coordinate::new(0, 1),
-                    Piece::new(PieceType::Major, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Major, Color::Blue),
                 ),
                 create_full_case(
                     Coordinate::new(0, 2),
-                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Spy, Color::Blue),
                 ),
                 create_full_case(
                     Coordinate::new(0, 3),
-                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Spy, Color::Blue),
                 ),
             ],
             vec![
@@ -644,19 +644,19 @@ mod test {
             vec![
                 create_full_case(
                     Coordinate::new(3, 0),
-                    Piece::new(PieceType::Flag, Box::new(Color::Red)),
+                    Piece::new(PieceType::Flag, Color::Red),
                 ),
                 create_full_case(
                     Coordinate::new(3, 1),
-                    Piece::new(PieceType::Major, Box::new(Color::Red)),
+                    Piece::new(PieceType::Major, Color::Red),
                 ),
                 create_full_case(
                     Coordinate::new(3, 2),
-                    Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                    Piece::new(PieceType::Spy, Color::Red),
                 ),
                 create_full_case(
                     Coordinate::new(3, 3),
-                    Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                    Piece::new(PieceType::Spy, Color::Red),
                 ),
             ],
         ]
@@ -667,15 +667,15 @@ mod test {
             vec![
                 create_full_case(
                     Coordinate::new(0, 0),
-                    Piece::new(PieceType::Flag, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Flag, Color::Blue),
                 ),
                 create_full_case(
                     Coordinate::new(0, 1),
-                    Piece::new(PieceType::Major, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Major, Color::Blue),
                 ),
                 create_full_case(
                     Coordinate::new(0, 2),
-                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Spy, Color::Blue),
                 ),
             ],
             vec![
@@ -686,15 +686,15 @@ mod test {
             vec![
                 create_full_case(
                     Coordinate::new(2, 0),
-                    Piece::new(PieceType::Flag, Box::new(Color::Red)),
+                    Piece::new(PieceType::Flag, Color::Red),
                 ),
                 create_full_case(
                     Coordinate::new(2, 1),
-                    Piece::new(PieceType::Major, Box::new(Color::Red)),
+                    Piece::new(PieceType::Major, Color::Red),
                 ),
                 create_full_case(
                     Coordinate::new(2, 2),
-                    Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                    Piece::new(PieceType::Spy, Color::Red),
                 ),
             ],
         ]
@@ -709,12 +709,12 @@ mod test {
                 if i < 4 {
                     new_board[i].push(create_full_case(
                         Coordinate::new(i as i16, j as i16),
-                        Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                        Piece::new(PieceType::Spy, Color::Blue),
                     ));
                 } else if i > 5 {
                     new_board[i].push(create_full_case(
                         Coordinate::new(i as i16, j as i16),
-                        Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                        Piece::new(PieceType::Spy, Color::Red),
                     ));
                 } else {
                     new_board[i].push(create_empty_case(Coordinate::new(i as i16, j as i16)));

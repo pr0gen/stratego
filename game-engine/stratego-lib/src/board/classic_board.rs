@@ -45,10 +45,9 @@ pub fn create_stratego_board() -> StrategoBoard {
         }
     }
 
-    let cases = verify_board_integrity(StrategoBoard::new(cases))
-        .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e));
+    verify_board_integrity(StrategoBoard::new(cases))
+        .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e))
 
-    cases
 }
 
 pub fn create_empty_stratego_board() ->  StrategoBoard {
@@ -200,15 +199,15 @@ mod test {
             vec![
                 create_full_case(
                     Coordinate::new(0, 0),
-                    Piece::new(PieceType::Flag, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Flag, Color::Blue),
                 ),
                 create_full_case(
                     Coordinate::new(0, 1),
-                    Piece::new(PieceType::Major, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Major, Color::Blue),
                 ),
                 create_full_case(
                     Coordinate::new(0, 2),
-                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                    Piece::new(PieceType::Spy, Color::Blue),
                 ),
             ],
             vec![
@@ -219,15 +218,15 @@ mod test {
             vec![
                 create_full_case(
                     Coordinate::new(2, 0),
-                    Piece::new(PieceType::Flag, Box::new(Color::Red)),
+                    Piece::new(PieceType::Flag, Color::Red),
                 ),
                 create_full_case(
                     Coordinate::new(2, 1),
-                    Piece::new(PieceType::Major, Box::new(Color::Red)),
+                    Piece::new(PieceType::Major, Color::Red),
                 ),
                 create_full_case(
                     Coordinate::new(2, 2),
-                    Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                    Piece::new(PieceType::Spy, Color::Red),
                 ),
             ],
         ]
@@ -261,7 +260,7 @@ mod test {
 
     #[test]
     fn should_display() {
-        let bomb = Piece::new(PieceType::Bomb, Box::new(Color::Blue));
+        let bomb = Piece::new(PieceType::Bomb, Color::Blue);
         let stratego_board = StrategoBoard {
             cases: vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]],
         };
@@ -271,7 +270,7 @@ mod test {
 
     #[test]
     fn should_place_piece_in_board() {
-        let bomb = Piece::new(PieceType::Bomb, Box::new(Color::Blue));
+        let bomb = Piece::new(PieceType::Bomb, Color::Blue);
         let stratego_board = StrategoBoard {
             cases: vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]],
         };
@@ -290,7 +289,7 @@ mod test {
 
     #[test]
     fn should_move_piece() {
-        let general = Piece::new(PieceType::General, Box::new(Color::Blue));
+        let general = Piece::new(PieceType::General, Color::Blue);
         let mut stratego_board = StrategoBoard {
             cases: vec![
                 vec![
@@ -334,7 +333,7 @@ mod test {
 
     #[test]
     fn should_not_move_piece_cause_unreachable() {
-        let sergeant = Piece::new(PieceType::Sergeant, Box::new(Color::Blue));
+        let sergeant = Piece::new(PieceType::Sergeant, Color::Blue);
         let mut stratego_board = StrategoBoard {
             cases: vec![
                 vec![
@@ -361,8 +360,8 @@ mod test {
 
     #[test]
     fn should_move_and_capture() {
-        let sergeant = Piece::new(PieceType::Sergeant, Box::new(Color::Blue));
-        let lieutenant = Piece::new(PieceType::Lieutenant, Box::new(Color::Red));
+        let sergeant = Piece::new(PieceType::Sergeant, Color::Blue);
+        let lieutenant = Piece::new(PieceType::Lieutenant, Color::Red);
         let mut stratego_board = StrategoBoard {
             cases: vec![vec![
                 create_full_case(Coordinate::new(0, 0), lieutenant.clone()),
@@ -392,7 +391,7 @@ mod test {
 
     #[test]
     fn should_not_move_in_diagonales() {
-        let general = Piece::new(PieceType::General, Box::new(Color::Red));
+        let general = Piece::new(PieceType::General, Color::Red);
         let mut stratego_board = StrategoBoard {
             cases: vec![
                 vec![

@@ -12,7 +12,7 @@ use self::deplacement::{AvailableMove, Move};
 pub struct Piece {
     m: Move,
     rank: PieceType,
-    color: Box<Color>,
+    color: Color,
 }
 
 #[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
@@ -52,7 +52,7 @@ impl From<&str> for Color {
 }
 
 impl Piece {
-    pub fn new(piece_type: PieceType, color: Box<Color>) -> Self {
+    pub fn new(piece_type: PieceType, color: Color) -> Self {
         match piece_type {
             PieceType::Null => Piece {
                 m: Move::new(AvailableMove::Immovable),
@@ -136,7 +136,7 @@ impl Piece {
 
     pub fn display(&self) -> String {
         let mut msg = " R";
-        if let Color::Blue = *self.color {
+        if let Color::Blue = self.color {
             msg = " B";
         }
 
@@ -165,13 +165,13 @@ mod test {
 
     #[test]
     fn should_display() {
-        let piece = Piece::new(PieceType::Captain, Box::new(Color::Blue));
+        let piece = Piece::new(PieceType::Captain, Color::Blue);
         assert_eq!("Cap B", piece.display());
 
-        let piece = Piece::new(PieceType::Sergeant, Box::new(Color::Red));
+        let piece = Piece::new(PieceType::Sergeant, Color::Red);
         assert_eq!("Ser R", piece.display());
 
-        let piece = Piece::new(PieceType::Null, Box::new(Color::None));
+        let piece = Piece::new(PieceType::Null, Color::None);
         assert_eq!("     ", piece.display());
     }
 }

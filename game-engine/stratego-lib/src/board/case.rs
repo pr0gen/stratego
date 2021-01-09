@@ -51,7 +51,7 @@ pub fn create_unreachable_case(coordinate: Coordinate) -> Case {
     Case {
         state: State::Unreachable,
         coordinate,
-        content: Piece::new(PieceType::Null, Box::new(Color::None)),
+        content: Piece::new(PieceType::Null, Color::None),
     }
 }
 
@@ -59,7 +59,7 @@ pub fn create_empty_case(coordinate: Coordinate) -> Case {
     Case {
         state: State::Empty,
         coordinate,
-        content: Piece::new(PieceType::Null, Box::new(Color::None)),
+        content: Piece::new(PieceType::Null, Color::None),
     }
 }
 
@@ -133,13 +133,13 @@ mod test {
     fn should_create_full_case() {
         let case = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Captain, Box::new(Color::Blue)),
+            Piece::new(PieceType::Captain, Color::Blue),
         );
 
         assert_eq!(State::Full, case.state);
         assert_eq!(Coordinate::new(0, 0), case.coordinate);
         assert_eq!(
-            Piece::new(PieceType::Captain, Box::new(Color::Blue)),
+            Piece::new(PieceType::Captain, Color::Blue),
             case.content
         );
     }
@@ -151,7 +151,7 @@ mod test {
         assert_eq!(State::Empty, case.state);
         assert_eq!(Coordinate::new(0, 0), case.coordinate);
         assert_eq!(
-            Piece::new(PieceType::Null, Box::new(Color::None)),
+            Piece::new(PieceType::Null, Color::None),
             case.content
         );
     }
@@ -163,7 +163,7 @@ mod test {
         assert_eq!(State::Unreachable, case.state);
         assert_eq!(Coordinate::new(0, 0), case.coordinate);
         assert_eq!(
-            Piece::new(PieceType::Null, Box::new(Color::None)),
+            Piece::new(PieceType::Null, Color::None),
             case.content
         );
     }
@@ -172,7 +172,7 @@ mod test {
     fn should_display() {
         let case = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Captain, Box::new(Color::Blue)),
+            Piece::new(PieceType::Captain, Color::Blue),
         );
         assert_eq!(String::from("Cap B"), case.display());
 

@@ -48,11 +48,11 @@ mod test {
     fn attacker_should_win() {
         let attacker = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Colonel, Box::new(Color::Blue)),
+            Piece::new(PieceType::Colonel, Color::Blue),
         );
         let defenser = create_full_case(
             Coordinate::new(0, 1),
-            Piece::new(PieceType::Lieutenant, Box::new(Color::Red)),
+            Piece::new(PieceType::Lieutenant, Color::Red),
         );
         let res = attack(attacker, defenser).unwrap();
 
@@ -67,11 +67,11 @@ mod test {
     fn defenser_should_win() {
         let attacker = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Lieutenant, Box::new(Color::Blue)),
+            Piece::new(PieceType::Lieutenant, Color::Blue),
         );
         let defenser = create_full_case(
             Coordinate::new(0, 1),
-            Piece::new(PieceType::Colonel, Box::new(Color::Red)),
+            Piece::new(PieceType::Colonel, Color::Red),
         );
         let res = attack(attacker, defenser).unwrap();
 
@@ -86,11 +86,11 @@ mod test {
     fn both_should_loose() {
         let attacker = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Colonel, Box::new(Color::Blue)),
+            Piece::new(PieceType::Colonel, Color::Blue),
         );
         let defenser = create_full_case(
             Coordinate::new(0, 1),
-            Piece::new(PieceType::Colonel, Box::new(Color::Red)),
+            Piece::new(PieceType::Colonel, Color::Red),
         );
         let res = attack(attacker, defenser).unwrap();
 
@@ -100,30 +100,30 @@ mod test {
 
     #[test]
     fn should_enable_move() {
-        let mut piece = Piece::new(PieceType::General, Box::new(Color::Blue));
+        let mut piece = Piece::new(PieceType::General, Color::Blue);
         let mut case = create_full_case(Coordinate::new(0, 0), piece);
         assert_eq!(check_piece_move(&case, &Coordinate::new(0, 1)), true);
 
-        piece = Piece::new(PieceType::Scout, Box::new(Color::Blue));
+        piece = Piece::new(PieceType::Scout, Color::Blue);
         case = create_full_case(Coordinate::new(0, 0), piece);
         assert_eq!(check_piece_move(&case, &Coordinate::new(0, 9)), true);
 
-        piece = Piece::new(PieceType::General, Box::new(Color::Blue));
+        piece = Piece::new(PieceType::General, Color::Blue);
         case = create_full_case(Coordinate::new(0, 0), piece);
         assert_eq!(check_piece_move(&case, &Coordinate::new(1, 0)), true);
     }
 
     #[test]
     fn should_not_enable_move() {
-        let mut piece = Piece::new(PieceType::General, Box::new(Color::Blue));
+        let mut piece = Piece::new(PieceType::General, Color::Blue);
         let mut case = create_full_case(Coordinate::new(0, 0), piece);
         assert_eq!(check_piece_move(&case, &Coordinate::new(0, 2)), false);
 
-        piece = Piece::new(PieceType::Bomb, Box::new(Color::Blue));
+        piece = Piece::new(PieceType::Bomb, Color::Blue);
         case = create_full_case(Coordinate::new(0, 0), piece);
         assert_eq!(check_piece_move(&case, &Coordinate::new(0, 2)), false);
 
-        piece = Piece::new(PieceType::Bomb, Box::new(Color::Blue));
+        piece = Piece::new(PieceType::Bomb, Color::Blue);
         case = create_full_case(Coordinate::new(0, 0), piece);
         assert_eq!(check_piece_move(&case, &Coordinate::new(1, 1)), false);
     }
