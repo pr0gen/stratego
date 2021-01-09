@@ -1,13 +1,16 @@
 use std::collections::HashSet;
 
 use crate::board::case::{Case, Coordinate, State};
+use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::deplacement::AvailableMove;
 use crate::board::piece::piece_utils::list_all_pieces;
 use crate::board::piece::{Color, PieceType};
+use crate::board::Board;
 use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
 
-pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate, Color)> {
+pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, Color)> {
+    let cases = board.state();
     let col_len = cases.len() - 1;
     let mut moves: Vec<(Coordinate, Coordinate, Color)> = Vec::with_capacity(col_len);
 
@@ -16,15 +19,15 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate,
     for x in 0..=col_len {
         let row_len = cases[x].len() - 1;
         for y in 0..=row_len {
-            let case = cases.get(x).unwrap().get(y).unwrap();
+            let case = board.get_at(&Coordinate::new(x as i16, y as i16));
             if y == 0 || y == row_len || x == 0 || x == col_len {
                 // It's a side
                 if y == 0 && x == 0 {
                     // It's a corner (upper left)
                     moves.append(&mut check_cases(
                         &[
-                            cases.get(x + 1).unwrap().get(y).unwrap(),
-                            cases.get(x).unwrap().get(y + 1).unwrap(),
+                            board.get_at(&Coordinate::new((x + 1) as i16, y as i16)),
+                            board.get_at(&Coordinate::new(x as i16, (y + 1) as i16)),
                         ],
                         &case,
                     ));
@@ -32,8 +35,8 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate,
                     // It's a corner (lower right)
                     moves.append(&mut check_cases(
                         &[
-                            cases.get(x - 1).unwrap().get(y).unwrap(),
-                            cases.get(x).unwrap().get(y - 1).unwrap(),
+                            board.get_at(&Coordinate::new((x - 1) as i16, y as i16)),
+                            board.get_at(&Coordinate::new(x as i16, (y - 1) as i16)),
                         ],
                         &case,
                     ));
@@ -41,8 +44,8 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate,
                     // It's a corner (lower left)
                     moves.append(&mut check_cases(
                         &[
-                            cases.get(x).unwrap().get(y - 1).unwrap(),
-                            cases.get(x + 1).unwrap().get(y).unwrap(),
+                            board.get_at(&Coordinate::new(x as i16, (y - 1) as i16)),
+                            board.get_at(&Coordinate::new((x + 1) as i16, y as i16)),
                         ],
                         &case,
                     ));
@@ -50,8 +53,8 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate,
                     // It's a corner (upper right)
                     moves.append(&mut check_cases(
                         &[
-                            cases.get(x - 1).unwrap().get(y).unwrap(),
-                            cases.get(x).unwrap().get(y + 1).unwrap(),
+                            board.get_at(&Coordinate::new((x - 1) as i16, y as i16)),
+                            board.get_at(&Coordinate::new(x as i16, (y + 1) as i16)),
                         ],
                         &case,
                     ));
@@ -62,13 +65,13 @@ pub fn get_availables_moves(cases: &[Vec<Case>]) -> Vec<(Coordinate, Coordinate,
             } else {
                 // It's a random case in the middle
                 moves.append(&mut check_cases(
-                        &[
-                            cases.get(x - 1).unwrap().get(y).unwrap(),
-                            cases.get(x + 1).unwrap().get(y).unwrap(),
-                            cases.get(x).unwrap().get(y + 1).unwrap(),
-                            cases.get(x).unwrap().get(y - 1).unwrap(),
-                        ] ,
-                        &case,
+                    &[
+                        board.get_at(&Coordinate::new((x - 1) as i16, y as i16)),
+                        board.get_at(&Coordinate::new((x + 1) as i16, y as i16)),
+                        board.get_at(&Coordinate::new(x as i16, (y + 1) as i16)),
+                        board.get_at(&Coordinate::new(x as i16, (y - 1) as i16)),
+                    ],
+                    &case,
                 ));
             }
         }
@@ -88,8 +91,9 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Col
         let mut moves = Vec::new();
         let coord_from = case.get_coordinate();
         let color = case.get_content().get_color();
+        eprintln!("{:?}", case);
         cases.iter().for_each(|case| {
-            if let Some(coord_to) = check_case(case) {
+            if let Some(coord_to) = check_case(case, &color) {
                 moves.push((*coord_from, coord_to, *color));
             }
         });
@@ -97,11 +101,12 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Col
     }
 }
 
-fn check_case(case: &Case) -> Option<Coordinate> {
-    if case.get_state() == &State::Empty {
-        Some(*case.get_coordinate())
-    } else {
+fn check_case(case: &Case, player_color: &Color) -> Option<Coordinate> {
+    if &State::Unreachable == case.get_state() || player_color == case.get_content().get_color() {
         None
+    } else {
+        eprintln!("content{:?} coord{:?} ", case.get_content(), case.get_coordinate());
+        Some(*case.get_coordinate())
     }
 }
 
@@ -157,13 +162,9 @@ fn check_side(cases: &[Vec<Case>], case: &Case) -> Vec<(Coordinate, Coordinate, 
     }
 }
 
-pub fn ask_next_move(player: &dyn Player, cases: &[Vec<Case>]) -> (Case, Coordinate) {
+pub fn ask_next_move(player: &dyn Player, board: &impl Board) -> (Case, Coordinate) {
     let (from, to) = player.ask_next_move();
-    let case = cases
-        .get(from.get_x() as usize)
-        .unwrap_or_else(|| panic!("you need to provide a correct x"))
-        .get(from.get_y() as usize)
-        .unwrap_or_else(|| panic!("you need to provide a correct y"));
+    let case = board.get_at(&Coordinate::new(from.get_x(), from.get_y()));
 
     (case.clone(), to)
 }
@@ -219,13 +220,14 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Result<Color, StrategoError> {
     Err(StrategoError::GameNotOverError())
 }
 
-pub fn verify_board_integrity(state: Vec<Vec<Case>>) -> Result<Vec<Vec<Case>>, StrategoError> {
+pub fn verify_board_integrity(board: impl Board) -> Result<StrategoBoard, StrategoError> {
+    let state = board.state();
     if !check_board_size(&state) {
         Err(InitGameError(String::from(
             "Board is not official, GO OUT OF THERE !!",
         )))
     } else if !check_empty_middle(&state) {
-        if !check_empty_lakes(&state) {
+        if !check_empty_lakes(&board) {
             Err(InitGameError(String::from(
                 "You can not place pieces in lakes, please check again",
             )))
@@ -249,7 +251,7 @@ pub fn verify_board_integrity(state: Vec<Vec<Case>>) -> Result<Vec<Vec<Case>>, S
             "You need to start with the right pieces",
         )))
     } else {
-        Ok(state)
+        Ok(StrategoBoard::new(board.state().to_owned()))
     }
 }
 
@@ -260,7 +262,6 @@ fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
         .map(|case| case.get_content().get_rank().clone())
         .collect();
 
-    //eprintln!("{:?}", piece_types);
     let pieces: HashSet<(PieceType, i8)> = piece_types
         .iter()
         .map(|x| {
@@ -271,18 +272,9 @@ fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
         })
         .collect();
 
-    //eprintln!("{:?}", pieces);
     let all_pieces = list_all_pieces();
     for (key, value) in pieces.iter() {
         if all_pieces.get(key) != Some(value) {
-            //let color = cases
-            //.first()
-            //.unwrap()
-            //.get(0)
-            //.unwrap()
-            //.get_content()
-            //.get_color();
-            //eprintln!("Error with {:?} {:?}", key, color);
             return false;
         }
     }
@@ -336,15 +328,15 @@ fn check_row_size(row: &[Case]) -> bool {
     10 == row.len()
 }
 
-fn check_empty_lakes(cases: &[Vec<Case>]) -> bool {
-    check_lake(cases.get(4).unwrap().get(2).unwrap())
-        && check_lake(cases.get(4).unwrap().get(3).unwrap())
-        && check_lake(cases.get(5).unwrap().get(2).unwrap())
-        && check_lake(cases.get(5).unwrap().get(3).unwrap())
-        && check_lake(cases.get(4).unwrap().get(6).unwrap())
-        && check_lake(cases.get(4).unwrap().get(7).unwrap())
-        && check_lake(cases.get(5).unwrap().get(6).unwrap())
-        && check_lake(cases.get(5).unwrap().get(7).unwrap())
+fn check_empty_lakes(board: &impl Board) -> bool {
+    check_lake(board.get_at(&Coordinate::new(4, 2)))
+        && check_lake(board.get_at(&Coordinate::new(4, 3)))
+        && check_lake(board.get_at(&Coordinate::new(5, 2)))
+        && check_lake(board.get_at(&Coordinate::new(5, 3)))
+        && check_lake(board.get_at(&Coordinate::new(4, 6)))
+        && check_lake(board.get_at(&Coordinate::new(4, 7)))
+        && check_lake(board.get_at(&Coordinate::new(5, 6)))
+        && check_lake(board.get_at(&Coordinate::new(5, 7)))
 }
 
 fn check_lake(c: &Case) -> bool {
@@ -357,6 +349,7 @@ mod test {
     use crate::board::case::{
         create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate,
     };
+    use crate::board::classic_board::StrategoBoard;
     use crate::board::piece::{Color, Piece, PieceType};
 
     use super::{game_is_over, get_availables_moves, verify_board_integrity};
@@ -364,14 +357,26 @@ mod test {
     #[test]
     fn should_retrieve_available_moves_3x3() {
         let cases = create_3_x_3_stratego_board();
-        let res = get_availables_moves(&cases);
+        let res = get_availables_moves(&StrategoBoard::new(cases));
         assert_eq!(4, res.len());
     }
 
     #[test]
     fn should_retrieve_available_moves_4x4() {
         let cases = create_4_x_4_stratego_board();
-        let res = get_availables_moves(&cases);
+        let res = get_availables_moves(&StrategoBoard::new(cases));
+        assert_eq!(6, res.len());
+    }
+
+    #[test]
+    fn should_retrieve_and_detect_capture() {
+        let mut cases = create_3_x_3_stratego_board();
+        cases[1][1] = create_full_case(
+            Coordinate::new(1, 1),
+            Piece::new(PieceType::Sergeant, Box::new(Color::Red)),
+        );
+
+        let res = get_availables_moves(&StrategoBoard::new(cases));
         assert_eq!(6, res.len());
     }
 
@@ -480,7 +485,7 @@ mod test {
             ],
         ];
 
-        let res = verify_board_integrity(new_board);
+        let res = verify_board_integrity(StrategoBoard::new(new_board));
 
         match res {
             Ok(_) => panic!("Should not happen"),
@@ -508,7 +513,7 @@ mod test {
 
         let b = StrategoBoard::new(new_board.clone());
         println!("{}", b.display());
-        let res = verify_board_integrity(new_board);
+        let res = verify_board_integrity(StrategoBoard::new(new_board));
 
         match res {
             Ok(_) => panic!("Should not happen"),
@@ -544,7 +549,7 @@ mod test {
         new_board[5][6] = create_unreachable_case(Coordinate::new(5, 6));
         new_board[5][7] = create_unreachable_case(Coordinate::new(7, 5));
 
-        let res = verify_board_integrity(new_board);
+        let res = verify_board_integrity(StrategoBoard::new(new_board));
         match res {
             Ok(_) => panic!("Should not happen"),
             Err(e) => {
@@ -564,7 +569,7 @@ mod test {
             Coordinate::new(0, 4),
             Piece::new(PieceType::Spy, Box::new(Color::Red)),
         );
-        let res = verify_board_integrity(new_board);
+        let res = verify_board_integrity(StrategoBoard::new(new_board));
         match res {
             Ok(_) => panic!("Should not happen"),
             Err(e) => {
@@ -582,7 +587,7 @@ mod test {
         let cases = create_statego_board();
         //let board = StrategoBoard::new(cases);
         //console.log(board.display());
-        let res = verify_board_integrity(cases);
+        let res = verify_board_integrity(StrategoBoard::new(cases));
 
         match res {
             Ok(_) => panic!("Should not happen"),

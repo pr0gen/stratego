@@ -24,19 +24,25 @@ pub fn find_game_by_id(game_id: i128) -> Option<Game<HumamAIEngine>> {
 }
 
 #[derive(Debug)]
-pub struct GamePool<E: Engine> {
+pub struct GamePool<E>
+where 
+    E: Engine<StrategoBoard>,
+{
     games: HashSet<Game<E>>,
 }
 
 #[derive(Hash, Eq, PartialEq, Debug, Copy, Clone)]
-pub struct Game<E: Engine> {
+pub struct Game<E>
+where 
+    E: Engine<StrategoBoard>,
+{
     id: i128,
     engine: E,
 }
 
 impl<E> Default for GamePool<E> 
 where
-    E: Engine + Hash + Eq + Clone,
+    E: Engine<StrategoBoard> + Hash + Eq + Clone,
 {
      fn default() -> Self {
          Self::new()
@@ -46,7 +52,7 @@ where
 
 impl<E> GamePool<E>
 where
-    E: Engine + Hash + Eq + Clone,
+    E: Engine<StrategoBoard> + Hash + Eq + Clone,
 {
     pub fn new() -> Self {
         GamePool {
@@ -73,7 +79,7 @@ where
 
 impl<E> Game<E>
 where
-    E: Engine + Hash + Eq + Clone,
+    E: Engine<StrategoBoard> + Hash + Eq + Clone,
 {
     pub fn new(id: i128, engine: E) -> Self {
         Game { id, engine }

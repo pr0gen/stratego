@@ -1,4 +1,5 @@
 use stratego_lib::board::piece::Color;
+use stratego_lib::board::Board;
 use stratego_lib::engine::{Engine, StrategoEngine};
 use stratego_lib::engine_utils::game_is_over;
 use stratego_lib::game_pool::{self, Game};
@@ -32,8 +33,8 @@ fn main() {
     let mut engine = game.get_engine().clone();
     println!("{}", engine.display_by_color(&engine.get_turn()));
     loop {
-        let cases = engine.status();
-        match game_is_over(cases) {
+        let board = engine.status();
+        match game_is_over(board.state()) {
             Ok(Color::Red) => {
                 println!("Red wins");
                 break;

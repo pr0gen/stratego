@@ -1,20 +1,20 @@
 use pyo3::prelude::*;
 use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
-use std::env::current_dir;
 use pythonize::pythonize;
+use std::env::current_dir;
 
+use crate::board::classic_board::create_stratego_board;
 use crate::board::piece::Color;
 use crate::engine::{Engine, StrategoEngine};
 use crate::engine_utils;
 use crate::error::StrategoError;
 use crate::game_pool;
+use crate::game_pool::Game;
 use crate::player::ai_player::AIPlayer;
 use crate::player::HumanPlayer;
-use crate::board::classic_board::create_stratego_board;
-use crate::game_pool::Game;
-use crate::GAME_POOL_ID;
 use crate::utils;
+use crate::GAME_POOL_ID;
 
 const AI_STRATEGO_PYTHON_MODULE: &str = "ai-python";
 
@@ -23,25 +23,29 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
         .import("sys")
         .unwrap_or_else(|e| {
             panic!(StrategoError::AILoadingError(format!(
-                "Failed to find sys python module, {}", e
+                "Failed to find sys python module, {}",
+                e
             )))
         })
         .get("path")
         .unwrap_or_else(|e| {
             panic!(StrategoError::AILoadingError(format!(
-                "Failed to find path function in sys python module, {}", e
+                "Failed to find path function in sys python module, {}",
+                e
             )))
         })
         .try_into()
         .unwrap_or_else(|e| {
             panic!(StrategoError::AILoadingError(format!(
-                "Failed to get result from path function in sys python module, {}", e
+                "Failed to get result from path function in sys python module, {}",
+                e
             )))
         });
 
     let cur = current_dir().unwrap_or_else(|e| {
         panic!(StrategoError::AILoadingError(format!(
-            "Failed to find pwd, {}", e
+            "Failed to find pwd, {}",
+            e
         )))
     });
 
@@ -49,17 +53,16 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     match syspath.insert(0, format!("{}/{}", pwd, AI_STRATEGO_PYTHON_MODULE)) {
         Ok(_) => Ok(()),
         Err(e) => panic!(StrategoError::AILoadingError(format!(
-            "Failed to load ai for stratego, {}", e
+            "Failed to load ai for stratego, {}",
+            e
         ))),
     }
 }
 
-
-#[pyfunction] 
+#[pyfunction]
 fn get_available_moves(game_id: i128) -> PyResult<Py<PyAny>> {
     if let Some(game) = game_pool::find_game_by_id(game_id) {
-        let engine = game.get_engine();
-        let moves = engine_utils::get_availables_moves(engine.status());
+        let moves = engine_utils::get_availables_moves( game.get_engine().status());
         let gil_holder = utils::get_gild_holder().unwrap();
         let gil = gil_holder.get();
         Ok(pythonize(gil.python(), &moves).unwrap())

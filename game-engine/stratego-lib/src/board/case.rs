@@ -7,6 +7,10 @@ use crate::parse;
 pub type PyCoord = (i16, String);
 pub type PyCoords = (PyCoord, PyCoord);
 
+pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
+    (Coordinate::from(co.0), Coordinate::from(co.1))
+}
+
 #[pyclass]
 #[derive(Serialize, Deserialize, Hash, Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
 pub struct Case {
@@ -29,14 +33,10 @@ pub enum State {
     Full,
 }
 
-pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
-    let co_0 = co.0;
-    let co_1 = co.1;
-
-    (
-        Coordinate::new(co_0.0, parse::parse_letter_to_i16(co_0.1.as_str())),
-        Coordinate::new(co_1.0, parse::parse_letter_to_i16(co_1.1.as_str())),
-    )
+impl From<PyCoord> for Coordinate {
+    fn from(py_coord: PyCoord) -> Self {
+        Coordinate::new(py_coord.0, parse::parse_letter_to_i16(py_coord.1.as_str()))
+    }
 }
 
 pub fn create_full_case(coordinate: Coordinate, content: Piece) -> Case {

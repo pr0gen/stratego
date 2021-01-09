@@ -39,6 +39,18 @@ pub enum PieceType {
     Flag = -1,
 }
 
+impl From<&str> for Color {
+
+    fn from(color: &str) -> Self {
+       match color {
+         "Red" => Color::Red,
+         "Blue" => Color::Blue,
+         _ => Color::None,
+       }
+    }
+
+}
+
 impl Piece {
     pub fn new(piece_type: PieceType, color: Box<Color>) -> Self {
         match piece_type {

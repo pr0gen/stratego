@@ -1,5 +1,6 @@
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+use serde::{Deserialize, Serialize};
 
 use super::board_utils::{attack, check_piece_move};
 use super::case::{
@@ -11,7 +12,7 @@ use super::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
-#[derive(Hash, Clone,  Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Serialize, Deserialize, Hash, Clone,  Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
 }
@@ -44,10 +45,10 @@ pub fn create_stratego_board() -> StrategoBoard {
         }
     }
 
-    let cases = verify_board_integrity(cases)
+    let cases = verify_board_integrity(StrategoBoard::new(cases))
         .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e));
 
-    StrategoBoard::new(cases)
+    cases
 }
 
 pub fn create_empty_stratego_board() ->  StrategoBoard {
@@ -156,6 +157,10 @@ impl Board for StrategoBoard {
         }
         display
     }
+
+    fn get_at(&self, coordinate: &Coordinate) -> &Case {
+        &self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize]
+    }
 }
 
 fn get_header(length: usize) -> String {
@@ -185,11 +190,65 @@ mod test {
     use super::{
         create_empty_case, create_empty_stratego_board, create_full_case, create_unreachable_case,
     };
-    use crate::board::case::Coordinate;
-    use crate::board::case::State;
+    use crate::board::case::{Case, State, Coordinate};
     use crate::board::piece::deplacement::{AvailableMove, Move};
     use crate::board::piece::{Color, Piece, PieceType};
     use crate::board::Board;
+
+    fn create_3_x_3_stratego_board() -> Vec<Vec<Case>> {
+        vec![
+            vec![
+                create_full_case(
+                    Coordinate::new(0, 0),
+                    Piece::new(PieceType::Flag, Box::new(Color::Blue)),
+                ),
+                create_full_case(
+                    Coordinate::new(0, 1),
+                    Piece::new(PieceType::Major, Box::new(Color::Blue)),
+                ),
+                create_full_case(
+                    Coordinate::new(0, 2),
+                    Piece::new(PieceType::Spy, Box::new(Color::Blue)),
+                ),
+            ],
+            vec![
+                create_empty_case(Coordinate::new(1, 0)),
+                create_empty_case(Coordinate::new(1, 1)),
+                create_empty_case(Coordinate::new(1, 2)),
+            ],
+            vec![
+                create_full_case(
+                    Coordinate::new(2, 0),
+                    Piece::new(PieceType::Flag, Box::new(Color::Red)),
+                ),
+                create_full_case(
+                    Coordinate::new(2, 1),
+                    Piece::new(PieceType::Major, Box::new(Color::Red)),
+                ),
+                create_full_case(
+                    Coordinate::new(2, 2),
+                    Piece::new(PieceType::Spy, Box::new(Color::Red)),
+                ),
+            ],
+        ]
+    }
+
+    #[test]
+    fn should_get_cases_in_board_straight() {
+        let board = StrategoBoard::new(create_3_x_3_stratego_board());  
+        let at = board.get_at(&Coordinate::new(0, 0)); 
+        let piece = at.get_content();
+        assert_eq!(&Color::Blue, piece.get_color());
+        assert_eq!(&PieceType::Flag, piece.get_rank());
+
+        let at = board.get_at(&Coordinate::new(1, 2)); 
+        assert_eq!(&State::Empty, at.get_state());
+
+        let at = board.get_at(&Coordinate::new(2, 1)); 
+        let piece = at.get_content();
+        assert_eq!(&Color::Red, piece.get_color());
+        assert_eq!(&PieceType::Major, piece.get_rank());
+    }
 
     #[test]
     fn should_build_stratego_board() {
