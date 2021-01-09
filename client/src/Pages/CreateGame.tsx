@@ -1,11 +1,11 @@
 import React, {Component, useEffect, useState} from "react";
-import {log} from "util";
 import {Redirect} from "react-router-dom";
+import { Socket } from "../Utils/Socket";
 
 
-// function CreateGame({socket}:SocketIOClient.Socket) {
-function CreateGame({socket}:any) {
+function CreateGame() {
 
+    const socket = Socket.getSocket()
     const [code, setCode] = useState('');
     const [foundGame, setFoundGame] = useState(false);
 

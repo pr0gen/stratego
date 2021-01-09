@@ -1,42 +1,11 @@
-
-
 export class GameEngine {
 
-    static initGame(){
+    static initGame() {
         return [
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ],
-            [
-                'B','Maj','G','Capt','L','Ser','Maj','G','Capt','L'
-            ]
+            'B', 'B', 'B', 'B', 'B', 'Maj', 'Maj', 'Maj', 'G', 'G', 'G', 'G',
+            'Capt', 'Capt', 'Capt', 'Capt', 'Ser', 'Ser', 'Ser', 'L', 'L', 'L', 'L'
         ]
     }
-
 
 
 }

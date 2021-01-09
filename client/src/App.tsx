@@ -10,19 +10,19 @@ import {
     Route,
     Link
 } from "react-router-dom";
-import './../styles/App.css'
+import './styles/App.css'
 
 import io from 'socket.io-client'
-import './../styles/style.scss'
-
+import './styles/style.scss'
+import { Socket } from "./Utils/Socket";
 
 const socket: SocketIOClient.Socket = io('http://localhost:3001');
 
 
 export default function App() {
 
+    Socket.setSocket(socket)
 
-    // @ts-ignore
     return (
         <Router>
             <div>
@@ -49,8 +49,8 @@ export default function App() {
                     <Route exact={true} path="/">
                         <Home />
                     </Route>
-                    <Route path="/create-game" component={() => <CreateGame socket={socket}></CreateGame>} ></Route>
-                    <Route path="/join-game" component={() => <JoinGame socket={socket}></JoinGame>}></Route>
+                    <Route path="/create-game" component={CreateGame} />
+                    <Route path="/join-game" component={JoinGame}/>
                     <Route path="/rules">
                         <Rules />
                     </Route>
@@ -60,5 +60,6 @@ export default function App() {
                 </Switch>
             </div>
         </Router>
+
     );
 }
