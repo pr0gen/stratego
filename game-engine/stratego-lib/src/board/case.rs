@@ -11,6 +11,10 @@ pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
     (Coordinate::from(co.0), Coordinate::from(co.1))
 }
 
+pub fn from(coord: &Coordinate) -> PyCoord {
+    (coord.get_x(), parse::parse_i16_to_str(coord.get_y() + 65)) 
+}
+
 #[pyclass]
 #[derive(Serialize, Deserialize, Hash, Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
 pub struct Case {
