@@ -31,8 +31,8 @@ fn should_parse_input() {
 
 pub fn parse_i16_to_str(x: i16) -> String {
     let x = x.to_be_bytes();
-    let xbis = str::from_utf8(&x);
-    String::from(xbis.unwrap())
+    String::from_utf8(x.to_vec())
+        .unwrap()
 }
 
 #[test]

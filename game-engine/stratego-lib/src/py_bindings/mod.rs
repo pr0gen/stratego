@@ -4,6 +4,7 @@ use pyo3::wrap_pyfunction;
 use pythonize::pythonize;
 use std::env::current_dir;
 
+use crate::board::case::{self, PyCoord};
 use crate::board::classic_board::create_stratego_board;
 use crate::board::piece::Color;
 use crate::engine::{Engine, StrategoEngine};
@@ -62,8 +63,13 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
 fn get_available_moves(game_id: i128) -> PyResult<Py<PyAny>> {
     if let Some(game) = game_pool::find_game_by_id(game_id) {
         let moves = engine_utils::get_availables_moves(game.get_engine().status());
+        let moves: Vec<(PyCoord, PyCoord, Color)> = moves
+            .iter()
+            .map(|(from, to, color)| (case::from(from), case::from(to), *color))
+            .collect();
         let gil_holder = utils::get_gild_holder().unwrap();
         let gil = gil_holder.get();
+        //Ok(moves)
         Ok(pythonize(gil.python(), &moves).unwrap())
     } else {
         panic!("Failed to find game {}", game_id);
