@@ -9,8 +9,7 @@ use crate::board::piece::Color;
 use crate::engine::{Engine, StrategoEngine};
 use crate::engine_utils;
 use crate::error::StrategoError;
-use crate::game_pool;
-use crate::game_pool::Game;
+use crate::game_pool::{self, Game};
 use crate::player::ai_player::AIPlayer;
 use crate::player::HumanPlayer;
 use crate::utils;
@@ -106,14 +105,8 @@ fn get_game_state(game_id: i128) -> PyResult<Py<PyAny>> {
     }
 }
 
-#[pyfunction]
-fn hello_world() -> PyResult<String> {
-    Ok(String::from("hello world"))
-}
-
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_wrapped(wrap_pyfunction!(hello_world))?;
     m.add_wrapped(wrap_pyfunction!(register_game))?;
     m.add_wrapped(wrap_pyfunction!(get_available_moves))?;
     m.add_wrapped(wrap_pyfunction!(get_game_state))?;

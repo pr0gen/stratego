@@ -33,11 +33,18 @@ pub enum State {
     Full,
 }
 
+impl Coordinate {
+    pub fn into(&self) -> PyCoord {
+        (self.x, parse::parse_i16_to_str(self.y))
+    }
+}
+
 impl From<PyCoord> for Coordinate {
     fn from(py_coord: PyCoord) -> Self {
         Coordinate::new(py_coord.0, parse::parse_letter_to_i16(py_coord.1.as_str()))
     }
 }
+
 
 pub fn create_full_case(coordinate: Coordinate, content: Piece) -> Case {
     Case {

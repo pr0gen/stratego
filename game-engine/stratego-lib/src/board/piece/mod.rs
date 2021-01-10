@@ -1,11 +1,10 @@
 use pyo3::prelude::pyclass;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+
+use self::deplacement::{AvailableMove, Move};
 
 pub mod deplacement;
 pub mod piece_utils;
-
-
-use self::deplacement::{AvailableMove, Move};
 
 #[pyclass]
 #[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Clone)]
@@ -40,15 +39,23 @@ pub enum PieceType {
 }
 
 impl From<&str> for Color {
-
     fn from(color: &str) -> Self {
-       match color {
-         "Red" => Color::Red,
-         "Blue" => Color::Blue,
-         _ => Color::None,
-       }
+        match color {
+            "Red" => Color::Red,
+            "Blue" => Color::Blue,
+            _ => Color::None,
+        }
     }
+}
 
+impl Color {
+    pub fn into(&self) -> &str {
+        match self {
+            Color::Red => "Red",
+            Color::Blue => "Blue",
+            _ => "None",
+        }
+    }
 }
 
 impl Piece {
