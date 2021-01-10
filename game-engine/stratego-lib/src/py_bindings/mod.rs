@@ -16,7 +16,7 @@ use crate::player::HumanPlayer;
 use crate::utils;
 use crate::GAME_POOL_ID;
 
-const AI_STRATEGO_PYTHON_MODULE: &str = "ai-python";
+const AI_STRATEGO_PYTHON_MODULE: &str = "ai_python";
 
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     let syspath: &PyList = py
@@ -62,7 +62,7 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
 #[pyfunction]
 fn get_available_moves(game_id: i128) -> PyResult<Py<PyAny>> {
     if let Some(game) = game_pool::find_game_by_id(game_id) {
-        let moves = engine_utils::get_availables_moves( game.get_engine().status());
+        let moves = engine_utils::get_availables_moves(game.get_engine().status());
         let gil_holder = utils::get_gild_holder().unwrap();
         let gil = gil_holder.get();
         Ok(pythonize(gil.python(), &moves).unwrap())

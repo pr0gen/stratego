@@ -91,7 +91,6 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Col
         let mut moves = Vec::new();
         let coord_from = case.get_coordinate();
         let color = case.get_content().get_color();
-        eprintln!("{:?}", case);
         cases.iter().for_each(|case| {
             if let Some(coord_to) = check_case(case, &color) {
                 moves.push((*coord_from, coord_to, *color));
@@ -105,7 +104,6 @@ fn check_case(case: &Case, player_color: &Color) -> Option<Coordinate> {
     if &State::Unreachable == case.get_state() || player_color == case.get_content().get_color() {
         None
     } else {
-        eprintln!("content{:?} coord{:?} ", case.get_content(), case.get_coordinate());
         Some(*case.get_coordinate())
     }
 }
