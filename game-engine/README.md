@@ -28,7 +28,7 @@ cp target/release/libstratego_lib.so ai-python
 mv ai-python/libstratego_lib.so ai-python/stratego_engine.so
 ```
 
-You should put all AI files in [ai-python](https://github.com/pr0gen/stratego/tree/develop/game-engine/ai-python) folder. Please, make sure this file **compile**, or Rust will throw an uncomprehensible error. I have searched for almost 3hours. :(
+You should put all AI files in [ai_python](https://github.com/pr0gen/stratego/tree/develop/game-engine/ai_python) folder. Please, make sure this file **compile**, or Rust will throw an uncomprehensible error. I have searched for almost 3hours. :(
 
 Your AIs should depend on interface `class StrategoAI(abc.ABC):`
 

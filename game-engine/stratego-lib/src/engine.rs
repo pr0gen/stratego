@@ -7,8 +7,8 @@ use crate::engine_utils;
 use crate::error::StrategoError;
 use crate::player::Player;
 
-pub trait Engine: Hash {
-    fn status(&self) -> &Vec<Vec<Case>>;
+pub trait Engine<B: Board>: Hash {
+    fn status(&self) -> &B;
 
     fn moving(&mut self) -> Result<(), StrategoError>;
 
@@ -67,14 +67,14 @@ where
     }
 }
 
-impl<B, P1, P2> Engine for StrategoEngine<B, P1, P2>
+impl<B, P1, P2> Engine<B> for StrategoEngine<B, P1, P2>
 where
     B: Board,
     P1: 'static + Player + Hash + Eq + Clone,
     P2: 'static + Player + Hash + Eq + Clone,
 {              
-    fn status(&self) -> &Vec<Vec<Case>> {
-        self.board.state()
+    fn status(&self) -> &B {
+        &self.board
     }
 
     fn moving(&mut self) -> Result<(), StrategoError> {
@@ -117,6 +117,7 @@ where
 #[cfg(test)]
 mod test {
     use crate::board::classic_board::create_empty_stratego_board;
+    use crate::board::Board;
     use crate::board::piece::Color;
     use crate::player::HumanPlayer;
 
@@ -134,6 +135,6 @@ mod test {
 
         let state = engine.status();
 
-        assert_eq!(10, state.len());
+        assert_eq!(10, state.state().len());
     }
 }

@@ -7,6 +7,10 @@ use crate::parse;
 pub type PyCoord = (i16, String);
 pub type PyCoords = (PyCoord, PyCoord);
 
+pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
+    (Coordinate::from(co.0), Coordinate::from(co.1))
+}
+
 #[pyclass]
 #[derive(Serialize, Deserialize, Hash, Debug, Clone, Ord, Eq, PartialOrd, PartialEq)]
 pub struct Case {
@@ -29,15 +33,18 @@ pub enum State {
     Full,
 }
 
-pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
-    let co_0 = co.0;
-    let co_1 = co.1;
-
-    (
-        Coordinate::new(co_0.0, parse::parse_letter_to_i16(co_0.1.as_str())),
-        Coordinate::new(co_1.0, parse::parse_letter_to_i16(co_1.1.as_str())),
-    )
+impl Coordinate {
+    pub fn into(&self) -> PyCoord {
+        (self.x, parse::parse_i16_to_str(self.y))
+    }
 }
+
+impl From<PyCoord> for Coordinate {
+    fn from(py_coord: PyCoord) -> Self {
+        Coordinate::new(py_coord.0, parse::parse_letter_to_i16(py_coord.1.as_str()))
+    }
+}
+
 
 pub fn create_full_case(coordinate: Coordinate, content: Piece) -> Case {
     Case {
@@ -51,7 +58,7 @@ pub fn create_unreachable_case(coordinate: Coordinate) -> Case {
     Case {
         state: State::Unreachable,
         coordinate,
-        content: Piece::new(PieceType::Null, Box::new(Color::None)),
+        content: Piece::new(PieceType::Null, Color::None),
     }
 }
 
@@ -59,7 +66,7 @@ pub fn create_empty_case(coordinate: Coordinate) -> Case {
     Case {
         state: State::Empty,
         coordinate,
-        content: Piece::new(PieceType::Null, Box::new(Color::None)),
+        content: Piece::new(PieceType::Null, Color::None),
     }
 }
 
@@ -133,13 +140,13 @@ mod test {
     fn should_create_full_case() {
         let case = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Captain, Box::new(Color::Blue)),
+            Piece::new(PieceType::Captain, Color::Blue),
         );
 
         assert_eq!(State::Full, case.state);
         assert_eq!(Coordinate::new(0, 0), case.coordinate);
         assert_eq!(
-            Piece::new(PieceType::Captain, Box::new(Color::Blue)),
+            Piece::new(PieceType::Captain, Color::Blue),
             case.content
         );
     }
@@ -151,7 +158,7 @@ mod test {
         assert_eq!(State::Empty, case.state);
         assert_eq!(Coordinate::new(0, 0), case.coordinate);
         assert_eq!(
-            Piece::new(PieceType::Null, Box::new(Color::None)),
+            Piece::new(PieceType::Null, Color::None),
             case.content
         );
     }
@@ -163,7 +170,7 @@ mod test {
         assert_eq!(State::Unreachable, case.state);
         assert_eq!(Coordinate::new(0, 0), case.coordinate);
         assert_eq!(
-            Piece::new(PieceType::Null, Box::new(Color::None)),
+            Piece::new(PieceType::Null, Color::None),
             case.content
         );
     }
@@ -172,7 +179,7 @@ mod test {
     fn should_display() {
         let case = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Captain, Box::new(Color::Blue)),
+            Piece::new(PieceType::Captain, Color::Blue),
         );
         assert_eq!(String::from("Cap B"), case.display());
 

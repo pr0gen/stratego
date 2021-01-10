@@ -18,4 +18,6 @@ pub trait Board : Hash + Eq + Clone + Debug {
     fn display(&self) -> String;
 
     fn display_by_color(&self, color: &Color) -> String;
+
+    fn get_at(&self, coordinate: &Coordinate) -> &Case;
 }
