@@ -4,4 +4,3 @@
 *.so
 */__pycache__
 Cargo.lock
-requirements.in
