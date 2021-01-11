@@ -1,18 +1,18 @@
 from ai_python.stratego_engine import register_game, get_available_moves, get_game_state
-from ai_python.ai import parse_moves
+from ai_python.ai import parse_moves, parse_move
 
 
 def test_parsing_moves():
-    game_id = register_game("Tigran", "test2")
-    moves = get_available_moves(game_id)
-    movesFormated = parse_moves(moves)
-    move = movesFormated[0]
+
+    move = parse_move(
+        ((3, '\x00B'), (4, '\x00B'), 'Blue')
+    )
 
     assert move.from_x == 3
-    assert move.from_y == 'A'
+    assert move.from_y == 'B'
 
     assert move.to_x == 4
-    assert move.to_y == 'A'
+    assert move.to_y == 'B'
 
     assert move.color == 'Blue'
 
