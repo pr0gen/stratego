@@ -19,4 +19,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r game-engine/requirements.txt
       - name: Run tests with pytest
-        run: pytest 
+        run: python3 -m pytest ai_python/test
+
