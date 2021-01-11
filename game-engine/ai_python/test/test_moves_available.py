@@ -1,6 +1,4 @@
-from ai_python.stratego_engine import register_game, get_available_moves, get_game_state
-from ai_python.ai import parse_moves, parse_move
-
+from ai_python.ai import  parse_move
 
 def test_parsing_moves():
 

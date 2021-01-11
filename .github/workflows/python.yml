@@ -18,6 +18,12 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r game-engine/requirements.txt
+      - name: compile lib
+        run: |
+          cargo build --release
+          cp target/release/libstratego_lib.so ai_python
+          mv ai_python/libstratego_lib.so ai_python/stratego_engine.so
+        working-directory: ./game-engine
       - name: Run tests with pytest
         run: python3 -m pytest ai_python/test
         working-directory: ./game-engine
