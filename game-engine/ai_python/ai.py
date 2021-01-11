@@ -73,10 +73,10 @@ def parse_moves(data):
         moveBuilder = MoveBuilder()
 
         moveBuilder \
-            .set_from_x(move[0]['x']) \
-            .set_from_y(move[0]['y']) \
-            .set_to_x(move[1]['x']) \
-            .set_to_y(move[1]['y']) \
+            .set_from_x(move[0][0]) \
+            .set_from_y(move[0][1][1]) \
+            .set_to_x(move[1][0]) \
+            .set_to_y(move[1][1][1]) \
             .set_color(move[2])
 
         moves.append(Builder.build(moveBuilder))

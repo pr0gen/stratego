@@ -10,11 +10,12 @@ class MonteCarloAI(StrategoAI):
         game_id = register_game("Tigran", "test2")
         moves = get_available_moves(game_id)
 
+
+
         movesFormated = parse_moves(moves)
 
         for move in movesFormated:
             move.show()
-
 
         return moves[randint(0, len(moves) - 1)]
 
