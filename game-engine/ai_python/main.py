@@ -18,6 +18,6 @@ def ask_next_move_test2() -> Tuple[Tuple[int, str], Tuple[int, str]]:
     return ((4, "A"), (5, "A"))
 
 def ask_next_move_monte_carlo() -> Tuple[Tuple[int, str], Tuple[int, str]]:
-    monteCarlo = MonteCarloAI() 
+    monteCarlo = MonteCarloAI()
     return monteCarlo.ask_next_move() 
 

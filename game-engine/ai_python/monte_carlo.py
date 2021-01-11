@@ -15,7 +15,6 @@ class MonteCarloAI(StrategoAI):
         for move in movesFormated:
             move.show()
 
-
         return moves[randint(0, len(moves) - 1)]
 
 monte_carlo = MonteCarloAI()

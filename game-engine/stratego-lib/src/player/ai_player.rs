@@ -3,7 +3,7 @@ use crate::player::*;
 use crate::utils;
 use crate::board::case;
 
-const AI_STRATEGO_INIT_FILE: &str = "__init__";
+const AI_STRATEGO_INIT_FILE: &str = "main";
 const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
 
 #[derive(Debug, Hash, Clone, Eq, PartialEq)]
