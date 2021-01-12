@@ -1,7 +1,7 @@
 import React, {Component, useEffect, useState} from "react";
 import {Redirect} from "react-router-dom";
 import { Socket } from "../Utils/Socket";
-
+import '../styles/CreateGame.scss'
 
 function CreateGame() {
 
@@ -32,9 +32,10 @@ function CreateGame() {
     return (
         <div className="create-game">
             {foundGame ? <Redirect to={"/game"} /> : null}
-            <h2>Create Game</h2>
-            <div className="content">
-                <p>Votre code est le : {code}</p>
+            <h2 className="medium-title">Create Game</h2>
+            <div className="content has-text-centered">
+                <p className="big-text">Your code is </p>
+                <p className="code"> { code }</p>
             </div>
         </div>
     )

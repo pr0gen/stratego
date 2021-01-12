@@ -1,6 +1,6 @@
 import React, {Component, useEffect, useState} from "react";
 import Case from "../Components/Case";
-import Line from "../Components/Line";
+import Board from "../Components/Board";
 import {Socket} from "../Utils/Socket";
 
 
@@ -31,17 +31,24 @@ function Game() {
         setPieces(pieces)
     })
 
+/*
+
+   <h2>Liste des Pièces</h2>
+            <div className="board-container">
+                {pieces.map(piece => <Case type={piece}/> )}
+            </div>
+ */
+
     return (
         <div className="game">
             <h2>Plateau de jeux</h2>
             <div className="board-container">
-                {board.map(line => <Line line={line}/> )}
+                <Board board={board}/>
             </div>
 
-            <h2>Liste des Pièces</h2>
-            <div className="board-container">
-                {pieces.map(piece => <Case type={piece}/> )}
-            </div>
+
+
+
         </div>
     )
 
