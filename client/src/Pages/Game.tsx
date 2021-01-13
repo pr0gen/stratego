@@ -1,5 +1,4 @@
 import React, {Component, useEffect, useState} from "react";
-import Case from "../Components/Case";
 import Board from "../Components/Board";
 import {Socket} from "../Utils/Socket";
 
@@ -17,7 +16,6 @@ function Game() {
         position: position;
     }
 
-
     const socket = Socket.getSocket()
 
     const [board, setBoard] = useState([
@@ -33,17 +31,16 @@ function Game() {
         [null,null,null,null,null,null,null,null,null,null]
     ])
 
-    const [gameBoard, setGameBoard] = useState([])
-
     const initGameBoard = () => {
 
-        const newBoard = []
+        const newBoard:strategoCase[] = []
         const allLetters = 'ABCDEFGHIJ'
 
         board.map((line, x) => {
 
             // @ts-ignore
             line.map((c, y) => newBoard.push({
+                // @ts-ignore
                 'type':c,
                 'position' : {
                     x,
@@ -51,28 +48,30 @@ function Game() {
                     y_letter: allLetters[y]
                 }
             }) )
-
         })
+
+        return newBoard
     }
 
-
+    const [gameBoard, setGameBoard] = useState(initGameBoard)
 
     const [pieces, setPieces] = useState([])
 
     useEffect(() => {
         socket.emit('get-all-cases');
+        initGameBoard()
+
     }, []);
 
     socket.on('response-get-all-cases', (pieces:any) => {
         setPieces(pieces)
     })
 
-
     return (
         <div className="game">
             <h2 className="medium-title">Plateau de jeux</h2>
             <div className="board-container">
-                <Board board={board}/>
+                <Board board={gameBoard}/>
                 <br/>
             </div>
         </div>
