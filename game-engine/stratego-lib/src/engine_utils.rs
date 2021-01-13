@@ -20,7 +20,38 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
         let row_len = cases[x].len() - 1;
         for y in 0..=row_len {
             let case = board.get_at(&Coordinate::new(x as i16, y as i16));
-            if y == 0 || y == row_len || x == 0 || x == col_len {
+            let content = case.get_content();
+            if &PieceType::Scout == content.get_rank() {
+                let color = content.get_color();
+                //horizontal
+                moves.append(&mut check_part_of_row(
+                    &cases[x],
+                    case,
+                    color,
+                    Direction::Left,
+                ));
+                moves.append(&mut check_part_of_row(
+                    &cases[x],
+                    case,
+                    color,
+                    Direction::Right,
+                ));
+
+                //vertical
+                let vertical = find_vertical_cases(&cases, y as i16);
+                moves.append(&mut check_part_of_row(
+                    &vertical,
+                    case,
+                    color,
+                    Direction::Up,
+                ));
+                moves.append(&mut check_part_of_row(
+                    &vertical,
+                    case,
+                    color,
+                    Direction::Down,
+                ));
+            } else if y == 0 || y == row_len || x == 0 || x == col_len {
                 // It's a side
                 if y == 0 && x == 0 {
                     // It's a corner (upper left)
@@ -78,6 +109,91 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
     }
 
     moves
+}
+
+fn find_vertical_cases(cases: &[Vec<Case>], y: i16) -> Vec<Case> {
+    let mut vec = Vec::new();
+    for row in cases {
+        for case in row {
+            let coordinate = case.get_coordinate();
+            if y == coordinate.get_y() {
+                vec.push(case.to_owned());
+            }
+        }
+    }
+
+    vec
+}
+
+#[test]
+fn should_find_vertical_case() {
+    use crate::board::case;
+    use crate::board::piece::{Piece, PieceType};
+    let cases = test::create_3_x_3_stratego_board();
+
+    let expected = vec![
+        case::create_full_case(
+            Coordinate::new(0, 1),
+            Piece::new(PieceType::Major, Color::Blue),
+        ),
+        case::create_empty_case(Coordinate::new(1, 1)),
+        case::create_full_case(
+            Coordinate::new(2, 1),
+            Piece::new(PieceType::Major, Color::Red),
+        ),
+    ];
+    assert_eq!(expected, find_vertical_cases(&cases, 1));
+}
+
+fn check_part_of_row(
+    cases: &[Case],
+    case: &Case,
+    player_color: &Color,
+    direction: Direction,
+) -> Vec<(Coordinate, Coordinate, Color)> {
+    let coordinate = case.get_coordinate();
+    match direction {
+        Direction::Up => {
+            check_row_for_scout(&cases[0..coordinate.get_x() as usize], case, player_color)
+        }
+        Direction::Left => {
+            check_row_for_scout(&cases[0..coordinate.get_y() as usize], case, player_color)
+        }
+        Direction::Right => check_row_for_scout(
+            &cases[(coordinate.get_y() + 1) as usize..cases.len()],
+            case,
+            player_color,
+        ),
+        Direction::Down => check_row_for_scout(
+            &cases[(coordinate.get_x() + 1) as usize..cases.len()],
+            case,
+            player_color,
+        ),
+    }
+}
+
+fn check_row_for_scout(
+    cases: &[Case],
+    case: &Case,
+    player_color: &Color,
+) -> Vec<(Coordinate, Coordinate, Color)> {
+    let mut moves = Vec::new();
+    let coord_from = case.get_coordinate();
+    for case in cases {
+        if let Some(to) = check_case(case, player_color) {
+            moves.push((*coord_from, to, *player_color));
+        } else {
+            break;
+        }
+    }
+    moves
+}
+
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
 }
 
 fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Color)> {
@@ -349,9 +465,55 @@ mod test {
     };
     use crate::board::classic_board::StrategoBoard;
     use crate::board::piece::{Color, Piece, PieceType};
+    use crate::board::Board;
 
     use super::{game_is_over, get_availables_moves, verify_board_integrity};
 
+    #[test]
+    fn should_check_scout_move_scouts_alone() {
+        let mut cases = empty_board();
+        cases[2][5] = create_full_case(
+            Coordinate::new(2, 5),
+            Piece::new(PieceType::Scout, Color::Red),
+        );
+        cases[8][1] = create_full_case(
+            Coordinate::new(8, 1),
+            Piece::new(PieceType::Scout, Color::Red),
+        );
+
+        let board = &StrategoBoard::new(cases);
+        eprintln!("{}", board.display());
+        let res = get_availables_moves(board);
+
+        assert_eq!(36, res.len());
+    }
+
+    #[test]
+    fn should_check_scout_move_scouts_with_others() {
+        let mut cases = empty_board();
+        cases[2][5] = create_full_case(
+            Coordinate::new(2, 5),
+            Piece::new(PieceType::Scout, Color::Red),
+        );
+        cases[9][5] = create_full_case(
+            Coordinate::new(9, 5),
+            Piece::new(PieceType::Bomb, Color::Red),
+        );
+        cases[8][1] = create_full_case(
+            Coordinate::new(8, 1),
+            Piece::new(PieceType::Scout, Color::Red),
+        );
+        cases[8][3] = create_full_case(
+            Coordinate::new(8, 3),
+            Piece::new(PieceType::Bomb, Color::Red),
+        );
+
+        let board = &StrategoBoard::new(cases);
+        eprintln!("{}", board.display());
+        let res = get_availables_moves(board);
+
+        assert_eq!(28, res.len());
+    }
     #[test]
     fn should_retrieve_available_moves_3x3() {
         let cases = create_3_x_3_stratego_board();
@@ -660,7 +822,7 @@ mod test {
         ]
     }
 
-    fn create_3_x_3_stratego_board() -> Vec<Vec<Case>> {
+    pub fn create_3_x_3_stratego_board() -> Vec<Vec<Case>> {
         vec![
             vec![
                 create_full_case(
@@ -749,7 +911,7 @@ mod test {
         board[4][6] = create_unreachable_case(Coordinate::new(4, 6));
         board[4][7] = create_unreachable_case(Coordinate::new(4, 7));
         board[5][6] = create_unreachable_case(Coordinate::new(5, 6));
-        board[5][7] = create_unreachable_case(Coordinate::new(7, 5));
+        board[5][7] = create_unreachable_case(Coordinate::new(5, 7));
 
         return board;
     }
