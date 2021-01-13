@@ -5,18 +5,53 @@ import Case from "./Case";
 
 export default function Board({board}: any) {
 
-    const board2: any[]= board   //refacto
+    type position = {
+        x:number,
+        y:number,
+        y_letter: string,
+    }
 
-    console.log(board2)
+    type strategoCase = {
+        type: string;
+        position: position;
+    }
+
+
+    const handleClickCase = (position : any) => {
+        console.log(position)
+    }
+
+    const getBoard = () :strategoCase[] => {
+
+        const newBoard:any = []
+        const allLetters = 'ABCDEFGHIJ'
+
+        // @ts-ignore
+        board.map((line, x) => {
+
+            // @ts-ignore
+            line.map((c, y) => newBoard.push({
+                'type':c,
+                'position' : {
+                    x,
+                    y,
+                    y_letter: allLetters[y]
+                }
+            }) )
+
+        })
+
+        return newBoard
+    }
 
     return (
-        <div className="container">
-            {board2.map(line => {
-                const temp:string[] = line
-                temp.map(temp => {
-                    <Case type={temp}/>
-                })
-            } )}
+        <div className="game-board">
+            {getBoard().map(c  =>
+                <Case key={c.position.x.toString() + c.position.y.toString()}
+                      type={c.type}
+                      position={c.position}
+                      eventClick={handleClickCase}
+                />)}
         </div>
     )
 
