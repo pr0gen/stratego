@@ -1,9 +1,21 @@
-import React from 'react'
+import React, {useState} from 'react'
+import '../styles/Game.scss'
+export default function Case({type,position, eventClick} : any) {
 
-export default function Case({type}: any) {
+    const [active, setActive] = useState(false)
+    const handleClick = () => {
+        setActive(!active )
+        eventClick(position)
+    }
+
+
+
 
     return (
-        <span>  {type ? `[${type}]` : '[_]'}  </span>
+        <div className={active ? 'active game-box' : 'game-box'} onClick={handleClick} >
+            {/*<span>  {type ? `${type}` : '_'}  </span>*/}
+        </div>
+
     )
 
 }

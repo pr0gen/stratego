@@ -30,12 +30,18 @@ function JoinGame() {
         <div className="join-game">
             {foundGame ? <Redirect to={"/game"} /> : null}
 
-            <h2>Join Game</h2>
-            <div className="content">
-                <label>Code de la partie :</label>
-                <input className="join-game-input" value={code} onChange={handleChangeCode}/>
-                <button className="join-game-btn" onClick={checkCode}>Rejoindre</button>
+            <h2 className="medium-title">Join Game</h2>
+
+            <div className="join-code has-text-centered">
+
+                <div className="control">
+                    <input className="input is-large is-rounded" type="text" placeholder="Game Code" value={code} onChange={handleChangeCode}/>
+                </div>
+
+                <button className="button is-primary mt-3" onClick={checkCode}> Code verification </button>
             </div>
+
+
         </div>
     )
 

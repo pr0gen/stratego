@@ -1,10 +1,20 @@
 import React, {Component, useEffect, useState} from "react";
-import Case from "../Components/Case";
-import Line from "../Components/Line";
+import Board from "../Components/Board";
 import {Socket} from "../Utils/Socket";
 
 
 function Game() {
+
+    type position = {
+        x:number,
+        y:number,
+        y_letter: string,
+    }
+
+    type strategoCase = {
+        type: string;
+        position: position;
+    }
 
     const socket = Socket.getSocket()
 
@@ -21,10 +31,36 @@ function Game() {
         [null,null,null,null,null,null,null,null,null,null]
     ])
 
+    const initGameBoard = () => {
+
+        const newBoard:strategoCase[] = []
+        const allLetters = 'ABCDEFGHIJ'
+
+        board.map((line, x) => {
+
+            // @ts-ignore
+            line.map((c, y) => newBoard.push({
+                // @ts-ignore
+                'type':c,
+                'position' : {
+                    x,
+                    y,
+                    y_letter: allLetters[y]
+                }
+            }) )
+        })
+
+        return newBoard
+    }
+
+    const [gameBoard, setGameBoard] = useState(initGameBoard)
+
     const [pieces, setPieces] = useState([])
 
     useEffect(() => {
         socket.emit('get-all-cases');
+        initGameBoard()
+
     }, []);
 
     socket.on('response-get-all-cases', (pieces:any) => {
@@ -33,14 +69,10 @@ function Game() {
 
     return (
         <div className="game">
-            <h2>Plateau de jeux</h2>
+            <h2 className="medium-title">Plateau de jeux</h2>
             <div className="board-container">
-                {board.map(line => <Line line={line}/> )}
-            </div>
-
-            <h2>Liste des Pièces</h2>
-            <div className="board-container">
-                {pieces.map(piece => <Case type={piece}/> )}
+                <Board board={gameBoard}/>
+                <br/>
             </div>
         </div>
     )
