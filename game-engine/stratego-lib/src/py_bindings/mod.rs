@@ -4,7 +4,7 @@ use pyo3::wrap_pyfunction;
 use pythonize::pythonize;
 use std::env::current_dir;
 
-use crate::board::case::{self, PyCoord};
+use crate::board::case::{self, PyCoord, Coordinate};
 use crate::board::classic_board::create_stratego_board;
 use crate::board::piece::Color;
 use crate::engine::{Engine, StrategoEngine};
@@ -111,10 +111,44 @@ fn get_game_state(game_id: i128) -> PyResult<Py<PyAny>> {
     }
 }
 
+#[pyfunction]
+fn perform_move(game_id: i128, from: PyCoord, to: PyCoord) -> PyResult<Py<PyAny>> {
+    if let Some(mut game) = game_pool::find_game_by_id(game_id) {
+        let engine = game.get_engine_mut();
+            println!("{}", engine.display());
+
+        if let Ok(cases) = engine.perform_move(Coordinate::from(from), Coordinate::from(to)) {
+            let gil_holder = utils::get_gild_holder().unwrap();
+            let gil = gil_holder.get();
+            println!("{}", engine.display());
+            Ok(pythonize(gil.python(), &cases).unwrap())
+        } else {
+            panic!("Failed to perform move")
+        }
+    } else {
+        panic!("Failed to find game {}", game_id);
+    }
+
+}
+
+#[pyfunction]
+fn beautifull_board_display(game_id: i128) -> PyResult<String> {
+    if let Some(game) = game_pool::find_game_by_id(game_id) {
+        let engine = game.get_engine();
+        Ok(engine.display())
+    } else {
+        panic!("Failed to find game {}", game_id);
+    }
+
+    
+}
+
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(register_game))?;
     m.add_wrapped(wrap_pyfunction!(get_available_moves))?;
     m.add_wrapped(wrap_pyfunction!(get_game_state))?;
+    m.add_wrapped(wrap_pyfunction!(perform_move))?;
+    m.add_wrapped(wrap_pyfunction!(beautifull_board_display))?;
     Ok(())
 }

@@ -12,6 +12,8 @@ pub trait Engine<B: Board>: Hash {
 
     fn moving(&mut self) -> Result<(), StrategoError>;
 
+    fn perform_move(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError>;
+
     fn get_turn(&self) -> Color;
 
     fn display(&self) -> String;
@@ -99,6 +101,11 @@ where
                 }
             }
         }
+    }
+
+    fn perform_move(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
+        let case = self.board.get_at(&from).clone();
+        self.execute_move(case, to)
     }
 
     fn get_turn(&self) -> Color {

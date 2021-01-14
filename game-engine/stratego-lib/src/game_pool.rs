@@ -4,8 +4,8 @@ use std::hash::Hash;
 use crate::board::classic_board::StrategoBoard;
 use crate::engine::{Engine, StrategoEngine};
 use crate::error::StrategoError;
-use crate::player::HumanPlayer;
 use crate::player::ai_player::AIPlayer;
+use crate::player::HumanPlayer;
 use crate::GAME_POOL;
 
 pub type HumamAIEngine = StrategoEngine<StrategoBoard, HumanPlayer, AIPlayer>;
@@ -25,7 +25,7 @@ pub fn find_game_by_id(game_id: i128) -> Option<Game<HumamAIEngine>> {
 
 #[derive(Debug)]
 pub struct GamePool<E>
-where 
+where
     E: Engine<StrategoBoard>,
 {
     games: HashSet<Game<E>>,
@@ -33,22 +33,21 @@ where
 
 #[derive(Hash, Eq, PartialEq, Debug, Copy, Clone)]
 pub struct Game<E>
-where 
+where
     E: Engine<StrategoBoard>,
 {
     id: i128,
     engine: E,
 }
 
-impl<E> Default for GamePool<E> 
+impl<E> Default for GamePool<E>
 where
     E: Engine<StrategoBoard> + Hash + Eq + Clone,
 {
-     fn default() -> Self {
-         Self::new()
-
-     }
- }
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl<E> GamePool<E>
 where
@@ -63,7 +62,9 @@ where
     pub fn register(&mut self, game: Game<E>) -> Result<(), StrategoError> {
         let game_id = *game.get_id();
         if !self.games.insert(game) {
-            Err(StrategoError::InitGameError(String::from( "Failed to register game into pool")))
+            Err(StrategoError::InitGameError(String::from(
+                "Failed to register game into pool",
+            )))
         } else {
             println!("Game has been registered {}", game_id);
             Ok(())
@@ -71,11 +72,9 @@ where
     }
 
     pub fn find_game_by_id(&self, id: i128) -> Option<&Game<E>> {
-        self.games.iter()
-            .find(|game| game.is(id))
+        self.games.iter().find(|game| game.is(id))
     }
 }
-
 
 impl<E> Game<E>
 where
@@ -92,7 +91,11 @@ where
     pub fn get_engine(&self) -> &E {
         &self.engine
     }
-    
+
+    pub fn get_engine_mut(&mut self) -> &mut E {
+        &mut self.engine
+    }
+
     pub fn get_id(&self) -> &i128 {
         &self.id
     }

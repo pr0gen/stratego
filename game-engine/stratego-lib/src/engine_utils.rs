@@ -11,47 +11,49 @@ use crate::player::Player;
 
 pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, Color)> {
     let cases = board.state();
-    let col_len = cases.len() - 1;
-    let mut moves: Vec<(Coordinate, Coordinate, Color)> = Vec::with_capacity(col_len);
+    let row_len = cases.len() - 1;
+    let mut moves: Vec<(Coordinate, Coordinate, Color)> = Vec::with_capacity(row_len);
 
-    // x -> col
-    // y -> row
-    for x in 0..=col_len {
-        let row_len = cases[x].len() - 1;
-        for y in 0..=row_len {
+    // x -> row
+    // y -> col
+    for x in 0..=row_len {
+        let col_len = cases[x].len() - 1;
+        for y in 0..=col_len {
             let case = board.get_at(&Coordinate::new(x as i16, y as i16));
             let content = case.get_content();
-            if &PieceType::Scout == content.get_rank() {
-                let color = content.get_color();
-                //horizontal
-                moves.append(&mut check_part_of_row(
-                    &cases[x],
-                    case,
-                    color,
-                    Direction::Left,
-                ));
-                moves.append(&mut check_part_of_row(
-                    &cases[x],
-                    case,
-                    color,
-                    Direction::Right,
-                ));
+            //FIXME it's fucked 
+            //if &PieceType::Scout == content.get_rank() {
+                //let color = content.get_color();
+                ////horizontal
+                //moves.append(&mut check_part_of_row(
+                    //&cases[x],
+                    //case,
+                    //color,
+                    //Direction::Left,
+                //));
+                //moves.append(&mut check_part_of_row(
+                    //&cases[x],
+                    //case,
+                    //color,
+                    //Direction::Right,
+                //));
 
-                //vertical
-                let vertical = find_vertical_cases(&cases, y as i16);
-                moves.append(&mut check_part_of_row(
-                    &vertical,
-                    case,
-                    color,
-                    Direction::Up,
-                ));
-                moves.append(&mut check_part_of_row(
-                    &vertical,
-                    case,
-                    color,
-                    Direction::Down,
-                ));
-            } else if y == 0 || y == row_len || x == 0 || x == col_len {
+                ////vertical
+                //let vertical = find_vertical_cases(&cases, y as i16);
+                //moves.append(&mut check_part_of_row(
+                    //&vertical,
+                    //case,
+                    //color,
+                    //Direction::Up,
+                //));
+                //moves.append(&mut check_part_of_row(
+                    //&vertical,
+                    //case,
+                    //color,
+                    //Direction::Down,
+                //));
+            //} else
+                if y == 0 || y == col_len || x == 0 || x == row_len {
                 // It's a side
                 if y == 0 && x == 0 {
                     // It's a corner (upper left)
@@ -62,7 +64,7 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
                         ],
                         &case,
                     ));
-                } else if y == row_len && x == col_len {
+                } else if y == col_len && x == row_len {
                     // It's a corner (lower right)
                     moves.append(&mut check_cases(
                         &[
@@ -71,7 +73,7 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
                         ],
                         &case,
                     ));
-                } else if x == 0 && y == col_len {
+                } else if x == 0 && y == row_len {
                     // It's a corner (lower left)
                     moves.append(&mut check_cases(
                         &[
@@ -80,7 +82,7 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
                         ],
                         &case,
                     ));
-                } else if x == col_len && y == 0 {
+                } else if x == row_len && y == 0 {
                     // It's a corner (upper right)
                     moves.append(&mut check_cases(
                         &[
