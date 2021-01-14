@@ -1,20 +1,10 @@
 import React, {Component, useEffect, useState} from "react";
 import Board from "../Components/Board";
+import { strategoCase } from "../Elements/StrategoCase";
 import {Socket} from "../Utils/Socket";
 
 
 function Game() {
-
-    type position = {
-        x:number,
-        y:number,
-        y_letter: string,
-    }
-
-    type strategoCase = {
-        type: string;
-        position: position;
-    }
 
     const socket = Socket.getSocket()
 
@@ -42,6 +32,8 @@ function Game() {
             line.map((c, y) => newBoard.push({
                 // @ts-ignore
                 'type':c,
+                'active': true,
+                'isSelected': false,
                 'position' : {
                     x,
                     y,
@@ -60,7 +52,6 @@ function Game() {
     useEffect(() => {
         socket.emit('get-all-cases');
         initGameBoard()
-
     }, []);
 
     socket.on('response-get-all-cases', (pieces:any) => {
@@ -71,7 +62,7 @@ function Game() {
         <div className="game">
             <h2 className="medium-title">Plateau de jeux</h2>
             <div className="board-container">
-                <Board board={gameBoard}/>
+                <Board board={gameBoard} setBoard={setGameBoard}/>
                 <br/>
             </div>
         </div>

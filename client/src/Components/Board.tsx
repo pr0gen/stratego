@@ -6,7 +6,16 @@ import Case from "./Case";
 export default function Board({board}: any) {
 
     const handleClickCase = (position : any) => {
-        console.log(position)
+
+        {
+            // @ts-ignore
+            // eslint-disable-next-line array-callback-return
+            board.map(c => {
+                if (c.position.x === position.x && c.position.y === position.y) {
+                    c.isSelected = true
+                }
+            })
+        }
     }
 
     const getBoard = () :any => {
