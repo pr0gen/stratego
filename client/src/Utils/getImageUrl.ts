@@ -1,4 +1,3 @@
-import {PieceType} from "../../../game-engine/ts-src/src/piece/piece";
 
 const getImageUrl = (piece :string) => {
 

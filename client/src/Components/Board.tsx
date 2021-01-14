@@ -2,36 +2,28 @@ import React from 'react'
 import Line from "../Components/Line";
 import '../styles/Game.scss'
 import Case from "./Case";
+import {StrategoBoard} from "../Elements/StrategoBoard";
+import getDefaultBoard from "../Utils/getDefaultBoard";
 
-export default function Board({board}: any) {
+export default function Board({board, setGameBoard}: any) {
 
-    const handleClickCase = (position : any) => {
+    const handleClickCase = (position: any) => {
+        console.log(position)
 
-        {
-            // @ts-ignore
-            // eslint-disable-next-line array-callback-return
-            board.map(c => {
-                if (c.position.x === position.x && c.position.y === position.y) {
-                    c.isSelected = true
-                }
-            })
-        }
-    }
-
-    const getBoard = () :any => {
-        return board
+        setGameBoard(new StrategoBoard(getDefaultBoard()))
     }
 
     return (
         <div className="game-board">
             {
                 // @ts-ignore
-                getBoard().map(c  =>
-                <Case key={c.position.x.toString() + c.position.y.toString()}
-                      type={c.type}
-                      position={c.position}
-                      eventClick={handleClickCase}
-                />)}
+                board.get().map(c =>
+                    <Case key={c.position.x.toString() + c.position.y.toString()}
+                          type={c.type}
+                          position={c.position}
+                          eventClick={handleClickCase}
+                          isSelected={c.isSelected}
+                    />)}
         </div>
     )
 
