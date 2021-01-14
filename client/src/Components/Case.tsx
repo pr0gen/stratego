@@ -7,12 +7,8 @@ export default function Case({type,position, eventClick, isSelected} : any) {
         console.log(isSelected)
     }
 
-
-
-
     return (
         <div className={isSelected ? 'active game-box' : 'game-box'} onClick={handleClick} >
-            {/*<span>  {type ? `${type}` : '_'}  </span>*/}
         </div>
 
     )

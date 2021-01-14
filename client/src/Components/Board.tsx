@@ -1,23 +1,29 @@
-import React from 'react'
-import Line from "../Components/Line";
+import React, {useEffect} from 'react'
 import '../styles/Game.scss'
 import Case from "./Case";
-import {StrategoBoard} from "../Elements/StrategoBoard";
-import getDefaultBoard from "../Utils/getDefaultBoard";
 
 export default function Board({board, setGameBoard}: any) {
 
-    const handleClickCase = (position: any) => {
-        console.log(position)
 
-        setGameBoard(new StrategoBoard(getDefaultBoard()))
+    const handleClickCase = (position: any) => {
+        // @ts-ignore
+        board.forEach(c => {
+            if (c.position.x === position.x && c.position.y === position.y) {
+                c.isSelected = true
+            } else {
+                c.isSelected = false
+            }
+        })
+
+        setGameBoard(board)
+
     }
 
     return (
         <div className="game-board">
             {
                 // @ts-ignore
-                board.get().map(c =>
+                board.map(c =>
                     <Case key={c.position.x.toString() + c.position.y.toString()}
                           type={c.type}
                           position={c.position}

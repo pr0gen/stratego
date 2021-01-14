@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import Board from "../Components/Board";
-import { StrategoBoard } from "../Elements/StrategoBoard";
+import {StrategoBoard} from "../Elements/StrategoBoard";
 import {Socket} from "../Utils/Socket";
 import getDefaultBoard from "../Utils/getDefaultBoard";
+import getStrategoBoard from "../Utils/getStrategoBoard";
 
 
 function Game() {
@@ -14,20 +15,27 @@ function Game() {
         socket.emit('get-all-cases');
     }, []);
 
-    socket.on('response-get-all-cases', (pieces:any) => {
+    socket.on('response-get-all-cases', (pieces: any) => {
         setPieces(pieces)
     })
 
     const [board, setBoard] = useState(getDefaultBoard())
-    const [gameBoard, setGameBoard] = useState(new StrategoBoard(board))
+    // @ts-ignore
+    const [gameBoard, setGameBoard] = useState(getStrategoBoard(board))
+    // @ts-ignore
     const [pieces, setPieces] = useState([])
+    const [key, setKey] = useState(Date.now)
 
+    const updateBoard = (board: any) => {
+        setGameBoard(board)
+        setKey(Date.now)
+    }
 
     return (
         <div className="game">
             <h2 className="medium-title">Plateau de jeux</h2>
             <div className="board-container">
-                <Board board={gameBoard} setBoard={setGameBoard}/>
+                <Board key={key} board={gameBoard} setGameBoard={updateBoard}/>
                 <br/>
             </div>
         </div>
