@@ -1,6 +1,8 @@
 use std::collections::HashSet;
 use std::hash::Hash;
+use std::cell::RefCell;
 
+use crate::board::case::{Coordinate, PyCoord, Case};
 use crate::board::classic_board::StrategoBoard;
 use crate::engine::{Engine, StrategoEngine};
 use crate::error::StrategoError;
@@ -20,6 +22,15 @@ pub fn find_game_by_id(game_id: i128) -> Option<Game<HumamAIEngine>> {
         Some(game.clone())
     } else {
         None
+    }
+}
+
+pub fn perform_move(game_id: i128, from: PyCoord, to: PyCoord) -> Result<Vec<Case>, StrategoError> {
+    if let Some(&mut game) = GAME_POOL.lock().unwrap().find_mut_game_by_id(game_id) {
+        let engine = game.get_engine_mut();
+        engine.perform_move(Coordinate::from(from), Coordinate::from(to))
+    } else {
+        panic!("Failed to find game {}", game_id);
     }
 }
 
@@ -71,9 +82,10 @@ where
         }
     }
 
-    pub fn find_game_by_id(&self, id: i128) -> Option<&Game<E>> {
+    pub fn find_game_by_id(&self, id: i128) -> Option<RefCell<Game<E>>> {
         self.games.iter().find(|game| game.is(id))
     }
+
 }
 
 impl<E> Game<E>

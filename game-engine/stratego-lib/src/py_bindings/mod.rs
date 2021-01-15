@@ -113,20 +113,12 @@ fn get_game_state(game_id: i128) -> PyResult<Py<PyAny>> {
 
 #[pyfunction]
 fn perform_move(game_id: i128, from: PyCoord, to: PyCoord) -> PyResult<Py<PyAny>> {
-    if let Some(mut game) = game_pool::find_game_by_id(game_id) {
-        let engine = game.get_engine_mut();
-            println!("{}", engine.display());
-
-        if let Ok(cases) = engine.perform_move(Coordinate::from(from), Coordinate::from(to)) {
-            let gil_holder = utils::get_gild_holder().unwrap();
-            let gil = gil_holder.get();
-            println!("{}", engine.display());
-            Ok(pythonize(gil.python(), &cases).unwrap())
-        } else {
-            panic!("Failed to perform move")
-        }
+    if let Ok(cases) = game_pool::perform_move(game_id, from, to) {
+        let gil_holder = utils::get_gild_holder().unwrap();
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), &cases).unwrap())
     } else {
-        panic!("Failed to find game {}", game_id);
+        panic!("Failed to perform move {}", game_id)
     }
 
 }
