@@ -1,28 +1,35 @@
-import React from 'react'
-import Line from "../Components/Line";
+import React, {useEffect} from 'react'
 import '../styles/Game.scss'
 import Case from "./Case";
 
-export default function Board({board}: any) {
+export default function Board({board, setGameBoard}: any) {
 
-    const handleClickCase = (position : any) => {
-        console.log(position)
-    }
 
-    const getBoard = () :any => {
-        return board
+    const handleClickCase = (position: any) => {
+        // @ts-ignore
+        board.forEach(c => {
+            if (c.position.x === position.x && c.position.y === position.y) {
+                c.isSelected = true
+            } else {
+                c.isSelected = false
+            }
+        })
+
+        setGameBoard(board)
+
     }
 
     return (
         <div className="game-board">
             {
                 // @ts-ignore
-                getBoard().map(c  =>
-                <Case key={c.position.x.toString() + c.position.y.toString()}
-                      type={c.type}
-                      position={c.position}
-                      eventClick={handleClickCase}
-                />)}
+                board.map(c =>
+                    <Case key={c.position.x.toString() + c.position.y.toString()}
+                          type={c.type}
+                          position={c.position}
+                          eventClick={handleClickCase}
+                          isSelected={c.isSelected}
+                    />)}
         </div>
     )
 
