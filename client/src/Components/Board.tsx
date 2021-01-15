@@ -1,22 +1,13 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import '../styles/Game.scss'
 import Case from "./Case";
 
 export default function Board({board, setGameBoard}: any) {
 
-
     const handleClickCase = (position: any) => {
         // @ts-ignore
-        board.forEach(c => {
-            if (c.position.x === position.x && c.position.y === position.y) {
-                c.isSelected = true
-            } else {
-                c.isSelected = false
-            }
-        })
-
+        board.forEach(c => c.isSelected = (c.position.x === position.x && c.position.y === position.y))
         setGameBoard(board)
-
     }
 
     return (
@@ -29,7 +20,8 @@ export default function Board({board, setGameBoard}: any) {
                           position={c.position}
                           eventClick={handleClickCase}
                           isSelected={c.isSelected}
-                    />)}
+                    />)
+            }
         </div>
     )
 

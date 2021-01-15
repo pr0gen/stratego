@@ -10,3 +10,5 @@ server/dist/
 
 
 game-engine/game-stratego
+
+client/.eslintcache
