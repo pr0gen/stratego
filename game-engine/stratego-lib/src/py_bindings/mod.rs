@@ -4,19 +4,127 @@ use pyo3::wrap_pyfunction;
 use pythonize::pythonize;
 use std::env::current_dir;
 
-use crate::board::case::{self, PyCoord, Coordinate};
-use crate::board::classic_board::create_stratego_board;
-use crate::board::piece::Color;
-use crate::engine::{Engine, StrategoEngine};
+use crate::board::case::{self, Case, PyCoord, Coordinate};
+use crate::board::classic_board::StrategoBoard;
+use crate::board::piece::{Color, Piece, PieceType};
+use crate::board::Board;
 use crate::engine_utils;
 use crate::error::StrategoError;
-use crate::game_pool::{self, Game};
-use crate::player::ai_player::AIPlayer;
-use crate::player::HumanPlayer;
 use crate::utils;
-use crate::GAME_POOL_ID;
 
 const AI_STRATEGO_PYTHON_MODULE: &str = "ai_python";
+
+#[pymodule]
+fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_wrapped(wrap_pyfunction!(get_available_moves))?;
+    m.add_class::<PyStrategoBoard>()?;
+    m.add_class::<Case>()?;
+    m.add_class::<Piece>()?;
+    m.add_class::<Coordinate>()?;
+
+    m.add_wrapped(wrap_pyfunction!(py_create_full_case))?;
+    m.add_wrapped(wrap_pyfunction!(py_create_empty_case))?;
+    m.add_wrapped(wrap_pyfunction!(py_create_unreachable_case))?;
+    m.add_wrapped(wrap_pyfunction!(py_create_piece))?;
+
+    Ok(())
+}
+
+type PyColor = String;
+type PyPieceType = i8;
+
+#[pyclass]
+#[derive(Clone)]
+struct PyStrategoBoard {
+    board: StrategoBoard,
+}
+
+
+#[pyfunction]
+fn get_available_moves(board: PyStrategoBoard) -> PyResult<Py<PyAny>> {
+        let moves = engine_utils::get_availables_moves(&board.board);
+        let moves: Vec<(PyCoord, PyCoord, Color)> = moves
+            .iter()
+            .map(|(from, to, color)| (case::from(from), case::from(to), *color))
+            .collect();
+        let gil_holder = utils::get_gild_holder().unwrap();
+        let gil = gil_holder.get();
+        //Ok(moves)
+        Ok(pythonize(gil.python(), &moves).unwrap())
+}
+
+#[pyfunction]
+fn py_create_full_case(coordinate: PyCoord, content: Piece) -> PyResult<Case> {
+    Ok(case::create_full_case(Coordinate::from(coordinate), content))
+}
+
+#[pyfunction]
+fn py_create_empty_case(coordinate: PyCoord) -> PyResult<Case> {
+    Ok(case::create_empty_case(Coordinate::from(coordinate)))
+}
+
+#[pyfunction]
+fn py_create_unreachable_case(coordinate: PyCoord) -> PyResult<Case> {
+    Ok(case::create_unreachable_case(Coordinate::from(coordinate)))
+}
+
+#[pyfunction]
+fn py_create_piece(piece_type: PyPieceType, color: PyColor) -> PyResult<Piece> {
+    Ok(Piece::new(piece_type.into(), color.into()))
+}
+
+impl Into<Color> for PyColor {
+    fn into(self) -> Color {
+        match self.as_str() {
+            "Blue" => Color::Blue,
+            "Red" => Color::Red,
+            _ => Color::None,
+        }
+    }
+}
+
+impl Into<PieceType> for PyPieceType {
+    fn into(self) -> PieceType {
+        match self {
+            -1 => PieceType::Flag,
+            -2 => PieceType::Bomb,
+            10 => PieceType::Marshal,
+            9 => PieceType::General,
+            8 => PieceType::Colonel,
+            7 => PieceType::Major,
+            6 => PieceType::Captain,
+            5 => PieceType::Lieutenant,
+            4 => PieceType::Sergeant,
+            3 => PieceType::Miner,
+            2 => PieceType::Scout,
+            1 => PieceType::Spy,
+            _ => PieceType::Null,
+        }
+    }
+}
+
+#[pymethods]
+impl PyStrategoBoard {
+    #[new]
+    pub fn new(cases: Vec<Vec<Case>>) -> Self {
+        PyStrategoBoard {
+            board: StrategoBoard::new(cases),
+        }
+    }
+
+    pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<Case>> {
+        Ok(self.board.moving(case, Coordinate::from(to)).unwrap())
+    }
+    
+    pub fn display_by_color(&self, color: PyColor) -> PyResult<String> {
+        Ok(self.board.display_by_color(&color.into())) 
+    }
+
+    //TODO
+    pub fn evaluate_simple(&self) -> PyResult<PyColor> {
+        todo!()
+    }
+}
 
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     let syspath: &PyList = py
@@ -57,90 +165,4 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
             e
         ))),
     }
-}
-
-#[pyfunction]
-fn get_available_moves(game_id: i128) -> PyResult<Py<PyAny>> {
-    if let Some(game) = game_pool::find_game_by_id(game_id) {
-        let moves = engine_utils::get_availables_moves(game.get_engine().status());
-        let moves: Vec<(PyCoord, PyCoord, Color)> = moves
-            .iter()
-            .map(|(from, to, color)| (case::from(from), case::from(to), *color))
-            .collect();
-        let gil_holder = utils::get_gild_holder().unwrap();
-        let gil = gil_holder.get();
-        //Ok(moves)
-        Ok(pythonize(gil.python(), &moves).unwrap())
-    } else {
-        panic!("Failed to find game {}", game_id);
-    }
-}
-
-#[pyfunction]
-fn register_game(player1: String, player2: String) -> PyResult<i128> {
-    let engine = StrategoEngine::new(
-        create_stratego_board(),
-        (
-            HumanPlayer::new(Color::Red, player1),
-            AIPlayer::new(Color::Blue, player2),
-        ),
-    );
-
-    let mut game_id = GAME_POOL_ID.lock().unwrap();
-    let gi = *game_id;
-    let game = Game::new(*game_id, engine);
-    *game_id += 1;
-
-    if game_pool::register_to_pool(game).is_ok() {
-        Ok(gi)
-    } else {
-        panic!("Failed to create game {}", game_id);
-    }
-}
-
-#[pyfunction]
-fn get_game_state(game_id: i128) -> PyResult<Py<PyAny>> {
-    if let Some(game) = game_pool::find_game_by_id(game_id) {
-        let engine = game.get_engine();
-        let status = engine.status().clone();
-        let gil_holder = utils::get_gild_holder().unwrap();
-        let gil = gil_holder.get();
-        Ok(pythonize(gil.python(), &status).unwrap())
-    } else {
-        panic!("Failed to find game {}", game_id);
-    }
-}
-
-#[pyfunction]
-fn perform_move(game_id: i128, from: PyCoord, to: PyCoord) -> PyResult<Py<PyAny>> {
-    if let Ok(cases) = game_pool::perform_move(game_id, from, to) {
-        let gil_holder = utils::get_gild_holder().unwrap();
-        let gil = gil_holder.get();
-        Ok(pythonize(gil.python(), &cases).unwrap())
-    } else {
-        panic!("Failed to perform move {}", game_id)
-    }
-
-}
-
-#[pyfunction]
-fn beautifull_board_display(game_id: i128) -> PyResult<String> {
-    if let Some(game) = game_pool::find_game_by_id(game_id) {
-        let engine = game.get_engine();
-        Ok(engine.display())
-    } else {
-        panic!("Failed to find game {}", game_id);
-    }
-
-    
-}
-
-#[pymodule]
-fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_wrapped(wrap_pyfunction!(register_game))?;
-    m.add_wrapped(wrap_pyfunction!(get_available_moves))?;
-    m.add_wrapped(wrap_pyfunction!(get_game_state))?;
-    m.add_wrapped(wrap_pyfunction!(perform_move))?;
-    m.add_wrapped(wrap_pyfunction!(beautifull_board_display))?;
-    Ok(())
 }

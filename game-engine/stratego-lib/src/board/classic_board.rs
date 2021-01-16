@@ -1,3 +1,4 @@
+use pyo3::prelude::pyclass;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use serde::{Deserialize, Serialize};
@@ -12,6 +13,7 @@ use super::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
+#[pyclass]
 #[derive(Serialize, Deserialize, Hash, Clone,  Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
