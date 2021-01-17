@@ -52,8 +52,7 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
                     color,
                     Direction::Down,
                 ));
-            } else
-                if y == 0 || y == col_len || x == 0 || x == row_len {
+            } else if y == 0 || y == col_len || x == 0 || x == row_len {
                 // It's a side
                 if y == 0 && x == 0 {
                     // It's a corner (upper left)
