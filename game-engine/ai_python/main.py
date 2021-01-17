@@ -21,3 +21,4 @@ def ask_next_move_monte_carlo() -> Tuple[Tuple[int, str], Tuple[int, str]]:
     monteCarlo = MonteCarloAI()
     return monteCarlo.ask_next_move() 
 
+

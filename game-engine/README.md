@@ -9,11 +9,15 @@ Please, I'm new to Rust, and we are studiants who are learning. Feel free to mak
 - [X] Rust should call the class function instead of a poorly named function
 - [ ] Implementing warp for client REST calls
 - [X] Return captures as available moves
+- [ ] Evolve Python api to Rust api
 
 ## Python AIs 
 
-### dependencies 
-We used this amazing crate [pyo3](https://github.com/PyO3/pyo3) for python and rust to easily commute, please make sure you can use it before.
+### dependencies
+
+We use this amazing crate [pyo3](https://github.com/PyO3/pyo3) for python and rust to easily commute, please make sure you can use it before.
+
+Install python dependencies with `pip3 install -r requirements.txt`
 
 **In game-engine folder**
 
@@ -99,4 +103,8 @@ The following function are there to help you build content for the board:
 
 ```
 
+### Web API
 
+Run web api, **in game_engine file**, with `uvicorn api:app --reload --app-dir 'ai_python'`, the app should run on [localhost](http://127.0.0.1:8000)
+
+Found swagger on [localhost](http://127.0.0.1:8000/docs)
