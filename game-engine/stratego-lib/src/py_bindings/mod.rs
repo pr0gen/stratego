@@ -5,7 +5,7 @@ use pythonize::pythonize;
 use std::env::current_dir;
 
 use crate::board::case::{self, Case, PyCoord, Coordinate};
-use crate::board::classic_board::StrategoBoard;
+use crate::board::classic_board::{self, StrategoBoard};
 use crate::board::piece::{Color, Piece, PieceType};
 use crate::board::Board;
 use crate::engine_utils;
@@ -16,16 +16,18 @@ const AI_STRATEGO_PYTHON_MODULE: &str = "ai_python";
 
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_wrapped(wrap_pyfunction!(get_available_moves))?;
-    m.add_class::<PyStrategoBoard>()?;
+    m.add_class::<RustStrategoBoard>()?;
     m.add_class::<Case>()?;
     m.add_class::<Piece>()?;
     m.add_class::<Coordinate>()?;
 
-    m.add_wrapped(wrap_pyfunction!(py_create_full_case))?;
-    m.add_wrapped(wrap_pyfunction!(py_create_empty_case))?;
-    m.add_wrapped(wrap_pyfunction!(py_create_unreachable_case))?;
-    m.add_wrapped(wrap_pyfunction!(py_create_piece))?;
+    m.add_wrapped(wrap_pyfunction!(rust_get_available_moves))?;
+    m.add_wrapped(wrap_pyfunction!(rust_create_full_case))?;
+    m.add_wrapped(wrap_pyfunction!(rust_create_empty_case))?;
+    m.add_wrapped(wrap_pyfunction!(rust_create_unreachable_case))?;
+    m.add_wrapped(wrap_pyfunction!(rust_create_piece))?;
+    m.add_wrapped(wrap_pyfunction!(rust_create_empty_stratego_board))?;
+    m.add_wrapped(wrap_pyfunction!(rust_create_stratego_board))?;
 
     Ok(())
 }
@@ -35,13 +37,24 @@ type PyPieceType = i8;
 
 #[pyclass]
 #[derive(Clone)]
-struct PyStrategoBoard {
+struct RustStrategoBoard {
     board: StrategoBoard,
 }
 
+#[pyfunction]
+fn rust_create_empty_stratego_board() -> PyResult<RustStrategoBoard> {
+    let board = classic_board::create_empty_stratego_board();
+    Ok(RustStrategoBoard::new(board.state().to_owned()))
+}
 
 #[pyfunction]
-fn get_available_moves(board: PyStrategoBoard) -> PyResult<Py<PyAny>> {
+fn rust_create_stratego_board() -> PyResult<RustStrategoBoard> {
+    let board = classic_board::create_stratego_board();
+    Ok(RustStrategoBoard::new(board.state().to_owned()))
+}
+
+#[pyfunction]
+fn rust_get_available_moves(board: RustStrategoBoard) -> PyResult<Py<PyAny>> {
         let moves = engine_utils::get_availables_moves(&board.board);
         let moves: Vec<(PyCoord, PyCoord, Color)> = moves
             .iter()
@@ -54,22 +67,22 @@ fn get_available_moves(board: PyStrategoBoard) -> PyResult<Py<PyAny>> {
 }
 
 #[pyfunction]
-fn py_create_full_case(coordinate: PyCoord, content: Piece) -> PyResult<Case> {
+fn rust_create_full_case(coordinate: PyCoord, content: Piece) -> PyResult<Case> {
     Ok(case::create_full_case(Coordinate::from(coordinate), content))
 }
 
 #[pyfunction]
-fn py_create_empty_case(coordinate: PyCoord) -> PyResult<Case> {
+fn rust_create_empty_case(coordinate: PyCoord) -> PyResult<Case> {
     Ok(case::create_empty_case(Coordinate::from(coordinate)))
 }
 
 #[pyfunction]
-fn py_create_unreachable_case(coordinate: PyCoord) -> PyResult<Case> {
+fn rust_create_unreachable_case(coordinate: PyCoord) -> PyResult<Case> {
     Ok(case::create_unreachable_case(Coordinate::from(coordinate)))
 }
 
 #[pyfunction]
-fn py_create_piece(piece_type: PyPieceType, color: PyColor) -> PyResult<Piece> {
+fn rust_create_piece(piece_type: PyPieceType, color: PyColor) -> PyResult<Piece> {
     Ok(Piece::new(piece_type.into(), color.into()))
 }
 
@@ -104,10 +117,10 @@ impl Into<PieceType> for PyPieceType {
 }
 
 #[pymethods]
-impl PyStrategoBoard {
+impl RustStrategoBoard {
     #[new]
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
-        PyStrategoBoard {
+        RustStrategoBoard {
             board: StrategoBoard::new(cases),
         }
     }

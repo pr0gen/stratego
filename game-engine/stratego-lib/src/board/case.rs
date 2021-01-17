@@ -1,4 +1,4 @@
-use pyo3::prelude::{pyfunction, pyclass};
+use pyo3::prelude::pyclass;
 use serde::{Deserialize, Serialize};
 
 use super::piece::{Color, Piece, PieceType};

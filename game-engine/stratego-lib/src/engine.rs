@@ -127,6 +127,7 @@ mod test {
     use crate::board::piece::Color;
     use crate::board::Board;
     use crate::player::HumanPlayer;
+    use crate::player::ai_player::AIPlayer;
 
     use super::{Engine, StrategoEngine};
 
@@ -136,7 +137,7 @@ mod test {
             create_empty_stratego_board(),
             (
                 HumanPlayer::new(Color::Red, String::from("Tigran")),
-                HumanPlayer::new(Color::Blue, String::from("Emma")),
+                AIPlayer::new(Color::Blue, String::from("Emma")),
             ),
         );
 

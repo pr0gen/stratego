@@ -22,37 +22,37 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
             let case = board.get_at(&Coordinate::new(x as i16, y as i16));
             let content = case.get_content();
             //FIXME it's fucked 
-            //if &PieceType::Scout == content.get_rank() {
-                //let color = content.get_color();
-                ////horizontal
-                //moves.append(&mut check_part_of_row(
-                    //&cases[x],
-                    //case,
-                    //color,
-                    //Direction::Left,
-                //));
-                //moves.append(&mut check_part_of_row(
-                    //&cases[x],
-                    //case,
-                    //color,
-                    //Direction::Right,
-                //));
+            if &PieceType::Scout == content.get_rank() {
+                let color = content.get_color();
+                //horizontal
+                moves.append(&mut check_part_of_row(
+                    &cases[x],
+                    case,
+                    color,
+                    Direction::Left,
+                ));
+                moves.append(&mut check_part_of_row(
+                    &cases[x],
+                    case,
+                    color,
+                    Direction::Right,
+                ));
 
-                ////vertical
-                //let vertical = find_vertical_cases(&cases, y as i16);
-                //moves.append(&mut check_part_of_row(
-                    //&vertical,
-                    //case,
-                    //color,
-                    //Direction::Up,
-                //));
-                //moves.append(&mut check_part_of_row(
-                    //&vertical,
-                    //case,
-                    //color,
-                    //Direction::Down,
-                //));
-            //} else
+                //vertical
+                let vertical = find_vertical_cases(&cases, y as i16);
+                moves.append(&mut check_part_of_row(
+                    &vertical,
+                    case,
+                    color,
+                    Direction::Up,
+                ));
+                moves.append(&mut check_part_of_row(
+                    &vertical,
+                    case,
+                    color,
+                    Direction::Down,
+                ));
+            } else
                 if y == 0 || y == col_len || x == 0 || x == row_len {
                 // It's a side
                 if y == 0 && x == 0 {
@@ -471,6 +471,7 @@ mod test {
 
     use super::{game_is_over, get_availables_moves, verify_board_integrity};
 
+    //#[ignore]
     #[test]
     fn should_check_scout_move_scouts_alone() {
         let mut cases = empty_board();
@@ -490,6 +491,7 @@ mod test {
         assert_eq!(36, res.len());
     }
 
+    //#[ignore]
     #[test]
     fn should_check_scout_move_scouts_with_others() {
         let mut cases = empty_board();
@@ -516,6 +518,7 @@ mod test {
 
         assert_eq!(28, res.len());
     }
+
     #[test]
     fn should_retrieve_available_moves_3x3() {
         let cases = create_3_x_3_stratego_board();
