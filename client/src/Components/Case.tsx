@@ -1,16 +1,22 @@
-import React, {useState} from 'react'
+import React from 'react'
 import '../styles/Game.scss'
+import getImageUrl from "../Utils/getImageUrl";
+
 export default function Case({type,position, eventClick, isSelected} : any) {
 
     const handleClick = () => {
+        if (['?', 'water'].includes(type)) return
         eventClick(position)
-        console.log(isSelected)
     }
 
     return (
-        <div className={isSelected ? 'active game-box' : 'game-box'} onClick={handleClick} >
+        <div
+            className={'game-box ' + (isSelected ? 'active border-active ' : '') + (type === 'water' ? 'water ' : '') }
+             onClick={handleClick}
+             style={{backgroundImage: 'url(' + getImageUrl(type)+')'}}
+        >
+            {type === '?' ? '?' : ''}
         </div>
-
     )
 
 }

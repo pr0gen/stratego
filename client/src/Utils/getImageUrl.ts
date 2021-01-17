@@ -1,46 +1,48 @@
 
 const getImageUrl = (piece :string) => {
 
+    const baseUrl = 'assets/images/'
+
     switch(piece) {
 
         case ' B ':
-            return 'bombe.png'
+            return baseUrl + 'bombe.png'
 
         case 'Mar':
-            return '.png'
+            return baseUrl + 'marshal.png'
 
         case ' G ':
-            return '.png'
+            return baseUrl + 'general.png'
 
         case 'Col':
-            return '.png'
+            return baseUrl + 'colonel.png'
 
         case 'Maj':
-            return '.png'
+            return baseUrl + 'major.png'
 
         case 'Capt':
-            return '.png'
+            return baseUrl + 'captain.png'
 
         case ' L ':
-            return '.png'
+            return baseUrl + 'lieutenant.png'
 
         case 'Ser':
-            return '.png'
+            return baseUrl + 'sergeant.png'
 
         case 'Min':
-            return '.png'
+            return baseUrl + 'miner.png'
 
         case 'Sco':
-            return '.png'
+            return baseUrl + 'scout.png'
 
         case 'Spy':
-            return '.png'
+            return baseUrl + 'spy.png'
 
         case ' F ':
-            return '.png'
+            return baseUrl + 'flag.png'
 
         default:
-            return 'default.png'
+            return baseUrl + ''
 
     }
 
