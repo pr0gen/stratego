@@ -42,45 +42,6 @@ it will ask your AI if everything is correctly set up his next move.
 
 [This file](https://github.com/pr0gen/stratego/tree/develop/game-engine/stratego-lib/src/py_bindings/mod.rs) controls Python using Rust code, to move pieces, ask for board state or available moves.
 
-
-## How to use Stratego Library
-
-The object `RustStrategoBoard` is available to be used in Python. 
-
-
-```python
-
-    board = RustStrategoBoard(cases) #constructor
-
-    board.moving(case, (1, "A")) # move a case
-    
-    board.display_by_color("Blue") 
-
-```
-
-The others three, are made to be displayed `Case`, `Piece`, `Coordinate`
-
-The following function are there to help you build content for the board: 
-
-```python
-
-    rust_create_stratego_board() # to get a stratego board randomlly filed
-
-    # you can also build an empty board and fill it yourself
-
-    rust_create_empty_stratego_board() 
-
-    piece = rust_create_piece(1, "Blue") # 1 correspond to the number in Rust enum
-
-    case = rust_create_full_case((1, "A"), piece)
-    rust_create_empty_case((1, "A")) # without content
-    rust_create_unreachable_case((1, "A")) # water
-
-    moves = rust_get_available_moves(board) # return available moves of a board
-    # maybe parsed in python with parse_moves() in ai.py file 
-
-```
-
 ## How to play 
 
 In stratego-exec, the main function defines a game with a AI.
@@ -97,4 +58,45 @@ In stratego-exec, the main function defines a game with a AI.
 The engine controls board and players. He asks them to enter position to play. (e.g: 0A)
 
 The GamePool is only here for AI to be able to create games and simulates some moves, you can disable it if you are playing PvP.
+
+## How to use Stratego Library
+
+The object `RustStrategoBoard` is available to be used in Python. 
+
+
+```python
+    import stratego_engine as se
+
+    board = se.RustStrategoBoard(cases) #constructor
+
+    board.moving(case, (1, "A")) # move a case
+    
+    board.display_by_color("Blue") 
+
+```
+
+The others three, are made to be displayed `Case`, `Piece`, `Coordinate`
+
+The following function are there to help you build content for the board: 
+
+```python
+    import stratego_engine as se
+
+    se.rust_create_stratego_board() # to get a stratego board randomlly filed
+
+    # you can also build an empty board and fill it yourself
+
+    se.rust_create_empty_stratego_board() 
+
+    piece = se.rust_create_piece(1, "Blue") # 1 correspond to the number in Rust enum
+
+    case = se.rust_create_full_case((1, "A"), piece)
+    se.rust_create_empty_case((1, "A")) # without content
+    se.rust_create_unreachable_case((1, "A")) # water
+
+    moves = se.rust_get_available_moves(board) # return available moves of a board
+    # maybe parsed in python with parse_moves() in ai.py file 
+
+```
+
 

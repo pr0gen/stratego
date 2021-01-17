@@ -181,8 +181,9 @@ fn check_row_for_scout(
 ) -> Vec<(Coordinate, Coordinate, Color)> {
     let mut moves = Vec::new();
     let coord_from = case.get_coordinate();
-    for case in cases {
-        if let Some(to) = check_case(case, player_color) {
+    for to_go_case in cases {
+
+        if let Some(to) = check_case(to_go_case, player_color) {
             moves.push((*coord_from, to, *player_color));
         } else {
             break;

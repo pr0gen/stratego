@@ -11,7 +11,8 @@ class MonteCarloAI(StrategoAI):
         moves = se.rust_get_available_moves(board)
 
         movesFormated = parse_moves(moves)
-        print(movesFormated[0].show())
+        for move in movesFormated:
+            move.show()
         return ((3, "A"), (4, "A"))
         # movesFormated = parse_moves(moves)
 
