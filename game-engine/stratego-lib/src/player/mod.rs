@@ -7,6 +7,7 @@ use crate::parse;
 pub mod ai_player;
 
 pub trait Player { 
+
     fn ask_next_move(&self) -> (Coordinate, Coordinate);
 
     fn get_color(&self) -> &Color;

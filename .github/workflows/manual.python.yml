@@ -1,9 +1,5 @@
 name: Manual Run Python Tests
-on:
-  push:
-    branches: [ master, develop ]
-  pull_request:
-    branches: [ master, develop ]
+on: workflow_dispatch  
 
 jobs:
   build:

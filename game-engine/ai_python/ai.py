@@ -13,19 +13,16 @@ class TestStrategoAI(StrategoAI):
         return ((3, "A"), (4, "A"))
 
 
-class Builder:
-
-    @staticmethod
-    def build(builder):
-        return Move(builder.from_x, builder.from_y, builder.to_x, builder.to_y, builder.color)
-
-
 class MoveBuilder:
     from_x = None
     from_y = None
     to_x = None
     to_y = None
     color = None
+
+    @staticmethod
+    def build(builder):
+        return Move(builder.from_x, builder.from_y, builder.to_x, builder.to_y, builder.color)
 
     def set_from_x(self, from_x):
         self.from_x = from_x
@@ -84,4 +81,4 @@ def parse_move(move):
         .set_to_y(move[1][1][1]) \
         .set_color(move[2])
 
-    return Builder.build(moveBuilder)
+    return MoveBuilder.build(moveBuilder)

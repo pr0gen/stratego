@@ -1,16 +1,24 @@
 use std::hash::Hash;
 
 use crate::board::case::{Case, Coordinate};
+use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::Color;
 use crate::board::Board;
 use crate::engine_utils;
 use crate::error::StrategoError;
-use crate::player::Player;
+use crate::player::ai_player::AIPlayer;
+use crate::player::{HumanPlayer, Player};
 
 pub trait Engine<B: Board>: Hash {
     fn status(&self) -> &B;
 
     fn moving(&mut self) -> Result<(), StrategoError>;
+
+    fn perform_move(
+        &mut self,
+        from: Coordinate,
+        to: Coordinate,
+    ) -> Result<Vec<Case>, StrategoError>;
 
     fn get_turn(&self) -> Color;
 
@@ -19,20 +27,15 @@ pub trait Engine<B: Board>: Hash {
     fn display_by_color(&self, color: &Color) -> String;
 }
 
-#[derive(Debug, Hash, Eq, PartialEq, Clone)]
-pub struct StrategoEngine<B: Board, P1: Player + Hash, P2: Player + Hash> {
-    board: B,
-    players: (P1, P2),
+#[derive(Debug, Hash)]
+pub struct StrategoEngine {
+    board: StrategoBoard,
+    players: (HumanPlayer, AIPlayer),
     turn: Color,
 }
 
-impl<B, P1, P2> StrategoEngine<B, P1, P2>
-where
-    B: Board,
-    P1: 'static + Player + Hash + Eq + Clone,
-    P2: 'static + Player + Hash + Eq + Clone,
-{
-    pub fn new(board: B, players: (P1, P2)) -> Self {
+impl StrategoEngine {
+    pub fn new(board: StrategoBoard, players: (HumanPlayer, AIPlayer)) -> Self {
         StrategoEngine {
             board,
             players,
@@ -67,13 +70,8 @@ where
     }
 }
 
-impl<B, P1, P2> Engine<B> for StrategoEngine<B, P1, P2>
-where
-    B: Board,
-    P1: 'static + Player + Hash + Eq + Clone,
-    P2: 'static + Player + Hash + Eq + Clone,
-{              
-    fn status(&self) -> &B {
+impl Engine<StrategoBoard> for StrategoEngine {
+    fn status(&self) -> &StrategoBoard {
         &self.board
     }
 
@@ -101,6 +99,15 @@ where
         }
     }
 
+    fn perform_move(
+        &mut self,
+        from: Coordinate,
+        to: Coordinate,
+    ) -> Result<Vec<Case>, StrategoError> {
+        let case = self.board.get_at(&from).clone();
+        self.execute_move(case, to)
+    }
+
     fn get_turn(&self) -> Color {
         self.turn
     }
@@ -117,9 +124,10 @@ where
 #[cfg(test)]
 mod test {
     use crate::board::classic_board::create_empty_stratego_board;
-    use crate::board::Board;
     use crate::board::piece::Color;
+    use crate::board::Board;
     use crate::player::HumanPlayer;
+    use crate::player::ai_player::AIPlayer;
 
     use super::{Engine, StrategoEngine};
 
@@ -129,7 +137,7 @@ mod test {
             create_empty_stratego_board(),
             (
                 HumanPlayer::new(Color::Red, String::from("Tigran")),
-                HumanPlayer::new(Color::Blue, String::from("Emma")),
+                AIPlayer::new(Color::Blue, String::from("Emma")),
             ),
         );
 
