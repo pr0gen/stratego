@@ -172,7 +172,7 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     });
 
     let pwd = cur.as_path().as_os_str().to_str().unwrap();
-    match syspath.insert(0, format!("{}", pwd)) {
+    match syspath.insert(0, pwd.to_string()) {
         Ok(_) => Ok(()),
         Err(e) => panic!(StrategoError::AILoadingError(format!(
             "Failed to load ai for stratego, {}",
