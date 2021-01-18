@@ -19,24 +19,15 @@ We use this amazing crate [pyo3](https://github.com/PyO3/pyo3) for python and ru
 
 Install python dependencies with `pip3 install -r requirements.txt`
 
-**In game-engine folder**
+Build engine project
 
-Compile Rust sources for Python, you can use `build_python.sh`.
-
-or 
-
-```shell
-cargo build --release
-
-cp target/release/stratego-exec game-stratego
-cp target/release/libstratego_lib.so ai_python/src
-mv ai_python/src/libstratego_lib.so ai_python/src/stratego_engine.so
+```bash
+  make lib-build
 ```
 
 You should put all AI files in [ai_python](https://github.com/pr0gen/stratego/tree/develop/game-engine/ai_python/src) folder. Please, make sure this file **compile**, or Rust will throw an uncomprehensible error. I have searched for almost 3hours. :(
 
 Your AIs should depend on interface `class StrategoAI(abc.ABC):`
-
 
 
 In [rust_bind](https://github.com/pr0gen/stratego/tree/develop/game-engine/rust_bind.py), thoses functions are needed for Rust to call your AI care with the name of this one.
@@ -107,6 +98,6 @@ The following function are there to help you build content for the board:
 
 ### Web API
 
-Run web api, **in game_engine file**, with `uvicorn api:app --reload `, the app should run on [localhost](http://127.0.0.1:8000)
+Run web api, with `make api-build`, the app should run on [localhost](http://127.0.0.1:8000)
 
 Found swagger on [localhost](http://127.0.0.1:8000/docs)
