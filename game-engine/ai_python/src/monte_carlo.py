@@ -1,5 +1,5 @@
 from typing import Tuple
-from ai_python.src.ai import StrategoAI, Move, MoveBuilder, parse_moves
+from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves
 
 import ai_python.src.stratego_engine as se
 from random import *
