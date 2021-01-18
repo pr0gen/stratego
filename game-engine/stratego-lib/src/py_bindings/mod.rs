@@ -4,15 +4,13 @@ use pyo3::wrap_pyfunction;
 use pythonize::pythonize;
 use std::env::current_dir;
 
-use crate::board::case::{self, Case, PyCoord, Coordinate};
+use crate::board::case::{self, Case, Coordinate, PyCoord};
 use crate::board::classic_board::{self, StrategoBoard};
 use crate::board::piece::{Color, Piece, PieceType};
 use crate::board::Board;
 use crate::engine_utils;
 use crate::error::StrategoError;
 use crate::utils;
-
-const AI_STRATEGO_PYTHON_MODULE: &str = "ai_python";
 
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -55,20 +53,23 @@ fn rust_create_stratego_board() -> PyResult<RustStrategoBoard> {
 
 #[pyfunction]
 fn rust_get_available_moves(board: RustStrategoBoard) -> PyResult<Py<PyAny>> {
-        let moves = engine_utils::get_availables_moves(&board.board);
-        let moves: Vec<(PyCoord, PyCoord, Color)> = moves
-            .iter()
-            .map(|(from, to, color)| (case::from(from), case::from(to), *color))
-            .collect();
-        let gil_holder = utils::get_gild_holder().unwrap();
-        let gil = gil_holder.get();
-        //Ok(moves)
-        Ok(pythonize(gil.python(), &moves).unwrap())
+    let moves = engine_utils::get_availables_moves(&board.board);
+    let moves: Vec<(PyCoord, PyCoord, Color)> = moves
+        .iter()
+        .map(|(from, to, color)| (case::from(from), case::from(to), *color))
+        .collect();
+    let gil_holder = utils::get_gild_holder().unwrap();
+    let gil = gil_holder.get();
+    //Ok(moves)
+    Ok(pythonize(gil.python(), &moves).unwrap())
 }
 
 #[pyfunction]
 fn rust_create_full_case(coordinate: PyCoord, content: Piece) -> PyResult<Case> {
-    Ok(case::create_full_case(Coordinate::from(coordinate), content))
+    Ok(case::create_full_case(
+        Coordinate::from(coordinate),
+        content,
+    ))
 }
 
 #[pyfunction]
@@ -128,9 +129,9 @@ impl RustStrategoBoard {
     pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<Case>> {
         Ok(self.board.moving(case, Coordinate::from(to)).unwrap())
     }
-    
+
     pub fn display_by_color(&self, color: PyColor) -> PyResult<String> {
-        Ok(self.board.display_by_color(&color.into())) 
+        Ok(self.board.display_by_color(&color.into()))
     }
 
     //TODO
@@ -171,7 +172,7 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     });
 
     let pwd = cur.as_path().as_os_str().to_str().unwrap();
-    match syspath.insert(0, format!("{}/{}", pwd, AI_STRATEGO_PYTHON_MODULE)) {
+    match syspath.insert(0, pwd.to_string()) {
         Ok(_) => Ok(()),
         Err(e) => panic!(StrategoError::AILoadingError(format!(
             "Failed to load ai for stratego, {}",

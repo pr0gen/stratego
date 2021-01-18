@@ -1,14 +1,15 @@
+use crate::board::case;
 use crate::error::StrategoError;
 use crate::player::*;
 use crate::utils;
-use crate::board::case;
 
-const AI_STRATEGO_INIT_FILE: &str = "main";
+const AI_STRATEGO_INIT_FILE: &str = "rust_bind";
 const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
 
 #[derive(Debug, Hash, Clone, Eq, PartialEq)]
 pub struct AIPlayer {
-    color: Color, name: String,
+    color: Color,
+    name: String,
 }
 
 impl AIPlayer {
@@ -37,26 +38,40 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
         Ok(gil_holder) => {
             let py = gil_holder.get().python();
 
+            use std::env::current_dir;
+
+            let cur = current_dir().unwrap_or_else(|e| {
+                panic!(StrategoError::AILoadingError(format!(
+                    "Failed to find pwd, {}",
+                    e
+                )))
+            });
+
+            let pwd = cur.as_path().as_os_str().to_str().unwrap();
+            eprintln!("{}", pwd);
             let import = py.import(AI_STRATEGO_INIT_FILE);
-            if import.is_err() {
+            if let Err(e) = import {
                 return Err(StrategoError::AILoadingError(format!(
-                    "Failed to import stratego ai init file, {}", import.unwrap(),
+                    "Failed to import stratego ai init file, {}",
+                    e,
                 )));
             }
 
             let function = import
                 .unwrap()
                 .get(format!("{}_{}", AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION, name).as_str());
-            if function.is_err() {
+            if let Err(e) = function {
                 return Err(StrategoError::AILoadingError(format!(
-                    "Failed to load AI function, {}", function.unwrap()
+                    "Failed to load AI function, {}",
+                    e
                 )));
             }
 
             let call = function.unwrap().call0();
-            if call.is_err() {
+            if let Err(e) = call {
                 return Err(StrategoError::AILoadingError(format!(
-                    "Failed to call AI function, {}", call.unwrap()
+                    "Failed to call AI function, {}",
+                    e
                 )));
             }
 

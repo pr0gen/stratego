@@ -2,6 +2,7 @@
 /node_modules/*
 /target
 *.so
-*/__pycache__
+*/__pycache__/*
 Cargo.lock
 requirements.in
+/__pycache__
