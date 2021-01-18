@@ -10,5 +10,7 @@ server/dist/
 
 
 game-engine/game-stratego
+game-engine/ai_python/test/__pycache__
+game-engine/ai_python/src/__pycache__
 
 client/.eslintcache
