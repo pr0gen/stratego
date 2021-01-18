@@ -1,4 +1,4 @@
-from ai_python.ai import  parse_move
+from ai_python.src.ai import parse_move
 
 def test_parsing_moves():
 

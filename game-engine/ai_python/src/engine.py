@@ -1,6 +1,7 @@
 from typing import Tuple, List
 import enum 
-import ai_python.stratego_engine as se
+import ai_python.src.stratego_engine as se
+
 
 class Color(enum.Enum):
     Blue = 1

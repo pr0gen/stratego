@@ -1,7 +1,5 @@
-import pprint
-from typing import Tuple
-from ai_python.engine import Player, Color, Engine, GamePool, Game
-import ai_python.stratego_engine as se
+from ai_python.src.engine import Player, Color, Engine, GamePool, Game
+import ai_python.src.stratego_engine as se
 
 def test_build_player(): 
     player = Player("Tigran", Color.Blue) 

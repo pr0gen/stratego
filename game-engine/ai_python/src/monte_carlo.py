@@ -1,7 +1,7 @@
 from typing import Tuple
-from ai import StrategoAI, Move, MoveBuilder, parse_moves
+from ai_python.src.ai import StrategoAI, Move, MoveBuilder, parse_moves
 
-import stratego_engine as se
+import ai_python.src.stratego_engine as se
 from random import *
 
 class MonteCarloAI(StrategoAI):
@@ -29,7 +29,7 @@ class MonteCarloAI(StrategoAI):
 
         # return moves[randint(0, len(moves) - 1)]
 
-monte_carlo = MonteCarloAI()
-move = monte_carlo.ask_next_move()
+# monte_carlo = MonteCarloAI()
+# move = monte_carlo.ask_next_move()
 
 
