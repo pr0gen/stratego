@@ -5,11 +5,11 @@ The main library is written in Rust. The AI part is using Python.
 Please, I'm new to Rust, and we are studiants who are learning. Feel free to make review or reach us if you see garbage code, I would be happy to learn !
 
 ## TODO
-- [ ] Maybe a MakeFile to build properly the project
+- [X] Maybe a MakeFile to build properly the project
 - [X] Rust should call the class function instead of a poorly named function
-- [ ] Implementing warp for client REST calls
 - [X] Return captures as available moves
 - [ ] Evolve Python api to Rust api
+- [ ] Implementing warp for client REST calls
 
 ## Python AIs 
 
