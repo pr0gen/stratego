@@ -134,6 +134,10 @@ impl RustStrategoBoard {
         Ok(self.board.display_by_color(&color.into()))
     }
 
+    pub fn at(&self, coordinate: PyCoord) -> PyResult<Case> {
+        Ok(self.board.get_at(&Coordinate::from(coordinate)).clone())
+    }
+
     //TODO
     pub fn evaluate_simple(&self) -> PyResult<PyColor> {
         todo!()

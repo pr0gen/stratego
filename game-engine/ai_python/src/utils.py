@@ -1,5 +1,39 @@
 import abc
-from typing import Tuple
+import random
+import string
+from typing import Tuple, List
+
+
+import ai_python.src.stratego_engine as se
+
+def parse_board(board: List[List[str]]):
+    # TODO
+    return se.rust_create_stratego_board()
+
+def generate_uuid(length) -> str:
+    return ''.join(random.choices(string.ascii_uppercase + string.digits, k = length))
+
+
+def parse_moves(data):
+    moves = []
+
+    for move in data:
+        moves.append(parse_move(move))
+
+    return moves
+
+
+def parse_move(move):
+    moveBuilder = MoveBuilder()
+
+    moveBuilder \
+        .set_from_x(move[0][0]) \
+        .set_from_y(move[0][1][1]) \
+        .set_to_x(move[1][0]) \
+        .set_to_y(move[1][1][1]) \
+        .set_color(move[2])
+
+    return MoveBuilder.build(moveBuilder)
 
 
 class StrategoAI(abc.ABC):
@@ -63,22 +97,3 @@ class Move:
         print('from:(', self.from_x, ',', self.from_y, ')  to:(', self.to_x, ',', self.to_y, ')   color:', self.color)
 
 
-def parse_moves(data):
-    moves = []
-
-    for move in data:
-        moves.append(parse_move(move))
-
-    return moves
-
-def parse_move(move):
-    moveBuilder = MoveBuilder()
-
-    moveBuilder \
-        .set_from_x(move[0][0]) \
-        .set_from_y(move[0][1][1]) \
-        .set_to_x(move[1][0]) \
-        .set_to_y(move[1][1][1]) \
-        .set_color(move[2])
-
-    return MoveBuilder.build(moveBuilder)

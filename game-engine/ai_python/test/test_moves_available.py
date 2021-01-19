@@ -1,4 +1,4 @@
-from ai_python.src.ai import parse_move
+from ai_python.src.utils import parse_move, generate_uuid
 
 def test_parsing_moves():
 
@@ -15,3 +15,6 @@ def test_parsing_moves():
     assert move.color == 'Blue'
 
 
+def test_generate_uuid():
+    uuid = generate_uuid(30)
+    assert len(uuid) == 30
