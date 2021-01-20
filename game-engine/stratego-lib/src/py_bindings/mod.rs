@@ -12,6 +12,8 @@ use crate::engine_utils;
 use crate::error::StrategoError;
 use crate::utils;
 
+pub mod evaluation_function;
+
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<RustStrategoBoard>()?;
