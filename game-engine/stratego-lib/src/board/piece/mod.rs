@@ -49,7 +49,7 @@ impl From<&str> for Color {
 }
 
 impl Color {
-    pub fn into(&self) -> &str {
+    pub fn as_str(&self) -> &str {
         match self {
             Color::Red => "Red",
             Color::Blue => "Blue",

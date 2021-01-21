@@ -29,6 +29,8 @@ fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(rust_create_empty_stratego_board))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_stratego_board))?;
 
+    m.add_wrapped(wrap_pyfunction!(rust_basic_evaluation))?;
+
     Ok(())
 }
 
@@ -39,6 +41,15 @@ type PyPieceType = i8;
 #[derive(Clone)]
 struct RustStrategoBoard {
     board: StrategoBoard,
+}
+
+#[pyfunction]
+fn rust_basic_evaluation(board: RustStrategoBoard) -> PyResult<PyColor> {
+    if let Some(color) = engine_utils::game_is_over(board.board.state()) {
+        Ok(format!("{}", color.as_str()))
+    } else {
+        Ok(String::from("None"))
+    }
 }
 
 #[pyfunction]

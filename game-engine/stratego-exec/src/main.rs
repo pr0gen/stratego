@@ -21,11 +21,11 @@ fn main() {
     loop {
         let board = engine.status();
         match game_is_over(board.state()) {
-            Ok(Color::Red) => {
+            Some(Color::Red) => {
                 println!("Red wins");
                 break;
             }
-            Ok(Color::Blue) => {
+            Some(Color::Blue) => {
                 println!("Blue wins");
                 break;
             }
