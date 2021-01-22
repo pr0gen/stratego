@@ -10,6 +10,12 @@ def parse_board(board: List[List[str]]):
     # TODO
     return se.rust_create_stratego_board()
 
+
+# def parse_case(case: se.Case) -> str:
+    # case
+
+
+
 def generate_uuid(length) -> str:
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k = length))
 

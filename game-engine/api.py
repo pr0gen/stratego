@@ -69,12 +69,15 @@ def read_game(uuid: str, color: str):
     return BoardResponse(200, False, "", game.uuid, board.display_by_color(color))
 
 
-@app.get("/moves/{player_id}/{uuid}")
+@app.get("/moves/{player_color}/{uuid}")
 def read_available_moves(player_color: str, uuid: str):
-    game = game_pool.find_game(uuid) 
-    engine = game.engine
-    moves = se.rust_get_available_moves(engine.board)
-    return MoveResponse(200, False, "", uuid, parse_moves(moves))
+    try:
+        game = game_pool.find_game(uuid) 
+        engine = game.engine
+        moves = se.rust_get_available_moves(engine.board)
+        return MoveResponse(200, False, "", uuid, parse_moves(moves))
+    except:
+        return StrategoResponse(200, True, "Game Not Found", uuid)
     
 
 @app.post("/moves")
@@ -82,6 +85,8 @@ def move_piece(uuid: str, player_id: str, coordinate_from: Tuple[int, str], coor
     game = game_pool.find_game(uuid) 
     engine = game.engine
     board = engine.board
+    print(board.display_by_color("Red"))
     moved = board.moving(board.at(coordinate_from), coordinate_to)
+    print(board.display_by_color("Red"))
     return MoveResponse(200, False, "", uuid, moved)
 

@@ -139,8 +139,9 @@ impl RustStrategoBoard {
         }
     }
 
-    pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<Case>> {
-        Ok(self.board.moving(case, Coordinate::from(to)).unwrap())
+    pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<String>> {
+        let cases = self.board.moving(case, Coordinate::from(to)).unwrap();
+        Ok(cases.iter().map(|case| case.display()).collect())
     }
 
     pub fn display_by_color(&self, color: PyColor) -> PyResult<String> {
