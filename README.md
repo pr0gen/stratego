@@ -70,6 +70,8 @@ The object `RustStrategoBoard` is available to be used in Python.
     
     board.display_by_color("Blue") 
 
+    board.at((1, "A"))
+
 ```
 
 The others three, are made to be displayed `Case`, `Piece`, `Coordinate`
@@ -94,6 +96,7 @@ The following function are there to help you build content for the board:
     moves = se.rust_get_available_moves(board) # return available moves of a board
     # maybe parsed in python with parse_moves() in ai.py file 
 
+    se.rust_basic_evaluation(board) # return color of the winner, if one there is *Yoda*
 ```
 
 ### Web API
