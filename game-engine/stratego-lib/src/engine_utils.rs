@@ -155,10 +155,14 @@ fn check_part_of_row(
     let coordinate = case.get_coordinate();
     match direction {
         Direction::Up => {
-            check_row_for_scout(&cases[0..coordinate.get_x() as usize], case, player_color)
+            let mut up = cases[0..coordinate.get_x() as usize].to_vec();
+            up.reverse();
+            check_row_for_scout(&up, case, player_color)
         }
         Direction::Left => {
-            check_row_for_scout(&cases[0..coordinate.get_y() as usize], case, player_color)
+            let mut left = cases[0..coordinate.get_y() as usize].to_vec();
+            left.reverse();
+            check_row_for_scout(&left, case, player_color)
         }
         Direction::Right => check_row_for_scout(
             &cases[(coordinate.get_y() + 1) as usize..cases.len()],
@@ -181,11 +185,17 @@ fn check_row_for_scout(
     let mut moves = Vec::new();
     let coord_from = case.get_coordinate();
     for to_go_case in cases {
-        //TODO fix this
-        if let Some(to) = check_case(to_go_case, player_color) {
-            moves.push((*coord_from, to, *player_color));
-        } else {
+
+        let coord_to = to_go_case.get_coordinate();
+        let state = to_go_case.get_state();
+        let color = to_go_case.get_content().get_color();
+        if &State::Full == state {
+            if player_color != color {
+                moves.push((*coord_from, *coord_to, *color));
+            }
             break;
+        } else if &State::Empty == state {
+            moves.push((*coord_from, *coord_to, *color));
         }
     }
     moves
@@ -471,7 +481,34 @@ mod test {
 
     use super::{game_is_over, get_availables_moves, verify_board_integrity};
 
-    //#[ignore]
+    #[test]
+    fn should_check_scouts_can_not_move_behind_pieces() {
+        let mut cases = empty_board();
+        cases[8][1] = create_full_case(
+            Coordinate::new(8, 1),
+            Piece::new(PieceType::Scout, Color::Red),
+        );
+        cases[8][3] = create_full_case(
+            Coordinate::new(8, 3),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        );
+        cases[8][4] = create_full_case(
+            Coordinate::new(8, 4),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        );
+
+        cases[2][1] = create_full_case(
+            Coordinate::new(2, 1),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        );
+
+        let board = &StrategoBoard::new(cases);
+        eprintln!("{}", board.display());
+        let res = get_availables_moves(board);
+        eprintln!("{:?}", res);
+        assert_eq!(10, res.len());
+    }
+
     #[test]
     fn should_check_scout_move_scouts_alone() {
         let mut cases = empty_board();
@@ -487,11 +524,10 @@ mod test {
         let board = &StrategoBoard::new(cases);
         eprintln!("{}", board.display());
         let res = get_availables_moves(board);
-
+        eprintln!("{:?}", res);
         assert_eq!(36, res.len());
     }
 
-    //#[ignore]
     #[test]
     fn should_check_scout_move_scouts_with_others() {
         let mut cases = empty_board();
@@ -515,7 +551,7 @@ mod test {
         let board = &StrategoBoard::new(cases);
         eprintln!("{}", board.display());
         let res = get_availables_moves(board);
-
+        eprintln!("{:?}", res);
         assert_eq!(28, res.len());
     }
 
