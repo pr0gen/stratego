@@ -46,7 +46,7 @@ struct RustStrategoBoard {
 #[pyfunction]
 fn rust_basic_evaluation(board: RustStrategoBoard) -> PyResult<PyColor> {
     if let Some(color) = engine_utils::game_is_over(board.board.state()) {
-        Ok(format!("{}", color.as_str()))
+        Ok(color.as_str().to_string())
     } else {
         Ok(String::from("None"))
     }
