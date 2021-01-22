@@ -21,7 +21,7 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
         for y in 0..=col_len {
             let case = board.get_at(&Coordinate::new(x as i16, y as i16));
             let content = case.get_content();
-            //FIXME it's fucked 
+            //FIXME it's fucked
             if &PieceType::Scout == content.get_rank() {
                 let color = content.get_color();
                 //horizontal
@@ -181,7 +181,7 @@ fn check_row_for_scout(
     let mut moves = Vec::new();
     let coord_from = case.get_coordinate();
     for to_go_case in cases {
-
+        //TODO fix this
         if let Some(to) = check_case(to_go_case, player_color) {
             moves.push((*coord_from, to, *player_color));
         } else {
@@ -285,7 +285,7 @@ pub fn ask_next_move(player: &dyn Player, board: &impl Board) -> (Case, Coordina
     (case.clone(), to)
 }
 
-pub fn game_is_over(cases: &[Vec<Case>]) -> Result<Color, StrategoError> {
+pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     let flatten_state: Vec<_> = cases.iter().flatten().collect();
 
     let blues: Vec<_> = flatten_state
@@ -303,7 +303,7 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Result<Color, StrategoError> {
         .filter(|&c| c.get_content().get_rank() == &PieceType::Flag)
         .collect();
     if res.is_empty() {
-        return Ok(Color::Red);
+        return Some(Color::Red);
     }
 
     let res: Vec<_> = reds
@@ -311,7 +311,7 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Result<Color, StrategoError> {
         .filter(|c| c.get_content().get_rank() == &PieceType::Flag)
         .collect();
     if res.is_empty() {
-        return Ok(Color::Blue);
+        return Some(Color::Blue);
     }
 
     //Check moveable pieces
@@ -321,7 +321,7 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Result<Color, StrategoError> {
         .filter(|c| !c.get_content().get_move().equals(AvailableMove::Immovable))
         .collect();
     if res.is_empty() {
-        return Ok(Color::Red);
+        return Some(Color::Red);
     }
 
     let res: Vec<_> = reds
@@ -330,10 +330,10 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Result<Color, StrategoError> {
         .filter(|c| !c.get_content().get_move().equals(AvailableMove::Immovable))
         .collect();
     if res.is_empty() {
-        return Ok(Color::Blue);
+        return Some(Color::Blue);
     }
 
-    Err(StrategoError::GameNotOverError())
+    None
 }
 
 pub fn verify_board_integrity(board: impl Board) -> Result<StrategoBoard, StrategoError> {
@@ -567,10 +567,10 @@ mod test {
 
         let res = game_is_over(&cases);
         match res {
-            Ok(val) => {
+            Some(val) => {
                 assert_eq!(Color::Red, val);
             }
-            Err(_) => panic!("Should not happen"),
+            None => panic!("Should not happen"),
         }
     }
     #[test]
@@ -595,10 +595,10 @@ mod test {
 
         let res = game_is_over(&cases);
         match res {
-            Ok(val) => {
+            Some(val) => {
                 assert_eq!(Color::Red, val);
             }
-            Err(_) => panic!("Should not happen"),
+            None => panic!("Should not happen"),
         }
     }
 
@@ -628,11 +628,9 @@ mod test {
 
         let res = game_is_over(&cases);
         match res {
-            Ok(_) => panic!("Should not happen"),
-            Err(e) => {
+            Some(_) => panic!("Should not happen"),
+            None => {
                 assert!(true);
-
-                assert_eq!(e.message(), String::from("Game is not over"));
             }
         }
     }
