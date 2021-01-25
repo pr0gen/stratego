@@ -9,10 +9,10 @@ use crate::board::Board;
 use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
 
-pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, Color)> {
+pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     let cases = board.state();
     let row_len = cases.len() - 1;
-    let mut moves: Vec<(Coordinate, Coordinate, Color)> = Vec::with_capacity(row_len);
+    let mut moves: Vec<(Coordinate, Coordinate, Color, Color)> = Vec::with_capacity(row_len);
 
     // x -> row
     // y -> col
@@ -151,7 +151,7 @@ fn check_part_of_row(
     case: &Case,
     player_color: &Color,
     direction: Direction,
-) -> Vec<(Coordinate, Coordinate, Color)> {
+) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     let coordinate = case.get_coordinate();
     match direction {
         Direction::Up => {
@@ -181,21 +181,20 @@ fn check_row_for_scout(
     cases: &[Case],
     case: &Case,
     player_color: &Color,
-) -> Vec<(Coordinate, Coordinate, Color)> {
+) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     let mut moves = Vec::new();
     let coord_from = case.get_coordinate();
     for to_go_case in cases {
-
         let coord_to = to_go_case.get_coordinate();
         let state = to_go_case.get_state();
         let color = to_go_case.get_content().get_color();
         if &State::Full == state {
             if player_color != color {
-                moves.push((*coord_from, *coord_to, *color));
+                moves.push((*coord_from, *coord_to, *player_color, *color));
             }
             break;
         } else if &State::Empty == state {
-            moves.push((*coord_from, *coord_to, *color));
+            moves.push((*coord_from, *coord_to, *player_color, *color));
         }
     }
     moves
@@ -208,7 +207,10 @@ enum Direction {
     Right,
 }
 
-fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Color)> {
+fn check_cases(
+    cases: &[&Case],
+    case: &Case,
+) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     if case
         .get_content()
         .get_move()
@@ -221,7 +223,7 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Col
         let color = case.get_content().get_color();
         cases.iter().for_each(|case| {
             if let Some(coord_to) = check_case(case, &color) {
-                moves.push((*coord_from, coord_to, *color));
+                moves.push((*coord_from, coord_to, *color, *case.get_content().get_color()));
             }
         });
         moves
@@ -236,7 +238,10 @@ fn check_case(case: &Case, player_color: &Color) -> Option<Coordinate> {
     }
 }
 
-fn check_side(cases: &[Vec<Case>], case: &Case) -> Vec<(Coordinate, Coordinate, Color)> {
+fn check_side(
+    cases: &[Vec<Case>],
+    case: &Case,
+) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     let col_len = cases.len() - 1;
     let row_len = cases.get(0).unwrap().len() - 1;
     let coord_case = case.get_coordinate();

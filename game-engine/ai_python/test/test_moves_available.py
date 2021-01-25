@@ -3,7 +3,7 @@ from ai_python.src.utils import parse_move, generate_uuid
 def test_parsing_moves():
 
     move = parse_move(
-        ((3, '\x00B'), (4, '\x00B'), 'Blue')
+        ((3, '\x00B'), (4, '\x00B'), 'Blue', 'None')
     )
 
     assert move.from_x == 3
@@ -12,7 +12,8 @@ def test_parsing_moves():
     assert move.to_x == 4
     assert move.to_y == 'B'
 
-    assert move.color == 'Blue'
+    assert move.color_from == 'Blue'
+    assert move.color_to == 'None'
 
 
 def test_generate_uuid():

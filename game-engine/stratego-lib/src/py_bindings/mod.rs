@@ -65,11 +65,12 @@ fn rust_create_stratego_board() -> PyResult<RustStrategoBoard> {
 }
 
 #[pyfunction]
-fn rust_get_available_moves(board: RustStrategoBoard) -> PyResult<Py<PyAny>> {
+fn rust_get_available_moves(board: RustStrategoBoard, color: PyColor) -> PyResult<Py<PyAny>> {
     let moves = engine_utils::get_availables_moves(&board.board);
-    let moves: Vec<(PyCoord, PyCoord, Color)> = moves
+    let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
         .iter()
-        .map(|(from, to, color)| (case::from(from), case::from(to), *color))
+        .map(|(from, to, origin_color, target_color)| (case::from(from), case::from(to), *origin_color, *target_color))
+        .filter(|(_, _, player_color, _)| player_color.as_str() == color)
         .collect();
     let gil_holder = utils::get_gild_holder().unwrap();
     let gil = gil_holder.get();
@@ -139,8 +140,9 @@ impl RustStrategoBoard {
         }
     }
 
-    pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<Case>> {
-        Ok(self.board.moving(case, Coordinate::from(to)).unwrap())
+    pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<String>> {
+        let cases = self.board.moving(case, Coordinate::from(to)).unwrap();
+        Ok(cases.iter().map(|case| case.display()).collect())
     }
 
     pub fn display_by_color(&self, color: PyColor) -> PyResult<String> {
@@ -151,10 +153,6 @@ impl RustStrategoBoard {
         Ok(self.board.get_at(&Coordinate::from(coordinate)).clone())
     }
 
-    //TODO
-    pub fn evaluate_simple(&self) -> PyResult<PyColor> {
-        todo!()
-    }
 }
 
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
