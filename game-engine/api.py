@@ -85,7 +85,7 @@ def read_available_moves(player_color: str, uuid: str):
 
     try:
         engine = game.engine
-        moves = se.rust_get_available_moves(engine.board, player_color)
+        moves = se.rust_get_available_moves_by_color(engine.board, player_color)
         return MoveResponse(200, False, "", uuid, parse_moves(moves))
     except: 
         logging.error("Failed to get available moves for", uuid)

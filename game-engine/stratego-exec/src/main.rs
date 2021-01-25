@@ -12,7 +12,7 @@ fn main() {
         (
             HumanPlayer::new(Color::Red, String::from("Tigran")),
             //HumanPlayer::new(Color::Blue, String::from("Cassiopee")),
-            AIPlayer::new(Color::Blue, String::from("test")),
+            AIPlayer::new(Color::Blue, String::from("monte_carlo")),
         ),
     );
 

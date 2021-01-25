@@ -293,8 +293,8 @@ fn check_side(
     }
 }
 
-pub fn ask_next_move(player: &dyn Player, board: &impl Board) -> (Case, Coordinate) {
-    let (from, to) = player.ask_next_move();
+pub fn ask_next_move(player: &dyn Player, board: &StrategoBoard) -> (Case, Coordinate) {
+    let (from, to) = player.ask_next_move(board.to_owned());
     let case = board.get_at(&Coordinate::new(from.get_x(), from.get_y()));
 
     (case.clone(), to)
