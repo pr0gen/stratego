@@ -21,6 +21,6 @@ def ask_next_move_test2(board: se.RustStrategoBoard) -> Tuple[Tuple[int, str], T
 
 
 def ask_next_move_monte_carlo(board: se.RustStrategoBoard) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-    monteCarlo = MonteCarloAI()
+    monteCarlo = MonteCarloAI('Blue')
     return monteCarlo.ask_next_move(board) 
 
