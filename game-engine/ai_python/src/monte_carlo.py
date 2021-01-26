@@ -7,9 +7,8 @@ from random import *
 
 class MonteCarloAI(StrategoAI):
     def ask_next_move(self, board: RustStrategoBoard) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-
-        newBoard = RustStrategoBoard(board.state()) 
-        moves = se.rust_get_available_moves(newBoard)
+        moves = board.get_available_moves()
+        print(moves)
 
         # movesFormated = parse_moves(moves)
         # for move in movesFormated:

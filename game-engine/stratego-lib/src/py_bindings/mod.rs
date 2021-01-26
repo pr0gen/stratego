@@ -2,6 +2,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 use pythonize::pythonize;
+use serde::{Deserialize, Serialize};
 use std::env::current_dir;
 
 use crate::board::case::{self, Case, Coordinate, PyCoord};
@@ -21,8 +22,6 @@ fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Piece>()?;
     m.add_class::<Coordinate>()?;
 
-    m.add_wrapped(wrap_pyfunction!(rust_get_available_moves))?;
-    m.add_wrapped(wrap_pyfunction!(rust_get_available_moves_by_color))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_full_case))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_empty_case))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_unreachable_case))?;
@@ -39,7 +38,7 @@ type PyColor = String;
 type PyPieceType = i8;
 
 #[pyclass]
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct RustStrategoBoard {
     board: StrategoBoard,
 }
@@ -63,33 +62,6 @@ fn rust_create_empty_stratego_board() -> PyResult<RustStrategoBoard> {
 fn rust_create_stratego_board() -> PyResult<RustStrategoBoard> {
     let board = classic_board::create_stratego_board();
     Ok(RustStrategoBoard::new(board.state().to_owned()))
-}
-
-#[pyfunction]
-fn rust_get_available_moves_by_color(board: RustStrategoBoard, color: PyColor) -> PyResult<Py<PyAny>> {
-    let moves = engine_utils::get_availables_moves(&board.board);
-    let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
-        .iter()
-        .map(|(from, to, origin_color, target_color)| (case::from(from), case::from(to), *origin_color, *target_color))
-        .filter(|(_, _, player_color, _)| player_color.as_str() == color)
-        .collect();
-    let gil_holder = utils::get_gild_holder().unwrap();
-    let gil = gil_holder.get();
-    //Ok(moves)
-    Ok(pythonize(gil.python(), &moves).unwrap())
-}
-
-#[pyfunction]
-fn rust_get_available_moves(board: RustStrategoBoard) -> PyResult<Py<PyAny>> {
-    let moves = engine_utils::get_availables_moves(&board.board);
-    let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
-        .iter()
-        .map(|(from, to, origin_color, target_color)| (case::from(from), case::from(to), *origin_color, *target_color))
-        .collect();
-    let gil_holder = utils::get_gild_holder().unwrap();
-    let gil = gil_holder.get();
-    //Ok(moves)
-    Ok(pythonize(gil.python(), &moves).unwrap())
 }
 
 #[pyfunction]
@@ -145,6 +117,8 @@ impl Into<PieceType> for PyPieceType {
     }
 }
 
+impl RustStrategoBoard {}
+
 #[pymethods]
 impl RustStrategoBoard {
     #[new]
@@ -154,8 +128,10 @@ impl RustStrategoBoard {
         }
     }
 
-    pub fn state(&self) -> PyResult<Vec<Vec<Case>>> {
-        Ok(self.board.state().to_owned())
+    pub fn state(&self) -> PyResult<Py<PyAny>> {
+        let gil_holder = utils::get_gild_holder().unwrap();
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), self.board.state()).unwrap())
     }
 
     pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<String>> {
@@ -171,6 +147,42 @@ impl RustStrategoBoard {
         Ok(self.board.get_at(&Coordinate::from(coordinate)).clone())
     }
 
+    pub fn get_available_moves(&self) -> PyResult<Py<PyAny>> {
+        let moves = engine_utils::get_availables_moves(&self.board);
+        let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
+            .iter()
+            .map(|(from, to, origin_color, target_color)| {
+                (
+                    case::from(from),
+                    case::from(to),
+                    *origin_color,
+                    *target_color,
+                )
+            })
+            .collect();
+        let gil_holder = utils::get_gild_holder().unwrap();
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), &moves).unwrap())
+    }
+
+    pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
+        let moves = engine_utils::get_availables_moves(&self.board);
+        let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
+            .iter()
+            .map(|(from, to, origin_color, target_color)| {
+                (
+                    case::from(from),
+                    case::from(to),
+                    *origin_color,
+                    *target_color,
+                )
+            })
+            .filter(|(_, _, player_color, _)| player_color.as_str() == color)
+            .collect();
+        let gil_holder = utils::get_gild_holder().unwrap();
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), &moves).unwrap())
+    }
 }
 
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
