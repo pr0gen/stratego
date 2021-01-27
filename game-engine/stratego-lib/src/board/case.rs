@@ -12,7 +12,7 @@ pub fn into(co: PyCoords) -> (Coordinate, Coordinate) {
 }
 
 pub fn from(coord: &Coordinate) -> PyCoord {
-    (coord.get_x(), parse::parse_i16_to_str(coord.get_y() + 65)) 
+    (coord.get_x(), parse::parse_i16_to_str(coord.get_y() + 65))
 }
 
 #[pyclass]
@@ -48,7 +48,6 @@ impl From<PyCoord> for Coordinate {
         Coordinate::new(py_coord.0, parse::parse_letter_to_i16(py_coord.1.as_str()))
     }
 }
-
 
 pub fn create_full_case(coordinate: Coordinate, content: Piece) -> Case {
     Case {
@@ -117,4 +116,3 @@ impl Coordinate {
         self.y
     }
 }
-

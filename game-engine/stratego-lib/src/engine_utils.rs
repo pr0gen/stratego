@@ -157,27 +157,6 @@ fn find_vertical_cases(cases: &[Vec<Case>], y: i16) -> Vec<Case> {
     vec
 }
 
-//#[test]
-//fn should_find_vertical_case() {
-    //use crate::board::case;
-    //use crate::board::piece::{Piece, PieceType};
-    //use crate::
-    //let cases = ::create_3_x_3_stratego_board();
-
-    //let expected = vec![
-        //case::create_full_case(
-            //Coordinate::new(0, 1),
-            //Piece::new(PieceType::Major, Color::Blue),
-        //),
-        //case::create_empty_case(Coordinate::new(1, 1)),
-        //case::create_full_case(
-            //Coordinate::new(2, 1),
-            //Piece::new(PieceType::Major, Color::Red),
-        //),
-    //];
-    //assert_eq!(expected, find_vertical_cases(&cases, 1));
-//}
-
 fn check_part_of_row(
     cases: &[Case],
     case: &Case,
@@ -506,4 +485,3 @@ fn check_empty_lakes(board: &impl Board) -> bool {
 fn check_lake(c: &Case) -> bool {
     &State::Unreachable == c.get_state()
 }
-

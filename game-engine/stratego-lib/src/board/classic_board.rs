@@ -3,24 +3,22 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
-use super::board_utils::{attack, check_piece_move};
-use super::case::{
+use crate::board::board_utils::{attack, check_piece_move};
+use crate::board::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
-use super::piece::piece_utils::list_of_all_pieces;
-use super::piece::Color;
-use super::Board;
+use crate::board::piece::piece_utils::list_of_all_pieces;
+use crate::board::piece::Color;
+use crate::board::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
 #[pyclass]
-#[derive(Serialize, Deserialize, Hash, Clone,  Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Serialize, Deserialize, Hash, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
 }
 
-//to test
-//TODO Load board from player
 pub fn create_stratego_board() -> StrategoBoard {
     let board = create_empty_stratego_board();
 
@@ -49,10 +47,9 @@ pub fn create_stratego_board() -> StrategoBoard {
 
     verify_board_integrity(StrategoBoard::new(cases))
         .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e))
-
 }
 
-pub fn create_empty_stratego_board() ->  StrategoBoard {
+pub fn create_empty_stratego_board() -> StrategoBoard {
     let size = 10;
     let mut board: Vec<Vec<Case>> = Vec::with_capacity(size);
     for i in 0..size {
@@ -183,4 +180,3 @@ fn parse_row_by_color(row: &[Case], color: &Color) -> String {
         .map(|case| format!("{} | ", case.display_by_color(color)))
         .collect()
 }
-

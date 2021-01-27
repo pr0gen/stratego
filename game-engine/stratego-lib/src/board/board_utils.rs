@@ -8,7 +8,7 @@ pub fn attack(from: Case, to: Case) -> Result<(Case, Case), StrategoError> {
     let defenser = to.get_content();
 
     //if &PieceType::Scout == attacker.get_rank() {
-        //check_scout_move()            
+    //check_scout_move()
     //}
 
     if attacker.get_color() == defenser.get_color() {
@@ -42,4 +42,3 @@ pub fn check_piece_move(case: &Case, to: &Coordinate) -> bool {
     let delta_y = (to.get_y() - c_coord.get_y()).abs();
     (delta_x <= m.get_max() && delta_y == 0) || (delta_x == 0 && delta_y <= m.get_max())
 }
-

@@ -236,7 +236,6 @@ mod engine_utils_tests {
             Piece::new(PieceType::Spy, Color::Blue),
         );
 
-
         let b = StrategoBoard::new(new_board.clone());
         println!("{}", b.display());
         let res = verify_board_integrity(StrategoBoard::new(new_board));

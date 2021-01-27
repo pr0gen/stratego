@@ -22,11 +22,9 @@ fn parse_str_to_i16(s: &str) -> i16 {
     s.parse::<i16>().unwrap()
 }
 
-
 pub fn parse_i16_to_str(x: i16) -> String {
     let x = x.to_be_bytes();
-    String::from_utf8(x.to_vec())
-        .unwrap()
+    String::from_utf8(x.to_vec()).unwrap()
 }
 
 #[test]
@@ -42,4 +40,3 @@ fn should_parse_i16_to_str() {
     assert_eq!("\u{0}B", parse_i16_to_str(66));
     assert_eq!("\u{0}K", parse_i16_to_str(75));
 }
-

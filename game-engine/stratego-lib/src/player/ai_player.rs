@@ -84,4 +84,3 @@ fn ask_ai_next_move(
         Err(e) => Err(e),
     }
 }
-
