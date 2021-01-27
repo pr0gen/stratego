@@ -85,13 +85,3 @@ fn ask_ai_next_move(
     }
 }
 
-#[test]
-#[ignore]
-fn should_ask_next_move_to_test_ai() {
-    let player = AIPlayer::new(Color::Blue, String::from("test"));
-
-    assert_eq!(
-        (Coordinate::new(3, 0), Coordinate::new(4, 0)),
-        player.ask_next_move(StrategoBoard::new(Vec::new()))
-    );
-}

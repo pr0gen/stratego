@@ -2,9 +2,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
 use pythonize::pythonize;
-use serde::{Deserialize, Serialize};
-use std::env::current_dir;
-
+use serde::{Deserialize, Serialize}; use std::env::current_dir;
 use crate::board::case::{self, Case, Coordinate, PyCoord};
 use crate::board::classic_board::{self, StrategoBoard};
 use crate::board::piece::{Color, Piece, PieceType};
