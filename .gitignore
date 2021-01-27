@@ -7,7 +7,7 @@ client/node_modules/
 server/dist/
 
 
-stratego-engine.so
+ai_python/src/stratego_engine.so
 game-stratego
 ai_python/test/__pycache__
 ai_python/src/__pycache__
