@@ -1,6 +1,4 @@
 
-game-engine/coverage/
-
 .idea/
 
 server/node_modules/
@@ -9,8 +7,10 @@ client/node_modules/
 server/dist/
 
 
-game-engine/game-stratego
-game-engine/ai_python/test/__pycache__
-game-engine/ai_python/src/__pycache__
+stratego-engine.so
+game-stratego
+ai_python/test/__pycache__
+ai_python/src/__pycache__
+__pycache__
 
 client/.eslintcache
