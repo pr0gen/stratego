@@ -20,12 +20,10 @@ jobs:
           pip install -r game-engine/requirements.txt
       - name: compile lib
         run: |
-          cargo build --release
-          cp target/release/libstratego_lib.so ai_python/src
+          cargo build --release --manifest-path game-engine/Cargo.toml
+          cp game-engine/target/release/libstratego_lib.so ai_python/src
           mv ai_python/src/libstratego_lib.so ai_python/src/stratego_engine.so
-        working-directory: ./game-engine
       - name: Run tests with pytest
         run: pytest
-        working-directory: ./game-engine
 
 

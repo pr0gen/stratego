@@ -1,6 +1,8 @@
 use crate::board::case;
+use crate::board::Board;
 use crate::error::StrategoError;
 use crate::player::*;
+use crate::py_bindings::RustStrategoBoard;
 use crate::utils;
 
 const AI_STRATEGO_INIT_FILE: &str = "rust_bind";
@@ -19,8 +21,8 @@ impl AIPlayer {
 }
 
 impl<'p> Player for AIPlayer {
-    fn ask_next_move(&self) -> (Coordinate, Coordinate) {
-        ask_ai_next_move(self.name.as_str()).unwrap_or_else(|e| panic!("{}", e.message()))
+    fn ask_next_move(&self, board: StrategoBoard) -> (Coordinate, Coordinate) {
+        ask_ai_next_move(self.name.as_str(), board).unwrap_or_else(|e| panic!("{}", e.message()))
     }
 
     fn get_color(&self) -> &Color {
@@ -32,23 +34,15 @@ impl<'p> Player for AIPlayer {
     }
 }
 
-fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoError> {
+fn ask_ai_next_move(
+    name: &str,
+    board: StrategoBoard,
+) -> Result<(Coordinate, Coordinate), StrategoError> {
     let gil_holder = utils::get_gild_holder();
     match gil_holder {
         Ok(gil_holder) => {
             let py = gil_holder.get().python();
 
-            use std::env::current_dir;
-
-            let cur = current_dir().unwrap_or_else(|e| {
-                panic!(StrategoError::AILoadingError(format!(
-                    "Failed to find pwd, {}",
-                    e
-                )))
-            });
-
-            let pwd = cur.as_path().as_os_str().to_str().unwrap();
-            eprintln!("{}", pwd);
             let import = py.import(AI_STRATEGO_INIT_FILE);
             if let Err(e) = import {
                 return Err(StrategoError::AILoadingError(format!(
@@ -67,7 +61,9 @@ fn ask_ai_next_move(name: &str) -> Result<(Coordinate, Coordinate), StrategoErro
                 )));
             }
 
-            let call = function.unwrap().call0();
+            let board = RustStrategoBoard::new(board.state().clone());
+            let args = (board,);
+            let call = function.unwrap().call1(args);
             if let Err(e) = call {
                 return Err(StrategoError::AILoadingError(format!(
                     "Failed to call AI function, {}",
@@ -96,6 +92,6 @@ fn should_ask_next_move_to_test_ai() {
 
     assert_eq!(
         (Coordinate::new(3, 0), Coordinate::new(4, 0)),
-        player.ask_next_move()
+        player.ask_next_move(StrategoBoard::new(Vec::new()))
     );
 }

@@ -2,13 +2,14 @@ use std::hash::Hash;
 
 use crate::board::case::Coordinate;
 use crate::board::piece::Color;
+use crate::board::classic_board::StrategoBoard;
 use crate::parse;
 
 pub mod ai_player;
 
 pub trait Player { 
 
-    fn ask_next_move(&self) -> (Coordinate, Coordinate);
+    fn ask_next_move(&self, board: StrategoBoard) -> (Coordinate, Coordinate);
 
     fn get_color(&self) -> &Color;
 
@@ -22,7 +23,7 @@ pub struct HumanPlayer {
 }
 
 impl Player for HumanPlayer {
-    fn ask_next_move(&self) -> (Coordinate, Coordinate) {
+    fn ask_next_move(&self, _board: StrategoBoard) -> (Coordinate, Coordinate) {
         println!("{:?} is playing", self.color);
         println!("from ? (e.g 0A)");
         let from: (i16, i16) = parse::parse_input(parse::read_from_input().unwrap().as_str());
