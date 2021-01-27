@@ -14,6 +14,8 @@ def parse_board(board: List[List[str]]):
 # def parse_case(case: se.Case) -> str:
     # case
 
+def move_ready(move) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+    return (move.from_x, move.from_y), (move.to_x, move.to_y)
 
 
 def generate_uuid(length) -> str:
@@ -45,12 +47,12 @@ def parse_move(move):
 
 class StrategoAI(abc.ABC):
     @abc.abstractmethod
-    def ask_next_move(self) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+    def ask_next_move(self, board: se.RustStrategoBoard) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         pass
 
 
 class TestStrategoAI(StrategoAI):
-    def ask_next_move(self) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+    def ask_next_move(self, board: se.RustStrategoBoard) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         return ((3, "A"), (4, "A"))
 
 

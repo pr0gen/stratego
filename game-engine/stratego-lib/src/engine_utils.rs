@@ -21,7 +21,6 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
         for y in 0..=col_len {
             let case = board.get_at(&Coordinate::new(x as i16, y as i16));
             let content = case.get_content();
-            //FIXME it's fucked
             if &PieceType::Scout == content.get_rank() {
                 let color = content.get_color();
                 //horizontal
@@ -293,8 +292,8 @@ fn check_side(
     }
 }
 
-pub fn ask_next_move(player: &dyn Player, board: &impl Board) -> (Case, Coordinate) {
-    let (from, to) = player.ask_next_move();
+pub fn ask_next_move(player: &dyn Player, board: &StrategoBoard) -> (Case, Coordinate) {
+    let (from, to) = player.ask_next_move(board.to_owned());
     let case = board.get_at(&Coordinate::new(from.get_x(), from.get_y()));
 
     (case.clone(), to)

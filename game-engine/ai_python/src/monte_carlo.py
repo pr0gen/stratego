@@ -1,35 +1,23 @@
 from typing import Tuple
-from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves
+from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move_ready
 
 import ai_python.src.stratego_engine as se
-from random import *
+from ai_python.src.stratego_engine import RustStrategoBoard
+import random
 
 class MonteCarloAI(StrategoAI):
-    def ask_next_move(self) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-        board = se.rust_create_stratego_board()
-        print(board.display_by_color("Blue"))
-        moves = se.rust_get_available_moves(board)
+    color = str
 
+    def __init__(self, color: str):
+        self.color = color
+
+    def ask_next_move(self, board: RustStrategoBoard) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+        moves = board.get_available_moves_by_color(self.color)
         movesFormated = parse_moves(moves)
-        for move in movesFormated:
-            move.show()
-        return ((3, "A"), (4, "A"))
-        # movesFormated = parse_moves(moves)
 
-        # # for move in movesFormated:
-            # # move.show()
+        index = random.randint(0, len(movesFormated) - 1)
 
-        # move = movesFormated[randint(0, len(moves) - 1)]
-        # if move.color == 'Red':
-            # move.show()
-            # # print(beautifull_board_display(game_id))
-
-        # # state = get_game_state(game_id)
-        # # print(state)
-
-        # return moves[randint(0, len(moves) - 1)]
-
-# monte_carlo = MonteCarloAI()
-# move = monte_carlo.ask_next_move()
-
+        move = movesFormated[index]
+        move.show()
+        return move_ready(move)
 
