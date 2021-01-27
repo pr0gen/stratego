@@ -21,7 +21,6 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
         for y in 0..=col_len {
             let case = board.get_at(&Coordinate::new(x as i16, y as i16));
             let content = case.get_content();
-            //FIXME it's fucked
             if &PieceType::Scout == content.get_rank() {
                 let color = content.get_color();
                 //horizontal
