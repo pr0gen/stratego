@@ -126,8 +126,8 @@ mod test {
     use crate::board::classic_board::create_empty_stratego_board;
     use crate::board::piece::Color;
     use crate::board::Board;
-    use crate::player::HumanPlayer;
     use crate::player::ai_player::AIPlayer;
+    use crate::player::HumanPlayer;
 
     use super::{Engine, StrategoEngine};
 

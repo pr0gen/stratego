@@ -1,14 +1,13 @@
 use std::hash::Hash;
 
 use crate::board::case::Coordinate;
-use crate::board::piece::Color;
 use crate::board::classic_board::StrategoBoard;
+use crate::board::piece::Color;
 use crate::parse;
 
 pub mod ai_player;
 
-pub trait Player { 
-
+pub trait Player {
     fn ask_next_move(&self, board: StrategoBoard) -> (Coordinate, Coordinate);
 
     fn get_color(&self) -> &Color;

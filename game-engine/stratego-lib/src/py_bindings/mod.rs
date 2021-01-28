@@ -1,17 +1,16 @@
-use pyo3::prelude::*;
-use pyo3::types::PyList;
-use pyo3::wrap_pyfunction;
-use pythonize::pythonize;
-use serde::{Deserialize, Serialize};
-use std::env::current_dir;
-
-use crate::board::case::{self, Case, Coordinate, PyCoord};
+use crate::board::case::{self, Case, Coordinate, PyCoord, PyState, State};
 use crate::board::classic_board::{self, StrategoBoard};
 use crate::board::piece::{Color, Piece, PieceType};
 use crate::board::Board;
 use crate::engine_utils;
 use crate::error::StrategoError;
 use crate::utils;
+use pyo3::prelude::*;
+use pyo3::types::PyList;
+use pyo3::wrap_pyfunction;
+use pythonize::pythonize;
+use serde::{Deserialize, Serialize};
+use std::env::current_dir;
 
 pub mod evaluation_function;
 
@@ -29,8 +28,6 @@ fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(rust_create_empty_stratego_board))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_stratego_board))?;
 
-    m.add_wrapped(wrap_pyfunction!(rust_basic_evaluation))?;
-
     Ok(())
 }
 
@@ -41,15 +38,6 @@ type PyPieceType = i8;
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct RustStrategoBoard {
     board: StrategoBoard,
-}
-
-#[pyfunction]
-fn rust_basic_evaluation(board: RustStrategoBoard) -> PyResult<PyColor> {
-    if let Some(color) = engine_utils::game_is_over(board.board.state()) {
-        Ok(color.as_str().to_string())
-    } else {
-        Ok(String::from("None"))
-    }
 }
 
 #[pyfunction]
@@ -128,6 +116,10 @@ impl RustStrategoBoard {
         }
     }
 
+    pub fn clone_board(&self) -> Self {
+        self.clone()
+    }
+
     pub fn state(&self) -> PyResult<Py<PyAny>> {
         let gil_holder = utils::get_gild_holder().unwrap();
         let gil = gil_holder.get();
@@ -165,6 +157,21 @@ impl RustStrategoBoard {
         Ok(pythonize(gil.python(), &moves).unwrap())
     }
 
+    pub fn place(
+        &mut self,
+        state: PyState,
+        coordinate: PyCoord,
+        piece_type: PyPieceType,
+        color: PyColor,
+    ) -> PyResult<()> {
+        self.board.place(Case::new(
+            State::from(state.as_str()),
+            Coordinate::from(coordinate),
+            Piece::new(piece_type.into(), color.into()),
+        ));
+        Ok(())
+    }
+
     pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
         let moves = engine_utils::get_availables_moves(&self.board);
         let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
@@ -182,6 +189,14 @@ impl RustStrategoBoard {
         let gil_holder = utils::get_gild_holder().unwrap();
         let gil = gil_holder.get();
         Ok(pythonize(gil.python(), &moves).unwrap())
+    }
+
+    pub fn basic_evaluation(&self) -> PyResult<PyColor> {
+        if let Some(color) = evaluation_function::basic_evaluation(&self.board) {
+            Ok(color.as_str().to_string())
+        } else {
+            Ok(String::from("None"))
+        }
     }
 }
 

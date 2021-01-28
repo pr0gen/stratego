@@ -4,6 +4,7 @@ from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import RustStrategoBoard
 import random
+import copy
 
 class MonteCarloAI(StrategoAI):
     color = str
@@ -13,8 +14,9 @@ class MonteCarloAI(StrategoAI):
 
     def ask_next_move(self, board: RustStrategoBoard) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         moves = board.get_available_moves_by_color(self.color)
-        movesFormated = parse_moves(moves)
 
+        movesFormated = parse_moves(moves)
+        print(board.basic_evaluation())
         index = random.randint(0, len(movesFormated) - 1)
 
         move = movesFormated[index]

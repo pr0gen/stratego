@@ -22,7 +22,7 @@ python-test:
 
 api-build:
 	@echo "== Run Stratego API=="
-	uvicorn api:app --reload
+	uvicorn api:app --reload 
 
 commit: engine rust-test rust-clippy python-test
 

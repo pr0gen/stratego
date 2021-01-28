@@ -3,24 +3,22 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
-use super::board_utils::{attack, check_piece_move};
-use super::case::{
+use crate::board::board_utils::{attack, check_piece_move};
+use crate::board::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
-use super::piece::piece_utils::list_of_all_pieces;
-use super::piece::Color;
-use super::Board;
+use crate::board::piece::piece_utils::list_of_all_pieces;
+use crate::board::piece::Color;
+use crate::board::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
 #[pyclass]
-#[derive(Serialize, Deserialize, Hash, Clone,  Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Serialize, Deserialize, Hash, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
 }
 
-//to test
-//TODO Load board from player
 pub fn create_stratego_board() -> StrategoBoard {
     let board = create_empty_stratego_board();
 
@@ -49,10 +47,9 @@ pub fn create_stratego_board() -> StrategoBoard {
 
     verify_board_integrity(StrategoBoard::new(cases))
         .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e))
-
 }
 
-pub fn create_empty_stratego_board() ->  StrategoBoard {
+pub fn create_empty_stratego_board() -> StrategoBoard {
     let size = 10;
     let mut board: Vec<Vec<Case>> = Vec::with_capacity(size);
     for i in 0..size {
@@ -77,6 +74,12 @@ pub fn create_empty_stratego_board() ->  StrategoBoard {
 impl StrategoBoard {
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
         StrategoBoard { cases }
+    }
+
+    pub fn place(&mut self, case: Case) -> Result<(), StrategoError> {
+        let coordinate = case.get_coordinate();
+        self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case.clone();
+        Ok(())
     }
 }
 
@@ -162,6 +165,7 @@ impl Board for StrategoBoard {
     fn get_at(&self, coordinate: &Coordinate) -> &Case {
         &self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize]
     }
+
 }
 
 fn get_header(length: usize) -> String {
@@ -182,239 +186,4 @@ fn parse_row_by_color(row: &[Case], color: &Color) -> String {
     row.iter()
         .map(|case| format!("{} | ", case.display_by_color(color)))
         .collect()
-}
-
-#[cfg(test)]
-mod test {
-
-    use super::StrategoBoard;
-    use super::{
-        create_empty_case, create_empty_stratego_board, create_full_case, create_unreachable_case,
-    };
-    use crate::board::case::{Case, State, Coordinate};
-    use crate::board::piece::deplacement::{AvailableMove, Move};
-    use crate::board::piece::{Color, Piece, PieceType};
-    use crate::board::Board;
-
-    fn create_3_x_3_stratego_board() -> Vec<Vec<Case>> {
-        vec![
-            vec![
-                create_full_case(
-                    Coordinate::new(0, 0),
-                    Piece::new(PieceType::Flag, Color::Blue),
-                ),
-                create_full_case(
-                    Coordinate::new(0, 1),
-                    Piece::new(PieceType::Major, Color::Blue),
-                ),
-                create_full_case(
-                    Coordinate::new(0, 2),
-                    Piece::new(PieceType::Spy, Color::Blue),
-                ),
-            ],
-            vec![
-                create_empty_case(Coordinate::new(1, 0)),
-                create_empty_case(Coordinate::new(1, 1)),
-                create_empty_case(Coordinate::new(1, 2)),
-            ],
-            vec![
-                create_full_case(
-                    Coordinate::new(2, 0),
-                    Piece::new(PieceType::Flag, Color::Red),
-                ),
-                create_full_case(
-                    Coordinate::new(2, 1),
-                    Piece::new(PieceType::Major, Color::Red),
-                ),
-                create_full_case(
-                    Coordinate::new(2, 2),
-                    Piece::new(PieceType::Spy, Color::Red),
-                ),
-            ],
-        ]
-    }
-
-    #[test]
-    fn should_get_cases_in_board_straight() {
-        let board = StrategoBoard::new(create_3_x_3_stratego_board());  
-        let at = board.get_at(&Coordinate::new(0, 0)); 
-        let piece = at.get_content();
-        assert_eq!(&Color::Blue, piece.get_color());
-        assert_eq!(&PieceType::Flag, piece.get_rank());
-
-        let at = board.get_at(&Coordinate::new(1, 2)); 
-        assert_eq!(&State::Empty, at.get_state());
-
-        let at = board.get_at(&Coordinate::new(2, 1)); 
-        let piece = at.get_content();
-        assert_eq!(&Color::Red, piece.get_color());
-        assert_eq!(&PieceType::Major, piece.get_rank());
-    }
-
-    #[test]
-    fn should_build_stratego_board() {
-        let stratego_board = create_empty_stratego_board();
-        let state = stratego_board.state();
-
-        assert_eq!(state.len(), 10);
-        assert_eq!(state[0].len(), 10);
-    }
-
-    #[test]
-    fn should_display() {
-        let bomb = Piece::new(PieceType::Bomb, Color::Blue);
-        let stratego_board = StrategoBoard {
-            cases: vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]],
-        };
-
-        assert_eq!("   |   A   |\n 0 |  B  B | \n", stratego_board.display());
-    }
-
-    #[test]
-    fn should_place_piece_in_board() {
-        let bomb = Piece::new(PieceType::Bomb, Color::Blue);
-        let stratego_board = StrategoBoard {
-            cases: vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]],
-        };
-        let actual_case = stratego_board.state().get(0).unwrap().get(0).unwrap();
-
-        let content = actual_case.get_content();
-        assert_eq!(content.get_rank(), &PieceType::Bomb);
-        assert_eq!(content.get_move(), &Move::new(AvailableMove::Immovable));
-        assert_eq!(content.get_color(), &Color::Blue);
-
-        assert_eq!(actual_case.get_state(), &State::Full);
-        let coord = actual_case.get_coordinate();
-        assert_eq!(coord.get_x(), 0);
-        assert_eq!(coord.get_y(), 0);
-    }
-
-    #[test]
-    fn should_move_piece() {
-        let general = Piece::new(PieceType::General, Color::Blue);
-        let mut stratego_board = StrategoBoard {
-            cases: vec![
-                vec![
-                    create_full_case(Coordinate::new(0, 0), general.clone()),
-                    create_empty_case(Coordinate::new(0, 1)),
-                ],
-                vec![
-                    create_empty_case(Coordinate::new(1, 0)),
-                    create_empty_case(Coordinate::new(1, 1)),
-                ],
-            ],
-        };
-
-        println!("{}", stratego_board.display());
-
-        let result = stratego_board.moving(
-            create_full_case(Coordinate::new(0, 0), general),
-            Coordinate::new(0, 1),
-        );
-
-        match result {
-            Ok(value) => {
-                let p = value.get(0).unwrap();
-                assert_eq!(&PieceType::General, p.get_content().get_rank());
-
-                let state = stratego_board.state();
-                let actual_case = state.get(0).unwrap().get(1).unwrap();
-                let content = actual_case.get_content();
-                assert_eq!(&PieceType::General, content.get_rank());
-                assert_eq!(&Move::new(AvailableMove::Normal), content.get_move());
-                assert_eq!(&Color::Blue, content.get_color());
-
-                assert_eq!(&State::Full, actual_case.get_state());
-                let coord = actual_case.get_coordinate();
-                assert_eq!(0, coord.get_x());
-                assert_eq!(1, coord.get_y());
-            }
-            Err(e) => panic!("{:?}", e),
-        }
-    }
-
-    #[test]
-    fn should_not_move_piece_cause_unreachable() {
-        let sergeant = Piece::new(PieceType::Sergeant, Color::Blue);
-        let mut stratego_board = StrategoBoard {
-            cases: vec![
-                vec![
-                    create_empty_case(Coordinate::new(0, 0)),
-                    create_empty_case(Coordinate::new(0, 1)),
-                ],
-                vec![
-                    create_empty_case(Coordinate::new(1, 0)),
-                    create_unreachable_case(Coordinate::new(1, 1)),
-                ],
-            ],
-        };
-
-        let result = stratego_board.moving(
-            create_full_case(Coordinate::new(1, 0), sergeant),
-            Coordinate::new(1, 1),
-        );
-
-        match result {
-            Ok(_) => panic!("Should not happen"),
-            Err(_) => assert!(true),
-        }
-    }
-
-    #[test]
-    fn should_move_and_capture() {
-        let sergeant = Piece::new(PieceType::Sergeant, Color::Blue);
-        let lieutenant = Piece::new(PieceType::Lieutenant, Color::Red);
-        let mut stratego_board = StrategoBoard {
-            cases: vec![vec![
-                create_full_case(Coordinate::new(0, 0), lieutenant.clone()),
-                create_full_case(Coordinate::new(0, 0), sergeant.clone()),
-            ]],
-        };
-
-        let result = stratego_board.moving(
-            create_full_case(Coordinate::new(0, 0), lieutenant),
-            Coordinate::new(0, 1),
-        );
-
-        match result {
-            Ok(cases) => {
-                let previous_case = cases.get(0).unwrap();
-                assert_eq!(&State::Empty, previous_case.get_state());
-
-                let actual_case = cases.get(1).unwrap();
-                assert_eq!(&State::Full, actual_case.get_state());
-                let piece = actual_case.get_content();
-                assert_eq!(&Color::Red, piece.get_color());
-                assert_eq!(&PieceType::Lieutenant, piece.get_rank());
-            }
-            Err(e) => panic!("{:?}", e),
-        }
-    }
-
-    #[test]
-    fn should_not_move_in_diagonales() {
-        let general = Piece::new(PieceType::General, Color::Red);
-        let mut stratego_board = StrategoBoard {
-            cases: vec![
-                vec![
-                    create_full_case(Coordinate::new(0, 0), general.clone()),
-                    create_empty_case(Coordinate::new(0, 1)),
-                ],
-                vec![
-                    create_empty_case(Coordinate::new(1, 0)),
-                    create_empty_case(Coordinate::new(1, 1)),
-                ],
-            ],
-        };
-
-        let result = stratego_board.moving(
-            create_full_case(Coordinate::new(0, 0), general),
-            Coordinate::new(1, 1),
-        );
-
-        match result {
-            Ok(_) => panic!("Should not happen"),
-            Err(_) => assert!(true),
-        }
-    }
 }
