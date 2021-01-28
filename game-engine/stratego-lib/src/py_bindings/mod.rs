@@ -153,6 +153,10 @@ impl RustStrategoBoard {
         Ok(pythonize(gil.python(), &moves).unwrap())
     }
 
+    pub fn place(&self, coordinate: PyCoord, piece_type: PyPieceType, color: PyColor) ->  PyResult<Py<PyAny>> {
+        self.board.place(Case::new(Coordinate::from(coordinate), )
+    }
+
     pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
         let moves = engine_utils::get_availables_moves(&self.board);
         let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves

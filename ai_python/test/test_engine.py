@@ -1,5 +1,6 @@
 from ai_python.src.engine import Player, Color, Engine, GamePool, Game
 import ai_python.src.stratego_engine as se
+import copy
 
 def test_build_player(): 
     player = Player("Tigran", Color.Blue) 
@@ -16,7 +17,6 @@ def test_build_engine():
     player_1 = engine.players[1]
     assert "Arthur" == player_1.name
     assert Color.Red == player_1.color
-
     assert Color.Red == engine.color
 
 
@@ -34,4 +34,13 @@ def test_find_game_by_uuid():
     game = game_pool.find_game(0)
     
     assert game.uuid == 0
+
+def test_copy_board():
+    board = se.rust_create_empty_stratego_board()
+    board.place((1, "A"), "Scout", "Red")
+    copied_board = copy.deepcopy(board)
+    board.moving(case, (1, "A")) # move a case
+    assert board.at((1, "A")) == copied_board.at((1, "A"))
+
+
 

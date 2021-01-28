@@ -74,6 +74,11 @@ pub fn create_empty_case(coordinate: Coordinate) -> Case {
 }
 
 impl Case {
+
+    pub fn new(state: State, coordinate: Coordinate, content: Piece) -> Self {
+        Case { state, coordinate, piece}
+    }
+
     pub fn get_state(&self) -> &State {
         &self.state
     }

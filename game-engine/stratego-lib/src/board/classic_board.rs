@@ -8,7 +8,7 @@ use crate::board::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
 use crate::board::piece::piece_utils::list_of_all_pieces;
-use crate::board::piece::Color;
+use crate::board::piece::{Color, Piece, self};
 use crate::board::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
@@ -74,6 +74,10 @@ pub fn create_empty_stratego_board() -> StrategoBoard {
 impl StrategoBoard {
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
         StrategoBoard { cases }
+    }
+
+    pub fn place(&self, case: Case) -> Result<(), StrategoError> {
+        Ok(self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case);
     }
 }
 
@@ -159,6 +163,7 @@ impl Board for StrategoBoard {
     fn get_at(&self, coordinate: &Coordinate) -> &Case {
         &self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize]
     }
+
 }
 
 fn get_header(length: usize) -> String {
