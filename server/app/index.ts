@@ -4,16 +4,16 @@ import {Players} from "../src/Players";
 import startSockets from "../routes/socket";
 import express from 'express'
 import socketio from "socket.io";
+import {GameEngineApi} from "../src/GameEngine/GameEngineApi";
 
 
-export default function run(app: express.Express, io: socketio.Server, options: {root:string}): void {
+export default async function run(app: express.Express, io: socketio.Server, options: { root: string }): Promise<void> {
 
 // Express
 
     app.get('/', (req, res) => {
         res.sendFile('index.html', options)
     })
-
 
 // Socket
 
