@@ -78,6 +78,8 @@ The object `RustStrategoBoard` is available to be used in Python.
     # maybe parsed in python with parse_moves() in ai.py file 
     board.rust_basic_evaluation() # return color of the winner, if one there is *Yoda*
 
+    board.place("Full", (1, "A"), 1, "Red") # place a piece at coordinate
+
 ```
 
 The others three, are made to be displayed `Case`, `Piece`, `Coordinate`
