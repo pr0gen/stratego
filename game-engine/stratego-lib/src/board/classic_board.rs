@@ -8,7 +8,7 @@ use crate::board::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
 use crate::board::piece::piece_utils::list_of_all_pieces;
-use crate::board::piece::{Color, Piece, self};
+use crate::board::piece::Color;
 use crate::board::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
@@ -76,8 +76,10 @@ impl StrategoBoard {
         StrategoBoard { cases }
     }
 
-    pub fn place(&self, case: Case) -> Result<(), StrategoError> {
-        Ok(self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case);
+    pub fn place(&mut self, case: Case) -> Result<(), StrategoError> {
+        let coordinate = case.get_coordinate();
+        self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case.clone();
+        Ok(())
     }
 }
 

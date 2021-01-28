@@ -36,11 +36,14 @@ def test_find_game_by_uuid():
     assert game.uuid == 0
 
 def test_copy_board():
+
     board = se.rust_create_empty_stratego_board()
-    board.place((1, "A"), "Scout", "Red")
-    copied_board = copy.deepcopy(board)
-    board.moving(case, (1, "A")) # move a case
-    assert board.at((1, "A")) == copied_board.at((1, "A"))
+    board.place("Full", (1, "A"), 1, "Red")
+    copied_board = board.clone_board();
+    case = board.at((1, "A"))
+    board.moving(case, (2, "A")) # move a case
+
+    assert board.at((1, "A")).py_get_state() != copied_board.at((1, "A")).py_get_state()
 
 
 

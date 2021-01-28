@@ -1,4 +1,4 @@
-use crate::board::case::{self, Case, Coordinate, PyCoord};
+use crate::board::case::{self, Case, Coordinate, PyCoord, PyState, State};
 use crate::board::classic_board::{self, StrategoBoard};
 use crate::board::piece::{Color, Piece, PieceType};
 use crate::board::Board;
@@ -116,6 +116,10 @@ impl RustStrategoBoard {
         }
     }
 
+    pub fn clone_board(&self) -> Self {
+        self.clone()
+    }
+
     pub fn state(&self) -> PyResult<Py<PyAny>> {
         let gil_holder = utils::get_gild_holder().unwrap();
         let gil = gil_holder.get();
@@ -153,8 +157,19 @@ impl RustStrategoBoard {
         Ok(pythonize(gil.python(), &moves).unwrap())
     }
 
-    pub fn place(&self, coordinate: PyCoord, piece_type: PyPieceType, color: PyColor) ->  PyResult<Py<PyAny>> {
-        self.board.place(Case::new(Coordinate::from(coordinate), )
+    pub fn place(
+        &mut self,
+        state: PyState,
+        coordinate: PyCoord,
+        piece_type: PyPieceType,
+        color: PyColor,
+    ) -> PyResult<()> {
+        self.board.place(Case::new(
+            State::from(state.as_str()),
+            Coordinate::from(coordinate),
+            Piece::new(piece_type.into(), color.into()),
+        ));
+        Ok(())
     }
 
     pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
