@@ -28,8 +28,6 @@ fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(rust_create_empty_stratego_board))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_stratego_board))?;
 
-    m.add_wrapped(wrap_pyfunction!(rust_basic_evaluation))?;
-
     Ok(())
 }
 
@@ -40,15 +38,6 @@ type PyPieceType = i8;
 #[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct RustStrategoBoard {
     board: StrategoBoard,
-}
-
-#[pyfunction]
-fn rust_basic_evaluation(board: RustStrategoBoard) -> PyResult<PyColor> {
-    if let Some(color) = engine_utils::game_is_over(board.board.state()) {
-        Ok(color.as_str().to_string())
-    } else {
-        Ok(String::from("None"))
-    }
 }
 
 #[pyfunction]
@@ -181,6 +170,14 @@ impl RustStrategoBoard {
         let gil_holder = utils::get_gild_holder().unwrap();
         let gil = gil_holder.get();
         Ok(pythonize(gil.python(), &moves).unwrap())
+    }
+
+    pub fn basic_evaluation(&self) -> PyResult<PyColor> {
+        if let Some(color) = evaluation_function::basic_evaluation(&self.board) {
+            Ok(color.as_str().to_string())
+        } else {
+            Ok(String::from("None"))
+        }
     }
 }
 

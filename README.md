@@ -76,6 +76,7 @@ The object `RustStrategoBoard` is available to be used in Python.
 
     board.get_available_moves_by_color('Red')
     # maybe parsed in python with parse_moves() in ai.py file 
+    board.rust_basic_evaluation() # return color of the winner, if one there is *Yoda*
 
 ```
 
@@ -98,7 +99,6 @@ The following function are there to help you build content for the board:
     se.rust_create_empty_case((1, "A")) # without content
     se.rust_create_unreachable_case((1, "A")) # water
 
-    se.rust_basic_evaluation(board) # return color of the winner, if one there is *Yoda*
 ```
 
 ### Web API

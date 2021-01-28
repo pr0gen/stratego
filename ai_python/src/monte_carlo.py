@@ -14,7 +14,7 @@ class MonteCarloAI(StrategoAI):
     def ask_next_move(self, board: RustStrategoBoard) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         moves = board.get_available_moves_by_color(self.color)
         movesFormated = parse_moves(moves)
-
+        print(board.basic_evaluation())
         index = random.randint(0, len(movesFormated) - 1)
 
         move = movesFormated[index]
