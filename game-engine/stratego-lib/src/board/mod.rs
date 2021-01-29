@@ -10,7 +10,7 @@ pub mod classic_board;
 pub mod piece;
 
 pub trait Board: Clone + Debug {
-    fn moving(&mut self, case: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError>;
+    fn moving(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError>;
 
     fn state(&self) -> &Vec<Vec<Case>>;
 

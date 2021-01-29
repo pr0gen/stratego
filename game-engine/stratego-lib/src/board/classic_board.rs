@@ -79,7 +79,8 @@ impl StrategoBoard {
 }
 
 impl Board for StrategoBoard {
-    fn moving(&mut self, case: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
+    fn moving(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
+        let case = self.get_at(&from).to_owned();
         if !check_piece_move(&case, &to) {
             return Err(StrategoError::MoveError(
                 String::from("Illegal move"),

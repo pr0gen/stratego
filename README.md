@@ -66,7 +66,7 @@ The object `StrategoBoardWrapper` is available to be used in Python.
 
     board = se.StrategoBoardWrapper(cases) #constructor
 
-    board.moving(case, (1, "A")) # move a case
+    board.moving((1, "A"), (2, "A")) # move a case
     
     board.display_by_color("Blue") 
 

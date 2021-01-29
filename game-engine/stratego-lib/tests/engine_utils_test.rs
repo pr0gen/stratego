@@ -85,6 +85,25 @@ mod engine_utils_tests {
     }
 
     #[test]
+    fn should_check_scout_does_not_cross_water() {
+        let mut cases = empty_board();
+        cases[4][1] = create_full_case(
+            Coordinate::new(4, 1),
+            Piece::new(PieceType::Scout, Color::Red),
+        );
+        cases[5][1] = create_full_case(
+            Coordinate::new(9, 5),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        );
+
+        let board = &StrategoBoard::new(cases);
+        eprintln!("{}", board.display());
+        let res = get_availables_moves(board);
+        eprintln!("{:?}", res);
+        assert_eq!(5, res.len());
+    }
+
+    #[test]
     fn should_retrieve_available_moves_3x3() {
         let cases = create_3_x_3_stratego_board();
         let res = get_availables_moves(&StrategoBoard::new(cases));

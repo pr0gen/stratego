@@ -40,7 +40,7 @@ def test_copy_board():
     board.place("Full", (1, "A"), 1, "Red")
     copied_board = board.clone_board();
     case = board.at((1, "A"))
-    board.moving(case, (2, "A")) # move a case
+    board.moving((1, "A"), (2, "A")) # move a case
 
     assert board.at((1, "A")).py_get_state() != copied_board.at((1, "A")).py_get_state()
     assert board.at((1, "A")).py_get_content() != copied_board.at((1, "A")).py_get_content()

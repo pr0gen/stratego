@@ -305,11 +305,8 @@ fn check_side(cases: &[Vec<Case>], case: &Case) -> Vec<(Coordinate, Coordinate, 
     }
 }
 
-pub fn ask_next_move(player: &dyn Player, board: &StrategoBoard) -> (Case, Coordinate) {
-    let (from, to) = player.ask_next_move(board.to_owned());
-    let case = board.get_at(&Coordinate::new(from.get_x(), from.get_y()));
-
-    (case.clone(), to)
+pub fn ask_next_move(player: &dyn Player, board: &StrategoBoard) -> (Coordinate, Coordinate) {
+    player.ask_next_move(board.to_owned())
 }
 
 pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {

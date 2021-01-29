@@ -62,8 +62,8 @@ impl StrategoBoardWrapper {
         Ok(pythonize(gil.python(), self.board.state())?)
     }
 
-    pub fn moving(&mut self, case: Case, to: PyCoord) -> PyResult<Vec<String>> {
-        let cases = self.board.moving(case, Coordinate::from(to)).unwrap();
+    pub fn moving(&mut self, from: PyCoord, to: PyCoord) -> PyResult<Vec<String>> {
+        let cases = self.board.moving(Coordinate::from(from), Coordinate::from(to)).unwrap();
         Ok(cases.iter().map(|case| case.display()).collect())
     }
 

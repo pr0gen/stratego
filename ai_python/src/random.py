@@ -21,3 +21,5 @@ class RandomAI(StrategoAI):
         move = movesFormated[index]
         move.show()
         return move_ready(move)
+    
+    
