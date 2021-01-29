@@ -3,12 +3,12 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
-use crate::board::board_utils::{attack, check_piece_move};
+use crate::board::board_utils;
 use crate::board::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
 use crate::board::piece::piece_utils::list_of_all_pieces;
-use crate::board::piece::Color;
+use crate::board::piece::{PieceType, Color};
 use crate::board::Board;
 use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
@@ -75,13 +75,21 @@ impl StrategoBoard {
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
         StrategoBoard { cases }
     }
-
 }
 
 impl Board for StrategoBoard {
     fn moving(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
         let case = self.get_at(&from).to_owned();
-        if !check_piece_move(&case, &to) {
+        let piece = case.get_content();
+        if &PieceType::Scout == piece.get_rank() { 
+           if !board_utils::check_scout_move(&case, &to, self.state()) {
+               return Err(StrategoError::MoveError(
+                       String::from("Illegal move"),
+                       case,
+                       to,
+               ));
+           }
+        } else if !board_utils::check_piece_move(&case, &to) {
             return Err(StrategoError::MoveError(
                 String::from("Illegal move"),
                 case,
@@ -89,7 +97,6 @@ impl Board for StrategoBoard {
             ));
         }
 
-        let piece = case.get_content();
         let to_x = to.get_x();
         let to_y = to.get_y();
         let aim_case = self
@@ -109,7 +116,7 @@ impl Board for StrategoBoard {
             }
             State::Full => {
                 let case_coord = case.get_coordinate();
-                match attack(
+                match board_utils::attack(
                     create_full_case(case_coord.to_owned(), piece.to_owned()),
                     aim_case.to_owned(),
                 ) {

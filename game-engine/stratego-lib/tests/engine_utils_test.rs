@@ -12,96 +12,94 @@ mod engine_utils_tests {
 
     #[test]
     fn should_check_scouts_can_not_move_behind_pieces() {
-        let mut cases = empty_board();
-        cases[8][1] = create_full_case(
+        let mut board = StrategoBoard::new(empty_board());
+
+        board.place(create_full_case(
             Coordinate::new(8, 1),
             Piece::new(PieceType::Scout, Color::Red),
-        );
-        cases[8][3] = create_full_case(
-            Coordinate::new(8, 3),
+        )).unwrap();
+        board.place(create_full_case(
+            Coordinate::new(8, 2),
             Piece::new(PieceType::Bomb, Color::Blue),
-        );
-        cases[8][4] = create_full_case(
+        )).unwrap();
+        board.place(create_full_case(
             Coordinate::new(8, 4),
             Piece::new(PieceType::Bomb, Color::Blue),
-        );
-
-        cases[2][1] = create_full_case(
+        )).unwrap();
+        board.place(create_full_case(
             Coordinate::new(2, 1),
             Piece::new(PieceType::Bomb, Color::Blue),
-        );
+        )).unwrap();
 
-        let board = &StrategoBoard::new(cases);
         eprintln!("{}", board.display());
-        let res = get_availables_moves(board);
+
+        let res = get_availables_moves(&board);
         eprintln!("{:?}", res);
-        assert_eq!(10, res.len());
+        assert_eq!(9, res.len());
     }
 
     #[test]
     fn should_check_scout_move_scouts_alone() {
-        let mut cases = empty_board();
-        cases[2][5] = create_full_case(
+        let mut board = StrategoBoard::new(empty_board());
+        board.place(create_full_case(
             Coordinate::new(2, 5),
             Piece::new(PieceType::Scout, Color::Red),
-        );
-        cases[8][1] = create_full_case(
+        )).unwrap();
+        board.place(create_full_case(
             Coordinate::new(8, 1),
             Piece::new(PieceType::Scout, Color::Red),
-        );
+        )).unwrap();
 
-        let board = &StrategoBoard::new(cases);
         eprintln!("{}", board.display());
-        let res = get_availables_moves(board);
+        let res = get_availables_moves(&board);
         eprintln!("{:?}", res);
         assert_eq!(36, res.len());
     }
 
     #[test]
     fn should_check_scout_move_scouts_with_others() {
-        let mut cases = empty_board();
-        cases[2][5] = create_full_case(
+        let mut board = StrategoBoard::new(empty_board());
+
+        board.place(create_full_case(
             Coordinate::new(2, 5),
             Piece::new(PieceType::Scout, Color::Red),
-        );
-        cases[9][5] = create_full_case(
+        )).unwrap();
+        board.place(create_full_case(
             Coordinate::new(9, 5),
             Piece::new(PieceType::Bomb, Color::Red),
-        );
-        cases[8][1] = create_full_case(
+        )).unwrap();
+        board.place(create_full_case(
             Coordinate::new(8, 1),
             Piece::new(PieceType::Scout, Color::Red),
-        );
-        cases[8][3] = create_full_case(
+        )).unwrap();
+        board.place(create_full_case(
             Coordinate::new(8, 3),
             Piece::new(PieceType::Bomb, Color::Red),
-        );
-
-        let board = &StrategoBoard::new(cases);
+        )).unwrap();
         eprintln!("{}", board.display());
-        let res = get_availables_moves(board);
+
+        let res = get_availables_moves(&board);
         eprintln!("{:?}", res);
+
         assert_eq!(28, res.len());
     }
 
-    //#[test]
-    //fn should_check_scout_does_not_cross_water() {
-        //let mut cases = empty_board();
-        //cases[4][1] = create_full_case(
-            //Coordinate::new(4, 1),
-            //Piece::new(PieceType::Scout, Color::Red),
-        //);
-        //cases[5][1] = create_full_case(
-            //Coordinate::new(9, 5),
-            //Piece::new(PieceType::Bomb, Color::Blue),
-        //);
-
-        //let board = &StrategoBoard::new(cases);
-        //eprintln!("{}", board.display());
-        //let res = get_availables_moves(board);
-        //eprintln!("{:?}", res);
-        //assert_eq!(5, res.len());
-    //}
+    #[test]
+    fn should_check_scout_does_not_cross_water() {
+        let mut board = StrategoBoard::new(empty_board());
+        board.place(create_full_case(
+            Coordinate::new(4, 1),
+            Piece::new(PieceType::Scout, Color::Red),
+        )).unwrap();
+        board.place(create_full_case(
+            Coordinate::new(5, 1),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        )).unwrap();
+        eprintln!("{}", board.display());
+        let res = get_availables_moves(&board);
+        eprintln!("{:?}", res);
+        assert_eq!(6, res.len());
+    }
 
     #[test]
     fn should_retrieve_available_moves_3x3() {
@@ -329,8 +327,6 @@ mod engine_utils_tests {
     #[test]
     fn should_check_players_have_the_right_pieces() {
         let cases = create_statego_board();
-        //let board = StrategoBoard::new(cases);
-        //console.log(board.display());
         let res = verify_board_integrity(StrategoBoard::new(cases));
 
         match res {
@@ -345,14 +341,6 @@ mod engine_utils_tests {
         }
     }
 
-    //#[test]
-    //fn should_verify_board_integrity() {
-    //let res = verify_board_integrity(create_statego_board());
-    //match res {
-    //Ok(_) => assert!(true),
-    //Err(_) => panic!("Should not happen"),
-    //}
-    //}
     fn create_4_x_4_stratego_board() -> Vec<Vec<Case>> {
         vec![
             vec![

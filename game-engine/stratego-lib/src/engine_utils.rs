@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use crate::board::board_utils::{self, Direction};
 use crate::board::case::{Case, Coordinate, State};
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::deplacement::AvailableMove;
@@ -127,7 +128,7 @@ pub fn check_for_scouts(
     ));
 
     //vertical
-    let vertical = find_vertical_cases(&cases, y as i16);
+    let vertical = board_utils::find_vertical_cases(&cases, y as i16);
     moves.append(&mut check_part_of_row(
         &vertical,
         case,
@@ -141,20 +142,6 @@ pub fn check_for_scouts(
         Direction::Down,
     ));
     moves
-}
-
-fn find_vertical_cases(cases: &[Vec<Case>], y: i16) -> Vec<Case> {
-    let mut vec = Vec::new();
-    for row in cases {
-        for case in row {
-            let coordinate = case.get_coordinate();
-            if y == coordinate.get_y() {
-                vec.push(case.to_owned());
-            }
-        }
-    }
-
-    vec
 }
 
 fn check_part_of_row(
@@ -199,25 +186,18 @@ fn check_row_for_scout(
         let coord_to = to_go_case.get_coordinate();
         let state = to_go_case.get_state();
         let color = to_go_case.get_content().get_color();
-        if &State::Unreachable == state {
-            break;
-        } else if &State::Full == state {
-            if player_color != color {
-                moves.push((*coord_from, *coord_to, *player_color, *color));
+        match state {
+            State::Unreachable => break,
+            State::Full => {
+                if player_color != color {
+                    moves.push((*coord_from, *coord_to, *player_color, *color));
+                }
+                break;
             }
-            break;
-        } else if &State::Empty == state {
-            moves.push((*coord_from, *coord_to, *player_color, *color));
+            State::Empty => moves.push((*coord_from, *coord_to, *player_color, *color)),
         }
     }
     moves
-}
-
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
 }
 
 fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Color, Color)> {
