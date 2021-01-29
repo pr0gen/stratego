@@ -1,5 +1,3 @@
-use std::hash::Hash;
-
 use crate::board::case::{Case, Coordinate};
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::Color;
@@ -9,7 +7,7 @@ use crate::error::StrategoError;
 use crate::player::ai_player::AIPlayer;
 use crate::player::{HumanPlayer, Player};
 
-pub trait Engine<B: Board>: Hash {
+pub trait Engine<B: Board> {
     fn status(&self) -> &B;
 
     fn moving(&mut self) -> Result<(), StrategoError>;
@@ -27,7 +25,7 @@ pub trait Engine<B: Board>: Hash {
     fn display_by_color(&self, color: &Color) -> String;
 }
 
-#[derive(Debug, Hash)]
+#[derive(Debug)]
 pub struct StrategoEngine {
     board: StrategoBoard,
     players: (HumanPlayer, AIPlayer),

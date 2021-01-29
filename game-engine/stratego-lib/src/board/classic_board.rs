@@ -14,7 +14,7 @@ use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
 #[pyclass]
-#[derive(Serialize, Deserialize, Hash, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
 }
@@ -76,11 +76,6 @@ impl StrategoBoard {
         StrategoBoard { cases }
     }
 
-    pub fn place(&mut self, case: Case) -> Result<(), StrategoError> {
-        let coordinate = case.get_coordinate();
-        self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case.clone();
-        Ok(())
-    }
 }
 
 impl Board for StrategoBoard {
@@ -166,6 +161,11 @@ impl Board for StrategoBoard {
         &self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize]
     }
 
+    fn place(&mut self, case: Case) -> Result<Case, StrategoError> {
+        let coordinate = case.get_coordinate();
+        self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case.clone();
+        Ok(case)
+    }
 }
 
 fn get_header(length: usize) -> String {

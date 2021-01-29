@@ -7,7 +7,6 @@ def test_build_player():
     assert player.name == "Tigran"
     assert player.color == Color.Blue
 
-
 def test_build_engine():
     engine = Engine((Player("Tigran", Color.Blue), Player("Arthur", Color.Red)), se.rust_create_empty_stratego_board())
     player_0 = engine.players[0]
@@ -44,6 +43,7 @@ def test_copy_board():
     board.moving(case, (2, "A")) # move a case
 
     assert board.at((1, "A")).py_get_state() != copied_board.at((1, "A")).py_get_state()
+    assert board.at((1, "A")).py_get_content() != copied_board.at((1, "A")).py_get_content()
 
 
 

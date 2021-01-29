@@ -1,5 +1,3 @@
-use std::hash::Hash;
-
 use crate::board::case::Coordinate;
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::Color;
@@ -15,7 +13,7 @@ pub trait Player {
     fn get_name(&self) -> &str;
 }
 
-#[derive(Debug, Hash, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct HumanPlayer {
     color: Color,
     name: String,
