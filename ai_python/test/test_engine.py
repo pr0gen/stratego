@@ -44,6 +44,7 @@ def test_copy_board():
     board.moving(case, (2, "A")) # move a case
 
     assert board.at((1, "A")).py_get_state() != copied_board.at((1, "A")).py_get_state()
+    assert board.at((1, "A")).py_get_content() != copied_board.at((1, "A")).py_get_content()
 
 
 

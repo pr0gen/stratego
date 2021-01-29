@@ -21,10 +21,10 @@ class Player:
 
 class Engine:
     players: Tuple[type(Player), type(Player)]
-    board: se.RustStrategoBoard
+    board: se.StrategoBoardWrapper
     turn: Color
 
-    def __init__(self, players: Tuple[Player, Player], board: se.RustStrategoBoard):
+    def __init__(self, players: Tuple[Player, Player], board: se.StrategoBoardWrapper):
         self.players = players
         self.board = board
         self.color = Color.Red

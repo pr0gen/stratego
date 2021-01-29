@@ -58,31 +58,36 @@ The GamePool is only here for AI to be able to create games and simulates some m
 
 ## How to use Stratego Library
 
-The object `RustStrategoBoard` is available to be used in Python. 
+The object `StrategoBoardWrapper` is available to be used in Python. 
 
 
 ```python
     import stratego_engine as se
 
-    board = se.RustStrategoBoard(cases) #constructor
+    board = se.StrategoBoardWrapper(cases) #constructor
 
     board.moving(case, (1, "A")) # move a case
     
     board.display_by_color("Blue") 
 
     board.at((1, "A"))
+    board.place("Full", (1, "A"), 1, "Red") # place a piece at coordinate
 
     board.get_available_moves()
-
     board.get_available_moves_by_color('Red')
     # maybe parsed in python with parse_moves() in ai.py file 
-    board.rust_basic_evaluation() # return color of the winner, if one there is *Yoda*
 
-    board.place("Full", (1, "A"), 1, "Red") # place a piece at coordinate
+    board.rust_basic_evaluation() # return color of the winner, if one there is *Yoda*
 
 ```
 
 The others three, are made to be displayed `Case`, `Piece`, `Coordinate`
+
+```python
+    case.py_get_state()
+    case.py_get_content()
+
+```
 
 The following function are there to help you build content for the board: 
 
