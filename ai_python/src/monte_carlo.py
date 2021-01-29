@@ -16,10 +16,28 @@ class MonteCarloAI(StrategoAI):
         moves = board.get_available_moves_by_color(self.color)
 
         movesFormated = parse_moves(moves)
-        print(board.basic_evaluation())
+        print(board.bgame-engine/asic_evaluation())
         index = random.randint(0, len(movesFormated) - 1)
 
-        move = movesFormated[index]
-        move.show()
-        return move_ready(move)
+        isThereAWinningMove = False
 
+        for move in movesFormated:
+
+            copied_board = board.clone_board()
+            isThereAWinningMove = simulateGame(move, copied_board)
+            if(isThereAWinningMove):
+                winning_move = move
+                break
+
+        if(isThereAWinningMove):
+            winning_move = movesFormated[index]
+            winning_move.show()
+            return move_ready(winning_move)
+        else:
+            move = movesFormated[index]
+            move.show()
+            return move_ready(move)
+
+    def simulateGame(move, board) -> bool :
+        //TODO
+        return true
