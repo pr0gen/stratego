@@ -24,7 +24,7 @@ mod py_wrapper_tests {
             vec![(
                 String::from("Full"),
                 1,
-                (1, String::from("A")),
+                (0, String::from("A")),
                 String::from("Red"),
             )],
             vec![(
@@ -41,7 +41,7 @@ mod py_wrapper_tests {
                 Piece::new(PieceType::Spy, Color::Red),
             )],
             vec![case::create_full_case(
-                Coordinate::new(1, 0),
+                Coordinate::new(3, 0),
                 Piece::new(PieceType::Sergeant, Color::Blue),
             )],
         ];

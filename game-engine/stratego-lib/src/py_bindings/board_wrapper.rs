@@ -11,7 +11,21 @@ use pythonize::pythonize;
 use serde::{Deserialize, Serialize};
 
 pub fn parse_python_cases(py_cases: Vec<Vec<PyCase>>) -> Vec<Vec<Case>> {
-    unimplemented!()
+    py_cases.iter().map(|row| parse_python_row(row)).collect()
+}
+
+fn parse_python_row(py_cases: &Vec<PyCase>) -> Vec<Case> {
+    py_cases
+        .iter()
+        .map(|(state, piece_type, coord, color): &PyCase | {
+            let piece_type: PyPieceType = *piece_type;
+            Case::new(
+                State::from(state.as_str()),
+                Coordinate::from(coord.clone()),
+                Piece::new(piece_type.into(), Color::from(color.as_str())),
+            )
+        })
+        .collect()
 }
 
 #[pyclass]
