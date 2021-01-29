@@ -81,7 +81,7 @@ def move_piece(data : MoveRequest):
       game = game_pool.find_game(data.uuid)
       engine = game.engine
       board = engine.board
-      moved = board.moving(board.at(data.coordinate_from), data.coordinate_to)
+      moved = board.moving(data.coordinate_from, data.coordinate_to)
       return MoveResponse(200, False, "", data.uuid, moved)
     except:
         logging.error("Failed to find game for uuid", data.uuid)

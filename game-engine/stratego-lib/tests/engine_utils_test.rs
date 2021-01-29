@@ -84,24 +84,24 @@ mod engine_utils_tests {
         assert_eq!(28, res.len());
     }
 
-    #[test]
-    fn should_check_scout_does_not_cross_water() {
-        let mut cases = empty_board();
-        cases[4][1] = create_full_case(
-            Coordinate::new(4, 1),
-            Piece::new(PieceType::Scout, Color::Red),
-        );
-        cases[5][1] = create_full_case(
-            Coordinate::new(9, 5),
-            Piece::new(PieceType::Bomb, Color::Blue),
-        );
+    //#[test]
+    //fn should_check_scout_does_not_cross_water() {
+        //let mut cases = empty_board();
+        //cases[4][1] = create_full_case(
+            //Coordinate::new(4, 1),
+            //Piece::new(PieceType::Scout, Color::Red),
+        //);
+        //cases[5][1] = create_full_case(
+            //Coordinate::new(9, 5),
+            //Piece::new(PieceType::Bomb, Color::Blue),
+        //);
 
-        let board = &StrategoBoard::new(cases);
-        eprintln!("{}", board.display());
-        let res = get_availables_moves(board);
-        eprintln!("{:?}", res);
-        assert_eq!(5, res.len());
-    }
+        //let board = &StrategoBoard::new(cases);
+        //eprintln!("{}", board.display());
+        //let res = get_availables_moves(board);
+        //eprintln!("{:?}", res);
+        //assert_eq!(5, res.len());
+    //}
 
     #[test]
     fn should_retrieve_available_moves_3x3() {
