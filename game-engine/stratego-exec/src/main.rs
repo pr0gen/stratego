@@ -11,8 +11,7 @@ fn main() {
         create_stratego_board(),
         (
             HumanPlayer::new(Color::Red, String::from("Tigran")),
-            //HumanPlayer::new(Color::Blue, String::from("Cassiopee")),
-            AIPlayer::new(Color::Blue, String::from("monte_carlo")),
+            AIPlayer::new(Color::Blue, String::from("random")),
         ),
     );
 

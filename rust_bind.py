@@ -4,6 +4,7 @@ from typing import Tuple
 
 from ai_python.src.utils import StrategoAI, TestStrategoAI
 from ai_python.src.monte_carlo import MonteCarloAI
+from ai_python.src.random import RandomAI
 import ai_python.src.stratego_engine as se
 
 def hello_world_2(): 
@@ -24,3 +25,7 @@ def ask_next_move_monte_carlo(board: se.StrategoBoardWrapper) -> Tuple[Tuple[int
     monteCarlo = MonteCarloAI('Blue')
     return monteCarlo.ask_next_move(board) 
 
+
+def ask_next_move_random(board: se.StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+    random = RandomAI('Blue')
+    return random.ask_next_move(board) 
