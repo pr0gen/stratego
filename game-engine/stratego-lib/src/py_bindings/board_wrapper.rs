@@ -14,7 +14,7 @@ pub fn parse_python_cases(py_cases: Vec<Vec<PyCase>>) -> Vec<Vec<Case>> {
     py_cases.iter().map(|row| parse_python_row(row)).collect()
 }
 
-fn parse_python_row(py_cases: &Vec<PyCase>) -> Vec<Case> {
+fn parse_python_row(py_cases: &[PyCase]) -> Vec<Case> {
     py_cases
         .iter()
         .map(|(state, piece_type, coord, color): &PyCase | {
