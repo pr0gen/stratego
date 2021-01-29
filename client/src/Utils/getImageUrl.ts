@@ -5,13 +5,13 @@ const getImageUrl = (piece :string) => {
 
     switch(piece) {
 
-        case ' B ':
+        case 'B':
             return baseUrl + 'bombe.png'
 
         case 'Mar':
             return baseUrl + 'marshal.png'
 
-        case ' G ':
+        case 'G':
             return baseUrl + 'general.png'
 
         case 'Col':
@@ -20,10 +20,10 @@ const getImageUrl = (piece :string) => {
         case 'Maj':
             return baseUrl + 'major.png'
 
-        case 'Capt':
+        case 'Cap':
             return baseUrl + 'captain.png'
 
-        case ' L ':
+        case 'L':
             return baseUrl + 'lieutenant.png'
 
         case 'Ser':
@@ -38,7 +38,7 @@ const getImageUrl = (piece :string) => {
         case 'Spy':
             return baseUrl + 'spy.png'
 
-        case ' F ':
+        case 'F':
             return baseUrl + 'flag.png'
 
         default:

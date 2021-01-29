@@ -14,6 +14,7 @@ const getStrategoBoard = (board:string[][]):strategoCase[] => {
             'type':c,
             'active': true,
             'isSelected': false,
+            'canBeSelected': false,
             'position' : {
                 x,
                 y,
