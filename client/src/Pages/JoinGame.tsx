@@ -9,13 +9,16 @@ function JoinGame() {
     const [code, setCode] = useState('');
     const [foundGame, setFoundGame] = useState(false);
 
-    function handleChangeCode(event:any) {
+    const handleChangeCode = (event:any) => {
         setCode(event.target.value)
     }
 
-    function checkCode() {
-        console.log(code)
-        socket.emit('join-game', code)
+    const checkCode = () => socket.emit('join-game', code)
+
+    const handleKeyPress = (event:any) => {
+        if(event.key === 'Enter'){
+            checkCode()
+        }
     }
 
     socket.on('response-join-game', (response:any) => {
@@ -35,7 +38,13 @@ function JoinGame() {
             <div className="join-code has-text-centered">
 
                 <div className="control">
-                    <input className="input is-large is-rounded" type="text" placeholder="Game Code" value={code} onChange={handleChangeCode}/>
+                    <input className="input is-large is-rounded"
+                           type="text"
+                           placeholder="Game Code"
+                           value={code}
+                           onChange={handleChangeCode}
+                           onKeyPress={handleKeyPress}
+                    />
                 </div>
 
                 <button className="button is-primary mt-3" onClick={checkCode}> Code verification </button>

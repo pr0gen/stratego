@@ -5,9 +5,11 @@ import startSockets from "../routes/socket";
 import express from 'express'
 import socketio from "socket.io";
 import {GameEngineApi} from "../src/GameEngine/GameEngineApi";
+import {boardParser} from "../utils/boardParser";
 
 
 export default async function run(app: express.Express, io: socketio.Server, options: { root: string }): Promise<void> {
+
 
 // Express
 

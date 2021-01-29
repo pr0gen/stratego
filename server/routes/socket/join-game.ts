@@ -6,8 +6,9 @@ export default function joinGame(socket: socketio.Socket, rooms: Rooms) {
     socket.on('join-game', (code: string) => {
 
         let room = rooms.getRoomByCode(code)
-
         if (room !== undefined) {
+
+            room.createBoard()
             room.addSecondPlayer(socket.id)
             console.log(rooms)
             socket.emit('response-join-game', {
