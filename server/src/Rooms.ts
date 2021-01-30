@@ -26,9 +26,14 @@ export class Rooms {
         this.rooms = newRooms.rooms
     }
 
-
     getRoomByCode(code: string) :Room|undefined{
         return this.rooms.find(room => room.code === code)
+    }
+
+    getRoomByPlayerId(playerId: string) :Room|undefined{
+        return this.rooms.find(room =>
+            (room.firstPlayer.id === playerId || room.secondPlayer.id === playerId )
+        )
     }
 
 }

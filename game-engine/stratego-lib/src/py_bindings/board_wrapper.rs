@@ -63,8 +63,10 @@ impl StrategoBoardWrapper {
     }
 
     pub fn moving(&mut self, from: PyCoord, to: PyCoord) -> PyResult<Vec<String>> {
-        let cases = self.board.moving(Coordinate::from(from), Coordinate::from(to)).unwrap();
-        Ok(cases.iter().map(|case| case.display()).collect())
+        match self.board.moving(Coordinate::from(from), Coordinate::from(to)) {
+            Ok(cases) => Ok(cases.iter().map(|case| case.display()).collect()),
+            Err(e) => Err(exceptions::PyTypeError::new_err(format!("[Error] Wrapper - failed to move: {}", e.message()))),
+        }
     }
 
     pub fn display_by_color(&self, color: PyColor) -> PyResult<String> {

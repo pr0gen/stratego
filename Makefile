@@ -20,10 +20,11 @@ python-test:
 	@echo "== Pytest =="
 	pytest
 
-api-build:
-	@echo "== Run Stratego API=="
-	uvicorn api:app --reload 
 
 commit: engine rust-test rust-clippy python-test
 
 lib-build: engine rust-test python-test
+
+api-build:
+	@echo "== Run Stratego API=="
+	uvicorn api:app --reload 

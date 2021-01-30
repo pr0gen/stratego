@@ -35,12 +35,14 @@ export class GameEngineApi {
         return response.uuid
     }
 
-    static async getAvailableMove(uuid:string, player_color:string){
+    static async getAvailableMove(uuid:string, player_color:string) {
+
         const {data: response} = await axios.get(`http://127.0.0.1:8000/moves/${player_color}/${uuid}`)
-        return response
+        return response.moves
     }
 
     static async setMove(uuid:string, player_id:string, coordinate_from : (string|number)[], coordinate_to : (string|number)[] ){
+
         const {data: response} = await axios.post(`http://127.0.0.1:8000/moves`, {
             uuid,
             player_id,
