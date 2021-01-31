@@ -563,7 +563,7 @@ mod engine_utils_tests {
         new_board[4][6] = create_unreachable_case(Coordinate::new(4, 6));
         new_board[4][7] = create_unreachable_case(Coordinate::new(4, 7));
         new_board[5][6] = create_unreachable_case(Coordinate::new(5, 6));
-        new_board[5][7] = create_unreachable_case(Coordinate::new(7, 5));
+        new_board[5][7] = create_unreachable_case(Coordinate::new(5, 7));
 
         new_board
     }
