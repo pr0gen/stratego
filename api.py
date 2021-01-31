@@ -68,8 +68,11 @@ def read_available_moves(player_color: str, uuid: str):
 
     try:
         engine = game.engine
-        moves = engine.board.get_available_moves_by_color(player_color)
-        return MoveResponse(200, False, "", uuid, parse_moves(moves))
+        moves = engine.board.get_available_moves()
+        parsedMoves = parse_moves(moves)
+        for m in parsedMoves:
+            m.show()
+        return MoveResponse(200, False, "", uuid, parsedMoves)
     except:
         logging.error("Failed to get available moves for", uuid)
         return StrategoResponse(200, True, "Move available error", uuid)

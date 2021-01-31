@@ -10,6 +10,16 @@ use crate::board::Board;
 use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
 
+pub fn get_availables_moves_by_color(
+    board: &impl Board,
+    color: &Color,
+) -> Vec<(Coordinate, Coordinate, Color, Color)> {
+    get_availables_moves(board)
+        .into_iter()
+        .filter(|(_, _, player_color, _)| player_color == color)
+        .collect()
+}
+
 pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     let cases = board.state();
     let row_len = cases.len() - 1;
@@ -213,6 +223,14 @@ fn check_row_for_scout(
     moves
 }
 
+fn check_case(case: &Case, player_color: &Color) -> Option<Coordinate> {
+    if &State::Unreachable == case.get_state() || player_color == case.get_content().get_color() {
+        None
+    } else {
+        Some(*case.get_coordinate())
+    }
+}
+
 fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     if case
         .get_content()
@@ -235,14 +253,6 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Col
             }
         });
         moves
-    }
-}
-
-fn check_case(case: &Case, player_color: &Color) -> Option<Coordinate> {
-    if &State::Unreachable == case.get_state() || player_color == case.get_content().get_color() {
-        None
-    } else {
-        Some(*case.get_coordinate())
     }
 }
 

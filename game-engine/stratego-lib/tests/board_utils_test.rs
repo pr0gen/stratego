@@ -102,7 +102,7 @@ mod board_utils_test {
     fn should_loose_against_bomb() {
         let attacker = create_full_case(
             Coordinate::new(0, 0),
-            Piece::new(PieceType::Lieutenant, Color::Blue),
+            Piece::new(PieceType::General, Color::Blue),
         );
         let defenser = create_full_case(
             Coordinate::new(0, 1),

@@ -17,7 +17,7 @@ pub fn parse_python_cases(py_cases: Vec<Vec<PyCase>>) -> Vec<Vec<Case>> {
 fn parse_python_row(py_cases: &[PyCase]) -> Vec<Case> {
     py_cases
         .iter()
-        .map(|(state, piece_type, coord, color): &PyCase | {
+        .map(|(state, piece_type, coord, color): &PyCase| {
             let piece_type: PyPieceType = *piece_type;
             Case::new(
                 State::from(state.as_str()),
@@ -63,9 +63,15 @@ impl StrategoBoardWrapper {
     }
 
     pub fn moving(&mut self, from: PyCoord, to: PyCoord) -> PyResult<Vec<String>> {
-        match self.board.moving(Coordinate::from(from), Coordinate::from(to)) {
+        match self
+            .board
+            .moving(Coordinate::from(from), Coordinate::from(to))
+        {
             Ok(cases) => Ok(cases.iter().map(|case| case.display()).collect()),
-            Err(e) => Err(exceptions::PyTypeError::new_err(format!("[Error] Wrapper - failed to move: {}", e.message()))),
+            Err(e) => Err(exceptions::PyTypeError::new_err(format!(
+                "[Error] Wrapper - failed to move: {}",
+                e.message()
+            ))),
         }
     }
 
@@ -75,25 +81,6 @@ impl StrategoBoardWrapper {
 
     pub fn at(&self, coordinate: PyCoord) -> PyResult<Case> {
         Ok(self.board.get_at(&Coordinate::from(coordinate)).clone())
-    }
-
-    pub fn get_available_moves(&self) -> PyResult<Py<PyAny>> {
-        let moves = engine_utils::get_availables_moves(&self.board);
-        let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
-            .iter()
-            .map(|(from, to, origin_color, target_color)| {
-                (
-                    case::from(from),
-                    case::from(to),
-                    *origin_color,
-                    *target_color,
-                )
-            })
-            .collect();
-        let gil_holder = utils::get_gild_holder()
-            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
-        let gil = gil_holder.get();
-        Ok(pythonize(gil.python(), &moves)?)
     }
 
     pub fn place(
@@ -118,7 +105,7 @@ impl StrategoBoardWrapper {
         }
     }
 
-    pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
+    pub fn get_available_moves(&self) -> PyResult<Py<PyAny>> {
         let moves = engine_utils::get_availables_moves(&self.board);
         let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
             .iter()
@@ -130,7 +117,26 @@ impl StrategoBoardWrapper {
                     *target_color,
                 )
             })
-            .filter(|(_, _, player_color, _)| player_color.as_str() == color)
+            .collect();
+        let gil_holder = utils::get_gild_holder()
+            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), &moves)?)
+    }
+
+
+    pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
+        let moves = engine_utils::get_availables_moves_by_color(&self.board, &color.into());
+        let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
+            .iter()
+            .map(|(from, to, origin_color, target_color)| {
+                (
+                    case::from(from),
+                    case::from(to),
+                    *origin_color,
+                    *target_color,
+                )
+            })
             .collect();
         let gil_holder = utils::get_gild_holder()
             .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));

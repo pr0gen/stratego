@@ -8,7 +8,35 @@ mod engine_utils_tests {
     use stratego_lib::board::piece::{Color, Piece, PieceType};
     use stratego_lib::board::Board;
 
-    use stratego_lib::engine_utils::{game_is_over, get_availables_moves, verify_board_integrity};
+    use stratego_lib::engine_utils::{game_is_over, get_availables_moves, get_availables_moves_by_color, verify_board_integrity};
+
+    #[test]
+    fn scout_move_in_doomed_case_six_f() {
+        let mut board = StrategoBoard::new(empty_board());
+
+        board.place(create_full_case(
+            Coordinate::new(8, 1),
+            Piece::new(PieceType::Scout, Color::Red),
+        )).unwrap();
+        board.place(create_full_case(
+            Coordinate::new(8, 2),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        )).unwrap();
+        board.place(create_full_case(
+            Coordinate::new(8, 4),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        )).unwrap();
+        board.place(create_full_case(
+            Coordinate::new(2, 1),
+            Piece::new(PieceType::Bomb, Color::Blue),
+        )).unwrap();
+
+        eprintln!("{}", board.display());
+
+        let res = get_availables_moves(&board);
+        eprintln!("{:?}", res);
+        assert_eq!(9, res.len());
+    }
 
     #[test]
     fn should_check_scouts_can_not_move_behind_pieces() {
@@ -54,6 +82,56 @@ mod engine_utils_tests {
         let res = get_availables_moves(&board);
         eprintln!("{:?}", res);
         assert_eq!(36, res.len());
+    }
+
+    #[test]
+    fn should_get_move_for_scout() {
+        let mut board = StrategoBoard::new(empty_board());
+        board.place(create_full_case(
+            Coordinate::new(7, 5),
+            Piece::new(PieceType::Scout, Color::Red),
+        )).unwrap();
+        
+
+        board.place(create_full_case(
+            Coordinate::new(7, 4),
+            Piece::new(PieceType::Lieutenant, Color::Red),
+        )).unwrap();
+
+        board.place(create_full_case(
+            Coordinate::new(7, 6),
+            Piece::new(PieceType::Lieutenant, Color::Blue),
+        )).unwrap();
+
+        eprintln!("{}", board.display());
+        let res = get_availables_moves(&board);
+        eprintln!("{:?}", res);
+        assert_eq!(17, res.len());
+    }
+
+    #[test]
+    fn should_get_move_for_scout_by_color() {
+        let mut board = StrategoBoard::new(empty_board());
+        board.place(create_full_case(
+            Coordinate::new(7, 5),
+            Piece::new(PieceType::Scout, Color::Red),
+        )).unwrap();
+        
+
+        board.place(create_full_case(
+            Coordinate::new(7, 4),
+            Piece::new(PieceType::Lieutenant, Color::Red),
+        )).unwrap();
+
+        board.place(create_full_case(
+            Coordinate::new(7, 6),
+            Piece::new(PieceType::Lieutenant, Color::Blue),
+        )).unwrap();
+
+        eprintln!("{}", board.display());
+        let res = get_availables_moves_by_color(&board, &Color::Red);
+        eprintln!("{:?}", res);
+        assert_eq!(13, res.len());
     }
 
     #[test]
