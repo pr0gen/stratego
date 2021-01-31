@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use crate::board::board_utils::Direction;
 use crate::board::case::{Case, Coordinate, State};
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::deplacement::AvailableMove;
@@ -8,6 +9,16 @@ use crate::board::piece::{Color, PieceType};
 use crate::board::Board;
 use crate::error::StrategoError::{self, InitGameError};
 use crate::player::Player;
+
+pub fn get_availables_moves_by_color(
+    board: &impl Board,
+    color: &Color,
+) -> Vec<(Coordinate, Coordinate, Color, Color)> {
+    get_availables_moves(board)
+        .into_iter()
+        .filter(|(_, _, player_color, _)| player_color == color)
+        .collect()
+}
 
 pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, Color, Color)> {
     let cases = board.state();
@@ -44,6 +55,19 @@ pub fn get_availables_moves(board: &impl Board) -> Vec<(Coordinate, Coordinate, 
     }
 
     moves
+}
+
+fn find_vertical_cases(cases: &[Vec<Case>], y: i16) -> Vec<Case> {
+    let mut vec = Vec::new();
+    for row in cases {
+        for case in row {
+            let coordinate = case.get_coordinate();
+            if y == coordinate.get_y() {
+                vec.push(case.to_owned());
+            }
+        }
+    }
+    vec
 }
 
 fn check_for_side(
@@ -101,7 +125,7 @@ fn check_for_side(
     moves
 }
 
-pub fn check_for_scouts(
+fn check_for_scouts(
     case: &Case,
     cases: &[Vec<Case>],
     coordinate: &Coordinate,
@@ -141,20 +165,6 @@ pub fn check_for_scouts(
         Direction::Down,
     ));
     moves
-}
-
-fn find_vertical_cases(cases: &[Vec<Case>], y: i16) -> Vec<Case> {
-    let mut vec = Vec::new();
-    for row in cases {
-        for case in row {
-            let coordinate = case.get_coordinate();
-            if y == coordinate.get_y() {
-                vec.push(case.to_owned());
-            }
-        }
-    }
-
-    vec
 }
 
 fn check_part_of_row(
@@ -199,25 +209,26 @@ fn check_row_for_scout(
         let coord_to = to_go_case.get_coordinate();
         let state = to_go_case.get_state();
         let color = to_go_case.get_content().get_color();
-        if &State::Unreachable == state {
-            break;
-        } else if &State::Full == state {
-            if player_color != color {
-                moves.push((*coord_from, *coord_to, *player_color, *color));
+        match state {
+            State::Unreachable => break,
+            State::Full => {
+                if player_color != color {
+                    moves.push((*coord_from, *coord_to, *player_color, *color));
+                }
+                break;
             }
-            break;
-        } else if &State::Empty == state {
-            moves.push((*coord_from, *coord_to, *player_color, *color));
+            State::Empty => moves.push((*coord_from, *coord_to, *player_color, *color)),
         }
     }
     moves
 }
 
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
+fn check_case(case: &Case, player_color: &Color) -> Option<Coordinate> {
+    if &State::Unreachable == case.get_state() || player_color == case.get_content().get_color() {
+        None
+    } else {
+        Some(*case.get_coordinate())
+    }
 }
 
 fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Color, Color)> {
@@ -242,14 +253,6 @@ fn check_cases(cases: &[&Case], case: &Case) -> Vec<(Coordinate, Coordinate, Col
             }
         });
         moves
-    }
-}
-
-fn check_case(case: &Case, player_color: &Color) -> Option<Coordinate> {
-    if &State::Unreachable == case.get_state() || player_color == case.get_content().get_color() {
-        None
-    } else {
-        Some(*case.get_coordinate())
     }
 }
 
@@ -305,11 +308,8 @@ fn check_side(cases: &[Vec<Case>], case: &Case) -> Vec<(Coordinate, Coordinate, 
     }
 }
 
-pub fn ask_next_move(player: &dyn Player, board: &StrategoBoard) -> (Case, Coordinate) {
-    let (from, to) = player.ask_next_move(board.to_owned());
-    let case = board.get_at(&Coordinate::new(from.get_x(), from.get_y()));
-
-    (case.clone(), to)
+pub fn ask_next_move(player: &dyn Player, board: &StrategoBoard) -> (Coordinate, Coordinate) {
+    player.ask_next_move(board.to_owned())
 }
 
 pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {

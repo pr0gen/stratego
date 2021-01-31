@@ -1,4 +1,5 @@
 use pyo3::prelude::pyclass;
+use std::fmt;
 use serde::{Deserialize, Serialize};
 
 use self::deplacement::{AvailableMove, Move};
@@ -6,22 +7,25 @@ use self::deplacement::{AvailableMove, Move};
 pub mod deplacement;
 pub mod piece_utils;
 
+pub type PyColor = String;
+pub type PyPieceType = i8;
+
 #[pyclass]
-#[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone)]
 pub struct Piece {
     m: Move,
     rank: PieceType,
     color: Color,
 }
 
-#[derive(Serialize, Deserialize, Hash, Debug, Eq, Ord, PartialEq, PartialOrd, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Copy, Clone)]
 pub enum Color {
     None,
     Red,
     Blue,
 }
 
-#[derive(Serialize, Deserialize, Debug, Eq, Ord, PartialEq, PartialOrd, Clone, Hash)]
+#[derive(Serialize, Deserialize, Debug, Eq, PartialEq, PartialOrd, Clone, Hash)]
 pub enum PieceType {
     Null = -10,
     Bomb = -2,
@@ -36,6 +40,36 @@ pub enum PieceType {
     Scout = 2,
     Spy = 1,
     Flag = -1,
+}
+
+impl Into<Color> for PyColor {
+    fn into(self) -> Color {
+        match self.as_str() {
+            "Blue" => Color::Blue,
+            "Red" => Color::Red,
+            _ => Color::None,
+        }
+    }
+}
+
+impl Into<PieceType> for PyPieceType {
+    fn into(self) -> PieceType {
+        match self {
+            -1 => PieceType::Flag,
+            -2 => PieceType::Bomb,
+            10 => PieceType::Marshal,
+            9 => PieceType::General,
+            8 => PieceType::Colonel,
+            7 => PieceType::Major,
+            6 => PieceType::Captain,
+            5 => PieceType::Lieutenant,
+            4 => PieceType::Sergeant,
+            3 => PieceType::Miner,
+            2 => PieceType::Scout,
+            1 => PieceType::Spy,
+            _ => PieceType::Null,
+        }
+    }
 }
 
 impl From<&str> for Color {
@@ -162,6 +196,13 @@ impl Piece {
             PieceType::Spy => format!("Spy{}", msg),
             PieceType::Flag => format!(" F {}", msg),
         }
+    }
+}
+
+
+impl fmt::Display for Piece {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}{}", self.rank, self.color.as_str())
     }
 }
 

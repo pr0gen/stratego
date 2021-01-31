@@ -3,7 +3,7 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
-use crate::board::board_utils::{attack, check_piece_move};
+use crate::board::board_utils;
 use crate::board::case::{
     create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
 };
@@ -14,7 +14,7 @@ use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
 #[pyclass]
-#[derive(Serialize, Deserialize, Hash, Clone, Debug, Eq, PartialEq, Ord, PartialOrd)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
 }
@@ -58,34 +58,31 @@ pub fn create_empty_stratego_board() -> StrategoBoard {
             board[i].push(create_empty_case(Coordinate::new(i as i16, j as i16)));
         }
     }
+    let mut board = StrategoBoard::new(board);
 
-    board[4][2] = create_unreachable_case(Coordinate::new(4, 2));
-    board[4][3] = create_unreachable_case(Coordinate::new(4, 3));
-    board[5][2] = create_unreachable_case(Coordinate::new(5, 2));
-    board[5][3] = create_unreachable_case(Coordinate::new(5, 3));
-    board[4][6] = create_unreachable_case(Coordinate::new(4, 6));
-    board[4][7] = create_unreachable_case(Coordinate::new(4, 7));
-    board[5][6] = create_unreachable_case(Coordinate::new(5, 6));
-    board[5][7] = create_unreachable_case(Coordinate::new(7, 5));
 
-    StrategoBoard::new(board)
+    board.place(create_unreachable_case(Coordinate::new(4, 2))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(4, 3))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 2))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 3))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(4, 6))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(4, 7))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 6))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 7))).unwrap();
+
+    board
 }
 
 impl StrategoBoard {
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
         StrategoBoard { cases }
     }
-
-    pub fn place(&mut self, case: Case) -> Result<(), StrategoError> {
-        let coordinate = case.get_coordinate();
-        self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case.clone();
-        Ok(())
-    }
 }
 
 impl Board for StrategoBoard {
-    fn moving(&mut self, case: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
-        if !check_piece_move(&case, &to) {
+    fn moving(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
+        let case = self.get_at(&from).to_owned();
+        if !board_utils::check_move(self, &from, &to) {
             return Err(StrategoError::MoveError(
                 String::from("Illegal move"),
                 case,
@@ -113,7 +110,7 @@ impl Board for StrategoBoard {
             }
             State::Full => {
                 let case_coord = case.get_coordinate();
-                match attack(
+                match board_utils::attack(
                     create_full_case(case_coord.to_owned(), piece.to_owned()),
                     aim_case.to_owned(),
                 ) {
@@ -166,6 +163,11 @@ impl Board for StrategoBoard {
         &self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize]
     }
 
+    fn place(&mut self, case: Case) -> Result<Case, StrategoError> {
+        let coordinate = case.get_coordinate();
+        self.cases[coordinate.get_x() as usize][coordinate.get_y() as usize] = case.clone();
+        Ok(case)
+    }
 }
 
 fn get_header(length: usize) -> String {
