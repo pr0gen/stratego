@@ -58,17 +58,19 @@ pub fn create_empty_stratego_board() -> StrategoBoard {
             board[i].push(create_empty_case(Coordinate::new(i as i16, j as i16)));
         }
     }
+    let mut board = StrategoBoard::new(board);
 
-    board[4][2] = create_unreachable_case(Coordinate::new(4, 2));
-    board[4][3] = create_unreachable_case(Coordinate::new(4, 3));
-    board[5][2] = create_unreachable_case(Coordinate::new(5, 2));
-    board[5][3] = create_unreachable_case(Coordinate::new(5, 3));
-    board[4][6] = create_unreachable_case(Coordinate::new(4, 6));
-    board[4][7] = create_unreachable_case(Coordinate::new(4, 7));
-    board[5][6] = create_unreachable_case(Coordinate::new(5, 6));
-    board[5][7] = create_unreachable_case(Coordinate::new(7, 5));
 
-    StrategoBoard::new(board)
+    board.place(create_unreachable_case(Coordinate::new(4, 2))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(4, 3))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 2))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 3))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(4, 6))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(4, 7))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 6))).unwrap();
+    board.place(create_unreachable_case(Coordinate::new(5, 7))).unwrap();
+
+    board
 }
 
 impl StrategoBoard {

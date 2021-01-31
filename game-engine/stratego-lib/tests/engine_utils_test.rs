@@ -11,31 +11,55 @@ mod engine_utils_tests {
     use stratego_lib::engine_utils::{game_is_over, get_availables_moves, get_availables_moves_by_color, verify_board_integrity};
 
     #[test]
-    fn scout_move_in_doomed_case_six_f() {
+    fn scout_move_is_doomed_case_six_f() {
         let mut board = StrategoBoard::new(empty_board());
 
         board.place(create_full_case(
-            Coordinate::new(8, 1),
+            Coordinate::new(0, 5),
+            Piece::new(PieceType::Scout, Color::Blue),
+        )).unwrap();
+
+        board.place(create_full_case(
+            Coordinate::new(1, 5),
+            Piece::new(PieceType::Colonel, Color::Blue),
+        )).unwrap();
+
+        board.place(create_full_case(
+            Coordinate::new(3, 5),
+            Piece::new(PieceType::Captain, Color::Blue),
+        )).unwrap();
+
+        board.place(create_full_case(
+            Coordinate::new(4, 5),
+            Piece::new(PieceType::Scout, Color::Blue),
+        )).unwrap();
+
+        board.place(create_full_case(
+            Coordinate::new(5, 5),
             Piece::new(PieceType::Scout, Color::Red),
         )).unwrap();
+
         board.place(create_full_case(
-            Coordinate::new(8, 2),
-            Piece::new(PieceType::Bomb, Color::Blue),
+            Coordinate::new(7, 5),
+            Piece::new(PieceType::Scout, Color::Red),
         )).unwrap();
+
         board.place(create_full_case(
-            Coordinate::new(8, 4),
-            Piece::new(PieceType::Bomb, Color::Blue),
+            Coordinate::new(8, 5),
+            Piece::new(PieceType::Spy, Color::Red),
         )).unwrap();
+
         board.place(create_full_case(
-            Coordinate::new(2, 1),
-            Piece::new(PieceType::Bomb, Color::Blue),
+            Coordinate::new(9, 5),
+            Piece::new(PieceType::Bomb, Color::Red),
         )).unwrap();
+
 
         eprintln!("{}", board.display());
 
-        let res = get_availables_moves(&board);
+        let res = get_availables_moves_by_color(&board, &Color::Red);
         eprintln!("{:?}", res);
-        assert_eq!(9, res.len());
+        assert_eq!(15, res.len());
     }
 
     #[test]
