@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod board_utils_test {
 
-    use stratego_lib::board::board_utils::{attack, check_piece_move};
+    use stratego_lib::board::board_utils::attack;
     use stratego_lib::board::case::{create_full_case, Coordinate, State};
     use stratego_lib::board::piece::{Color, Piece, PieceType};
 
@@ -59,36 +59,6 @@ mod board_utils_test {
         assert_eq!(res.1.get_state(), &State::Empty);
     }
 
-    #[test]
-    fn should_enable_move() {
-        let mut piece = Piece::new(PieceType::General, Color::Blue);
-        let mut case = create_full_case(Coordinate::new(0, 0), piece);
-        assert_eq!(check_piece_move(&case, &Coordinate::new(0, 1)), true);
-
-        piece = Piece::new(PieceType::Scout, Color::Blue);
-        case = create_full_case(Coordinate::new(0, 0), piece);
-        assert_eq!(check_piece_move(&case, &Coordinate::new(0, 9)), true);
-
-        piece = Piece::new(PieceType::General, Color::Blue);
-        case = create_full_case(Coordinate::new(0, 0), piece);
-        assert_eq!(check_piece_move(&case, &Coordinate::new(1, 0)), true);
-    }
-
-    #[test]
-    fn should_not_enable_move() {
-        let mut piece = Piece::new(PieceType::General, Color::Blue);
-        let mut case = create_full_case(Coordinate::new(0, 0), piece);
-        assert_eq!(check_piece_move(&case, &Coordinate::new(0, 2)), false);
-
-        piece = Piece::new(PieceType::Bomb, Color::Blue);
-        case = create_full_case(Coordinate::new(0, 0), piece);
-        assert_eq!(check_piece_move(&case, &Coordinate::new(0, 2)), false);
-
-        piece = Piece::new(PieceType::Bomb, Color::Blue);
-        case = create_full_case(Coordinate::new(0, 0), piece);
-        assert_eq!(check_piece_move(&case, &Coordinate::new(1, 1)), false);
-    }
-
 }
 
 #[cfg(test)]
@@ -97,7 +67,6 @@ mod board_tests {
     use stratego_lib::board::case::{create_empty_case, create_full_case, create_unreachable_case};
     use stratego_lib::board::case::{Case, Coordinate, State};
     use stratego_lib::board::classic_board::{create_empty_stratego_board, StrategoBoard};
-    use stratego_lib::board::piece::deplacement::{AvailableMove, Move};
     use stratego_lib::board::piece::{Color, Piece, PieceType};
     use stratego_lib::board::Board;
 
@@ -140,6 +109,33 @@ mod board_tests {
     }
 
     #[test]
+    fn should_allow_scout_move() {
+        let mut board = create_empty_stratego_board();
+        board
+            .place(create_full_case(
+                Coordinate::new(0, 0),
+                Piece::new(PieceType::Scout, Color::Blue),
+            ))
+            .unwrap();
+
+        match board.moving(Coordinate::new(0, 0), Coordinate::new(0, 1)) {
+            Ok(_) => assert!(true),
+            Err(e) => {
+                eprintln!("{}", e.message());
+                assert!(false);
+            }
+        }
+
+        match board.moving(Coordinate::new(0, 1), Coordinate::new(0, 9)) {
+            Ok(_) => assert!(true),
+            Err(e) => {
+                eprintln!("{}", e.message());
+                assert!(false);
+            }
+        }
+    }
+
+    #[test]
     fn should_get_cases_in_board_straight() {
         let board = StrategoBoard::new(create_3_x_3_stratego_board());
         let at = board.get_at(&Coordinate::new(0, 0));
@@ -175,24 +171,6 @@ mod board_tests {
     }
 
     #[test]
-    fn should_place_piece_in_board() {
-        let bomb = Piece::new(PieceType::Bomb, Color::Blue);
-        let stratego_board =
-            StrategoBoard::new(vec![vec![create_full_case(Coordinate::new(0, 0), bomb)]]);
-        let actual_case = stratego_board.state().get(0).unwrap().get(0).unwrap();
-
-        let content = actual_case.get_content();
-        assert_eq!(content.get_rank(), &PieceType::Bomb);
-        assert_eq!(content.get_move(), &Move::new(AvailableMove::Immovable));
-        assert_eq!(content.get_color(), &Color::Blue);
-
-        assert_eq!(actual_case.get_state(), &State::Full);
-        let coord = actual_case.get_coordinate();
-        assert_eq!(coord.get_x(), 0);
-        assert_eq!(coord.get_y(), 0);
-    }
-
-    #[test]
     fn should_move_piece() {
         let general = Piece::new(PieceType::General, Color::Blue);
         let mut stratego_board = StrategoBoard::new(vec![
@@ -208,10 +186,7 @@ mod board_tests {
 
         println!("{}", stratego_board.display());
 
-        let result = stratego_board.moving(
-            Coordinate::new(0, 0),
-            Coordinate::new(0, 1),
-        );
+        let result = stratego_board.moving(Coordinate::new(0, 0), Coordinate::new(0, 1));
 
         match result {
             Ok(_) => assert!(true),
@@ -233,10 +208,7 @@ mod board_tests {
             ],
         ]);
 
-        let result = stratego_board.moving(
-            Coordinate::new(1, 0),
-            Coordinate::new(1, 1),
-        );
+        let result = stratego_board.moving(Coordinate::new(1, 0), Coordinate::new(1, 1));
 
         match result {
             Ok(_) => panic!("Should not happen"),
@@ -265,13 +237,10 @@ mod board_tests {
             ],
         ]);
 
-        let result = stratego_board.moving(
-            Coordinate::new(0, 0),
-            Coordinate::new(0, 2),
-        );
-    
         eprintln!("{}", stratego_board.display());
-        //assert!(false);
+        let result = stratego_board.moving(Coordinate::new(0, 0), Coordinate::new(0, 2));
+
+        eprintln!("{}", stratego_board.display());
         match result {
             Ok(_) => panic!("Should not happen"),
             Err(_) => assert!(true),
@@ -282,22 +251,20 @@ mod board_tests {
     fn should_move_and_capture() {
         let sergeant = Piece::new(PieceType::Sergeant, Color::Blue);
         let lieutenant = Piece::new(PieceType::Lieutenant, Color::Red);
-        let mut stratego_board = StrategoBoard::new(vec![vec![
-            create_full_case(Coordinate::new(0, 0), lieutenant.clone()),
-            create_full_case(Coordinate::new(0, 0), sergeant.clone()),
-        ]]);
+        let mut stratego_board = create_empty_stratego_board();
+        stratego_board.place(create_full_case(Coordinate::new(0, 0), lieutenant.clone())).unwrap();
+        stratego_board.place(create_full_case(Coordinate::new(0, 1), sergeant.clone())).unwrap();
 
-        let result = stratego_board.moving(
-            Coordinate::new(0, 0),
-            Coordinate::new(0, 1),
-        );
+        eprintln!("{}", stratego_board.display());
+        let result = stratego_board.moving(Coordinate::new(0, 0), Coordinate::new(0, 1));
+        eprintln!("{}", stratego_board.display());
 
         match result {
-            Ok(cases) => {
-                let previous_case = cases.get(0).unwrap();
+            Ok(_) => {
+                let previous_case = stratego_board.get_at(&Coordinate::new(0, 0));
                 assert_eq!(&State::Empty, previous_case.get_state());
 
-                let actual_case = cases.get(1).unwrap();
+                let actual_case = stratego_board.get_at(&Coordinate::new(0, 1));
                 assert_eq!(&State::Full, actual_case.get_state());
                 let piece = actual_case.get_content();
                 assert_eq!(&Color::Red, piece.get_color());
@@ -321,10 +288,7 @@ mod board_tests {
             ],
         ]);
 
-        let result = stratego_board.moving(
-            Coordinate::new(0, 0),
-            Coordinate::new(1, 1),
-        );
+        let result = stratego_board.moving(Coordinate::new(0, 0), Coordinate::new(1, 1));
 
         match result {
             Ok(_) => panic!("Should not happen"),
