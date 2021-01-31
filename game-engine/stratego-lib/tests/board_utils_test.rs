@@ -24,6 +24,7 @@ mod board_utils_test {
         assert_eq!(defenser2.get_content().get_color(), &Color::Blue);
     }
 
+
     #[test]
     fn defenser_should_win() {
         let attacker = create_full_case(
@@ -59,6 +60,81 @@ mod board_utils_test {
         assert_eq!(res.1.get_state(), &State::Empty);
     }
 
+    #[test]
+    fn spy_should_kill_marshal() {
+        let attacker = create_full_case(
+            Coordinate::new(0, 0),
+            Piece::new(PieceType::Spy, Color::Blue),
+        );
+        let defenser = create_full_case(
+            Coordinate::new(0, 1),
+            Piece::new(PieceType::Marshal, Color::Red),
+        );
+        let res = attack(attacker, defenser).unwrap();
+
+        assert_eq!(res.0.get_state(), &State::Empty);
+
+        let defenser2 = res.1;
+        assert_eq!(defenser2.get_state(), &State::Full);
+        assert_eq!(defenser2.get_content().get_color(), &Color::Blue);
+    }
+
+    #[test]
+    fn miner_should_kill_bomb() {
+        let attacker = create_full_case(
+            Coordinate::new(0, 0),
+            Piece::new(PieceType::Miner, Color::Blue),
+        );
+        let defenser = create_full_case(
+            Coordinate::new(0, 1),
+            Piece::new(PieceType::Bomb, Color::Red),
+        );
+        let res = attack(attacker, defenser).unwrap();
+
+        assert_eq!(res.0.get_state(), &State::Empty);
+
+        let defenser2 = res.1;
+        assert_eq!(defenser2.get_state(), &State::Full);
+        assert_eq!(defenser2.get_content().get_color(), &Color::Blue);
+    }
+
+    #[test]
+    fn should_loose_against_bomb() {
+        let attacker = create_full_case(
+            Coordinate::new(0, 0),
+            Piece::new(PieceType::Lieutenant, Color::Blue),
+        );
+        let defenser = create_full_case(
+            Coordinate::new(0, 1),
+            Piece::new(PieceType::Bomb, Color::Red),
+        );
+        let res = attack(attacker, defenser).unwrap();
+
+        assert_eq!(res.0.get_state(), &State::Empty);
+
+        let defenser2 = res.1;
+        assert_eq!(defenser2.get_state(), &State::Full);
+        assert_eq!(defenser2.get_content().get_color(), &Color::Red);
+    }
+
+    #[test]
+    fn should_loose_against_marshal() {
+        let attacker = create_full_case(
+            Coordinate::new(0, 0),
+            Piece::new(PieceType::Lieutenant, Color::Blue),
+        );
+        let defenser = create_full_case(
+            Coordinate::new(0, 1),
+            Piece::new(PieceType::Marshal, Color::Red),
+        );
+        let res = attack(attacker, defenser).unwrap();
+
+        assert_eq!(res.0.get_state(), &State::Empty);
+
+        let defenser2 = res.1;
+        assert_eq!(defenser2.get_state(), &State::Full);
+        assert_eq!(defenser2.get_content().get_color(), &Color::Red);
+    }
 }
 
 #[cfg(test)]
