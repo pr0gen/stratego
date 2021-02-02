@@ -2,7 +2,7 @@ use crate::board::case::{self, Case, Coordinate, PyCoord, PyState, State};
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::{Color, Piece, PyColor, PyPieceType};
 use crate::board::Board;
-use crate::engine_utils;
+use crate::board::board_utils;
 use crate::py_bindings::evaluation_function;
 use crate::utils;
 use pyo3::exceptions;
@@ -106,7 +106,7 @@ impl StrategoBoardWrapper {
     }
 
     pub fn get_available_moves(&self) -> PyResult<Py<PyAny>> {
-        let moves = engine_utils::get_availables_moves(&self.board);
+        let moves = board_utils::get_availables_moves(&self.board);
         let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
             .iter()
             .map(|(from, to, origin_color, target_color)| {
@@ -126,7 +126,7 @@ impl StrategoBoardWrapper {
 
 
     pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
-        let moves = engine_utils::get_availables_moves_by_color(&self.board, &color.into());
+        let moves = board_utils::get_availables_moves_by_color(&self.board, &color.into());
         let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
             .iter()
             .map(|(from, to, origin_color, target_color)| {

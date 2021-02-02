@@ -4,9 +4,7 @@ use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
 use crate::board::board_utils;
-use crate::board::case::{
-    create_empty_case, create_full_case, create_unreachable_case, Case, Coordinate, State,
-};
+use crate::board::case::{ self, Case, Coordinate, State, };
 use crate::board::piece::piece_utils::list_of_all_pieces;
 use crate::board::piece::Color;
 use crate::board::Board;
@@ -31,7 +29,7 @@ pub fn create_stratego_board() -> StrategoBoard {
     for (i, row) in cases.iter_mut().enumerate().take(max) {
         for (j, case) in row.iter_mut().enumerate() {
             let piece = pieces.pop();
-            *case = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+            *case = case::create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
         }
     }
 
@@ -41,7 +39,7 @@ pub fn create_stratego_board() -> StrategoBoard {
     for (i, row) in cases.iter_mut().enumerate().take(max).skip(6) {
         for (j, case) in row.iter_mut().enumerate() {
             let piece = pieces.pop();
-            *case = create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+            *case = case::create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
         }
     }
 
@@ -55,20 +53,35 @@ pub fn create_empty_stratego_board() -> StrategoBoard {
     for i in 0..size {
         board.push(Vec::with_capacity(size));
         for j in 0..size {
-            board[i].push(create_empty_case(Coordinate::new(i as i16, j as i16)));
+            board[i].push(case::create_empty_case(Coordinate::new(i as i16, j as i16)));
         }
     }
     let mut board = StrategoBoard::new(board);
 
-
-    board.place(create_unreachable_case(Coordinate::new(4, 2))).unwrap();
-    board.place(create_unreachable_case(Coordinate::new(4, 3))).unwrap();
-    board.place(create_unreachable_case(Coordinate::new(5, 2))).unwrap();
-    board.place(create_unreachable_case(Coordinate::new(5, 3))).unwrap();
-    board.place(create_unreachable_case(Coordinate::new(4, 6))).unwrap();
-    board.place(create_unreachable_case(Coordinate::new(4, 7))).unwrap();
-    board.place(create_unreachable_case(Coordinate::new(5, 6))).unwrap();
-    board.place(create_unreachable_case(Coordinate::new(5, 7))).unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 2)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 3)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 2)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 3)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 6)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 7)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 6)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 7)))
+        .unwrap();
 
     board
 }
@@ -76,6 +89,42 @@ pub fn create_empty_stratego_board() -> StrategoBoard {
 impl StrategoBoard {
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
         StrategoBoard { cases }
+    }
+
+    fn move_piece_when_empty(
+        &mut self,
+        to: Coordinate,
+        case: Case,
+    ) -> Result<Vec<Case>, StrategoError> {
+        let piece = case.get_content();
+        let new_case = case::create_full_case(to, piece.to_owned());
+        self.place(new_case.clone())?;
+        let case_coord = case.get_coordinate();
+        self.place(case::create_empty_case(case_coord.to_owned()))?;
+
+        Ok(vec![new_case])
+    }
+
+    fn move_piece_when_full(
+        &mut self,
+        case: Case,
+        aim_case: &Case,
+    ) -> Result<Vec<Case>, StrategoError> {
+        let piece = case.get_content();
+        let case_coord = case.get_coordinate();
+
+        match board_utils::attack(
+            case::create_full_case(case_coord.to_owned(), piece.to_owned()),
+            aim_case.to_owned(),
+        ) {
+            Ok((from, to)) => {
+                self.place(from.clone())?;
+                self.place(to.clone())?;
+
+                Ok(vec![from, to])
+            }
+            Err(e) => Err(e),
+        }
     }
 }
 
@@ -90,39 +139,11 @@ impl Board for StrategoBoard {
             ));
         }
 
-        let piece = case.get_content();
-        let to_x = to.get_x();
-        let to_y = to.get_y();
-        let aim_case = self
-            .cases
-            .get(to_x as usize)
-            .unwrap_or_else(|| panic!("Failed to get from column"))
-            .get(to_y as usize)
-            .unwrap_or_else(|| panic!("Failed to get from row"));
+        let aim_case = self.get_at(&to).to_owned();
+
         match aim_case.get_state() {
-            State::Empty => {
-                let new_case = create_full_case(to, piece.to_owned());
-                self.cases[to_x as usize][to_y as usize] = new_case.clone();
-                let case_coord = case.get_coordinate();
-                self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
-                    create_empty_case(case_coord.to_owned());
-                Ok(vec![new_case])
-            }
-            State::Full => {
-                let case_coord = case.get_coordinate();
-                match board_utils::attack(
-                    create_full_case(case_coord.to_owned(), piece.to_owned()),
-                    aim_case.to_owned(),
-                ) {
-                    Ok((from, to)) => {
-                        self.cases[case_coord.get_x() as usize][case_coord.get_y() as usize] =
-                            from.clone();
-                        self.cases[to_x as usize][to_y as usize] = to.clone();
-                        Ok(vec![from, to])
-                    }
-                    Err(e) => Err(e),
-                }
-            }
+            State::Empty => self.move_piece_when_empty(to, case),
+            State::Full => self.move_piece_when_full(case, &aim_case),
             State::Unreachable => Err(StrategoError::MoveError(
                 String::from("Unreachable"),
                 case,

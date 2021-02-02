@@ -4,8 +4,7 @@ use crate::board::piece::Color;
 use crate::board::Board;
 use crate::engine_utils;
 use crate::error::StrategoError;
-use crate::player::ai_player::AIPlayer;
-use crate::player::{HumanPlayer, Player};
+use crate::player::Player;
 
 pub trait Engine<B: Board> {
     fn status(&self) -> &B;
@@ -28,12 +27,12 @@ pub trait Engine<B: Board> {
 #[derive(Debug)]
 pub struct StrategoEngine {
     board: StrategoBoard,
-    players: (HumanPlayer, AIPlayer),
+    players: (Box<dyn Player>, Box<dyn Player>),
     turn: Color,
 }
 
 impl StrategoEngine {
-    pub fn new(board: StrategoBoard, players: (HumanPlayer, AIPlayer)) -> Self {
+    pub fn new(board: StrategoBoard, players: (Box<dyn Player>, Box<dyn Player>)) -> Self {
         StrategoEngine {
             board,
             players,
@@ -49,12 +48,11 @@ impl StrategoEngine {
         }
     }
 
-
     fn get_player_from_color(&self) -> &dyn Player {
         if Color::Red == self.turn {
-            &self.players.0
+            &*self.players.0
         } else {
-            &self.players.1
+            &*self.players.1
         }
     }
 }
@@ -89,7 +87,11 @@ impl Engine<StrategoBoard> for StrategoEngine {
         }
     }
 
-    fn perform_move(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError> {
+    fn perform_move(
+        &mut self,
+        from: Coordinate,
+        to: Coordinate,
+    ) -> Result<Vec<Case>, StrategoError> {
         match self.board.moving(from, to) {
             Ok(cases) => {
                 self.flip_color();
@@ -127,8 +129,8 @@ mod test {
         let engine = StrategoEngine::new(
             create_empty_stratego_board(),
             (
-                HumanPlayer::new(Color::Red, String::from("Tigran")),
-                AIPlayer::new(Color::Blue, String::from("Emma")),
+                Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
+                Box::new(AIPlayer::new(Color::Blue, String::from("Emma"))),
             ),
         );
 
