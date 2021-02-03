@@ -2,7 +2,10 @@ from typing import Tuple, List
 import enum 
 
 import ai_python.src.stratego_engine as se
-from ai_python.src.utils import generate_uuid
+from ai_python.src.utils import generate_uuid, StrategoAI, TestStrategoAI
+from ai_python.src.monte_carlo import MonteCarloAI
+from ai_python.src.random import RandomAI
+from ai_python.src.request import AIRequest
 
 
 class Color(enum.Enum):
@@ -18,30 +21,17 @@ class Player:
         self.name = name
         self.color = color
 
-
-class Engine:
-    players: Tuple[type(Player), type(Player)]
-    board: se.StrategoBoardWrapper
-    turn: Color
-
-    def __init__(self, players: Tuple[Player, Player], board: se.StrategoBoardWrapper):
-        self.players = players
-        self.board = board
-        self.color = Color.Red
-
-
 class Game:
-    engine: Engine
     uuid: int
-
+    board: se.StrategoBoardWrapper
 
     @staticmethod
-    def new(engine: Engine):
-        return Game(engine, generate_uuid(20))
+    def new(board: se.StrategoBoardWrapper):
+        return Game(board, generate_uuid(20))
 
 
-    def __init__(self, engine: Engine, uuid: int):
-        self.engine = engine
+    def __init__(self, board:se.StrategoBoardWrapper, uuid: int):
+        self.board = board
         self.uuid = uuid
 
 
@@ -67,9 +57,15 @@ class GamePool:
         return message
 
 
-
-
-
+def play_with_ai(data: AIRequest, game: Game) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+    color = data.color
+    switcher = {
+        "random": RandomAI(color),
+        "monte_carlo": MonteCarloAI(color) 
+    }
+    ai = switcher.get(data.ai_name)
+    return ai.ask_next_move(game.board)
+     
 
 
 
