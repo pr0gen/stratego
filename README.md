@@ -146,7 +146,7 @@ Routes:
  http://127.0.0.1:8000/moves
   {
     "uuid": "uuid",
-    "player_color": "Red",
+    "player_id": "Red", # I know, we fucked that one :D
     "coordinate_from": [
         6,
         "A"
