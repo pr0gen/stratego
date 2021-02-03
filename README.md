@@ -1,7 +1,5 @@
 # Stratego Game Engine
-
 The main library is written in Rust. The AI part is using Python.
-
 Please, I'm new to Rust, and we are studiants who are learning. Feel free to make review or reach us if you see garbage code, I would be happy to learn !
 
 ## TODO
@@ -111,3 +109,65 @@ The following function are there to help you build content for the board:
 Run web api, with `make api-build`, the app should run on [localhost](http://127.0.0.1:8000)
 
 Found swagger on [localhost](http://127.0.0.1:8000/docs)
+
+Routes: 
+
+- Create a game with 2 players (p1 is red)
+
+  ```
+  http://127.0.0.1:8000/create-game
+  {
+      "player_id_1": "Tigran",
+      "player_id_2": "random",
+      "type": "h",
+      "board": [
+          [
+              "your initilized board"
+          ]
+      ]
+  }
+  ```
+- Get state of a game 
+
+  ```
+  http://127.0.0.1:8000/game/{uuid}]/{color}
+  
+  
+  ```
+
+- Get all available moves on a game 
+  ```
+  http://127.0.0.1:8000/moves/{color}/{uuid}
+
+  ```
+
+- Move a piece on a game
+ ``` 
+ http://127.0.0.1:8000/moves
+  {
+    "uuid": "uuid",
+    "player_color": "Red",
+    "coordinate_from": [
+        6,
+        "A"
+    ],
+    "coordinate_to": [
+        5,
+        "A"
+    ]
+  }
+
+ ```
+
+- Use an AI as a player 
+  ```
+  http://127.0.0.1:8000/ai
+  {
+    "uuid": "uuid",
+    "color": "Red",
+    "ai_name": "random"
+  }
+
+   ```
+
+
