@@ -19,8 +19,8 @@ export default function getAllCases(socket: socketio.Socket, rooms: Rooms) {
 
         console.log('send cases')
 
-        socket.emit('response-get-all-cases', board)
-        socket.to(otherPlayerId).emit('response-get-all-cases', boardOtherPlayer)
+        socket.emit('response-get-all-cases', board, room.playerCanMove(socket.id))
+        socket.to(otherPlayerId).emit('response-get-all-cases', boardOtherPlayer,room.playerCanMove(otherPlayerId))
     })
 
 }
