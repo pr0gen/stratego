@@ -1,6 +1,5 @@
 from typing import Tuple, List
 import enum 
-
 import ai_python.src.stratego_engine as se
 from ai_python.src.utils import generate_uuid, StrategoAI, TestStrategoAI
 from ai_python.src.monte_carlo import MonteCarloAI
@@ -9,17 +8,9 @@ from ai_python.src.request import AIRequest
 
 
 class Color(enum.Enum):
-    Blue = 1
-    Red = 2
+    Red = 1 
+    Blue = 2
 
-
-class Player:
-    name = str
-    color = Color
-
-    def __init__(self, name: str, color: Color):
-        self.name = name
-        self.color = color
 
 class Game:
     uuid: int
@@ -28,7 +19,6 @@ class Game:
     @staticmethod
     def new(board: se.StrategoBoardWrapper):
         return Game(board, generate_uuid(20))
-
 
     def __init__(self, board:se.StrategoBoardWrapper, uuid: int):
         self.board = board
@@ -60,8 +50,8 @@ class GamePool:
 def play_with_ai(data: AIRequest, game: Game) -> Tuple[Tuple[int, str], Tuple[int, str]]:
     color = data.color
     switcher = {
-        "random": RandomAI(color),
-        "monte_carlo": MonteCarloAI(color) 
+        RandomAI.name: RandomAI(color),
+        MonteCarloAI.name : MonteCarloAI(color) 
     }
     ai = switcher.get(data.ai_name)
     return ai.ask_next_move(game.board)

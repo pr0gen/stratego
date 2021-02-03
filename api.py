@@ -6,7 +6,7 @@ from typing import Tuple, List
 from pydantic import BaseModel
 
 from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, generate_uuid, parse_board
-from ai_python.src.engine import GamePool, Game, Player, Color, play_with_ai
+from ai_python.src.engine import GamePool, Game, Color, play_with_ai
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper
 from ai_python.src.request import CreateGameRequest, MoveRequest, AIRequest

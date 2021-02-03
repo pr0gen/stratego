@@ -7,6 +7,7 @@ import random
 import copy
 
 class MonteCarloAI(StrategoAI):
+    name = "monte_carlo"
     color = str
 
     def __init__(self, color: str):
