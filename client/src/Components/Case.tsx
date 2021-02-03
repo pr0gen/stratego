@@ -2,10 +2,11 @@ import React from 'react'
 import '../styles/Game.scss'
 import getImageUrl from "../Utils/getImageUrl";
 
-export default function Case({type,position, eventClick, canBeSelected,isSelected} : any) {
+export default function Case({type,position, eventClick, canBeSelected,isSelected,active} : any) {
 
     const handleClick = () => {
         if (type === 'water') return
+        if (active === false) return
         eventClick(position)
     }
 
