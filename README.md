@@ -73,7 +73,7 @@ The object `StrategoBoardWrapper` is available to be used in Python.
 
     board.place("Full", (1, "A"), 1, "Red") # place a piece at coordinate
 
-    board.rust_basic_evaluation() # return color of the winner, if one there is *Yoda*
+    board.basic_evaluation() # return color of the winner, if one there is *Yoda*
 
 ```
 
