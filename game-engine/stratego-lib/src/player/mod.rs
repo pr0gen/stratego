@@ -1,13 +1,12 @@
-use std::hash::Hash;
-
 use crate::board::case::Coordinate;
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::Color;
 use crate::parse;
+use core::fmt::Debug;
 
 pub mod ai_player;
 
-pub trait Player {
+pub trait Player: Debug {
     fn ask_next_move(&self, board: StrategoBoard) -> (Coordinate, Coordinate);
 
     fn get_color(&self) -> &Color;
@@ -15,7 +14,7 @@ pub trait Player {
     fn get_name(&self) -> &str;
 }
 
-#[derive(Debug, Hash, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct HumanPlayer {
     color: Color,
     name: String,

@@ -1,5 +1,4 @@
 use std::fmt::Debug;
-use std::hash::Hash;
 
 use self::case::{Case, Coordinate};
 use self::piece::Color;
@@ -10,8 +9,8 @@ pub mod case;
 pub mod classic_board;
 pub mod piece;
 
-pub trait Board: Hash + Eq + Clone + Debug {
-    fn moving(&mut self, case: Case, to: Coordinate) -> Result<Vec<Case>, StrategoError>;
+pub trait Board: Clone + Debug {
+    fn moving(&mut self, from: Coordinate, to: Coordinate) -> Result<Vec<Case>, StrategoError>;
 
     fn state(&self) -> &Vec<Vec<Case>>;
 
@@ -20,4 +19,6 @@ pub trait Board: Hash + Eq + Clone + Debug {
     fn display_by_color(&self, color: &Color) -> String;
 
     fn get_at(&self, coordinate: &Coordinate) -> &Case;
+
+    fn place(&mut self, case: Case) -> Result<Case, StrategoError>;
 }

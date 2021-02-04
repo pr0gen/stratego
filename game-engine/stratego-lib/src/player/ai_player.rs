@@ -1,14 +1,13 @@
 use crate::board::case;
-use crate::board::Board;
 use crate::error::StrategoError;
 use crate::player::*;
-use crate::py_bindings::RustStrategoBoard;
+use crate::py_bindings::board_wrapper::StrategoBoardWrapper;
 use crate::utils;
 
 const AI_STRATEGO_INIT_FILE: &str = "rust_bind";
 const AI_STRATEGO_BASE_ASK_NEXT_MOVE_FUNCTION: &str = "ask_next_move";
 
-#[derive(Debug, Hash, Clone, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub struct AIPlayer {
     color: Color,
     name: String,
@@ -61,7 +60,7 @@ fn ask_ai_next_move(
                 )));
             }
 
-            let board = RustStrategoBoard::new(board.state().clone());
+            let board = StrategoBoardWrapper::new(board);
             let args = (board,);
             let call = function.unwrap().call1(args);
             if let Err(e) = call {

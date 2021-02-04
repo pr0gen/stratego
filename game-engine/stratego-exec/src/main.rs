@@ -10,9 +10,8 @@ fn main() {
     let mut engine = StrategoEngine::new(
         create_stratego_board(),
         (
-            HumanPlayer::new(Color::Red, String::from("Tigran")),
-            //HumanPlayer::new(Color::Blue, String::from("Cassiopee")),
-            AIPlayer::new(Color::Blue, String::from("monte_carlo")),
+            Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
+            Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
         ),
     );
 
