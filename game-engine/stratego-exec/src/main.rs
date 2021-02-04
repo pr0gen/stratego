@@ -4,13 +4,13 @@ use stratego_lib::board::Board;
 use stratego_lib::engine::{Engine, StrategoEngine};
 use stratego_lib::engine_utils::game_is_over;
 use stratego_lib::player::ai_player::AIPlayer;
-use stratego_lib::player::HumanPlayer;
+//use stratego_lib::player::HumanPlayer;
 
 fn main() {
     let mut engine = StrategoEngine::new(
         create_stratego_board(),
         (
-            Box::new(HumanPlayer::new(Color::Red, String::from("Tigran"))),
+            Box::new(AIPlayer::new(Color::Red, String::from("monte_carlo"))),
             Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
         ),
     );

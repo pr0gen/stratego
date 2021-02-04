@@ -27,4 +27,4 @@ lib-build: engine rust-test python-test
 
 api-build:
 	@echo "== Run Stratego API=="
-	uvicorn api:app --reload 
+	uvicorn api:app --reload
