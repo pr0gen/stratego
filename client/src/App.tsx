@@ -4,6 +4,8 @@ import Home from './Pages/Home';
 import JoinGame from './Pages/JoinGame';
 import Rules from './Pages/Rules';
 import Game from './Pages/Game';
+import SelectAI from './Pages/SelectAI';
+
 import {
     BrowserRouter as Router,
     Switch,
@@ -26,7 +28,7 @@ export default function App() {
     return (
         <Router>
             <div>
-                <Route path={['/create-game', '/join-game', '/rules', '/game']}>
+                <Route path={['/select-ai','/create-game', '/join-game', '/rules', '/game']}>
                     <div className="bloc-back">
                         <Link className="nav-items button is-primary btn-back" to="/"> Back </Link>
                     </div>
@@ -36,14 +38,11 @@ export default function App() {
                     <Route exact={true} path="/">
                         <Home/>
                     </Route>
+                    <Route path="/select-ai" component={SelectAI}/>
                     <Route path="/create-game" component={CreateGame}/>
                     <Route path="/join-game" component={JoinGame}/>
-                    <Route path="/rules">
-                        <Rules/>
-                    </Route>
-                    <Route path="/game">
-                        <Game/>
-                    </Route>
+                    <Route path="/rules" component={Rules}/>
+                    <Route path="/game" component={Game}/>
                 </Switch>
             </div>
         </Router>
