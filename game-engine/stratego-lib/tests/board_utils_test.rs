@@ -11,8 +11,7 @@ mod board_utils_test {
         let attacker = case::create_full_case(
             Coordinate::new(0, 0),
             Piece::new(PieceType::Colonel, Color::Blue),
-        );
-        let defenser = case::create_full_case(
+        ); let defenser = case::create_full_case(
             Coordinate::new(0, 1),
             Piece::new(PieceType::Lieutenant, Color::Red),
         );
@@ -438,7 +437,7 @@ mod board_utils_test {
 #[cfg(test)]
 mod board_tests {
 
-    use stratego_lib::board::case::{self, Case, Coordinate, State};
+    use stratego_lib::board::case::{self, Coordinate, State};
     use stratego_lib::board::classic_board::{create_empty_stratego_board, StrategoBoard};
     use stratego_lib::board::piece::{Color, Piece, PieceType};
     use stratego_lib::board::Board;
