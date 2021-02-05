@@ -25,7 +25,6 @@ export default function Board({board, setGameBoard, refreshBoard}: any) {
         })
 
         socket.on('response-move-piece', (moves: object[]) => {
-            console.log("refreshBoard")
             refreshBoard()
         })
 
@@ -74,6 +73,7 @@ export default function Board({board, setGameBoard, refreshBoard}: any) {
                           eventClick={handleClickCase}
                           canBeSelected={c.canBeSelected}
                           isSelected={c.isSelected}
+                          active={c.active}
                     />)
             }
         </div>

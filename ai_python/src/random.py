@@ -6,6 +6,7 @@ from ai_python.src.stratego_engine import StrategoBoardWrapper
 import random
 
 class RandomAI(StrategoAI):
+    name = "random"
     color = str
 
     def __init__(self, color: str):

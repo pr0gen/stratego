@@ -10,10 +10,15 @@ function Game() {
     const [board, setBoard] = useState(getDefaultBoard())
     // @ts-ignore
     const [gameBoard, setGameBoard] = useState(getStrategoBoard(board))
-    // @ts-ignore
     const [pieces, setPieces] = useState([])
     const [key, setKey] = useState(Date.now)
-    const updateBoard = (board: any) => {
+    const updateBoard = (board: any, canMove = true) => {
+        console.log(canMove)
+        console.log(board)
+        if(!canMove) {
+            console.log("je disabled les cases")
+            board.forEach((piece:any) => piece.active = false)
+        }
         setGameBoard(board)
         setKey(Date.now)
     }
@@ -23,13 +28,12 @@ function Game() {
     const socket = Socket.getSocket()
 
     useEffect(() => {
-        console.log("test 3")
         socket.emit('get-all-cases');
 
-        socket.on('response-get-all-cases', (pieces: any) => {
+        socket.on('response-get-all-cases', (pieces: any, canMove:boolean) => {
             setPieces([])
-            console.log("test 1")
-            updateBoard(getStrategoBoard(pieces))
+            console.log("can move =>" + canMove)
+            updateBoard(getStrategoBoard(pieces), canMove)
         })
         
         return () => {
@@ -39,7 +43,6 @@ function Game() {
     }, []);
 
     const refreshBoard = () => {
-        console.log("test 2")
         socket.emit('get-all-cases');
     }
 

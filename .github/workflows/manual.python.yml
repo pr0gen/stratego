@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r game-engine/requirements.txt
+          pip install -r requirements.txt
       - name: compile lib
         run: |
           cargo build --release --manifest-path game-engine/Cargo.toml

@@ -21,11 +21,11 @@ def ask_next_move_test2(board: se.StrategoBoardWrapper) -> Tuple[Tuple[int, str]
     return ((4, "A"), (5, "A"))
 
 
-def ask_next_move_monte_carlo(board: se.StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-    monteCarlo = MonteCarloAI('Blue')
+def ask_next_move_monte_carlo(board: se.StrategoBoardWrapper, color: str) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+    monteCarlo = MonteCarloAI(color)
     return monteCarlo.ask_next_move(board) 
 
 
-def ask_next_move_random(board: se.StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-    random = RandomAI('Blue')
+def ask_next_move_random(board: se.StrategoBoardWrapper, color: str) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+    random = RandomAI(color)
     return random.ask_next_move(board) 

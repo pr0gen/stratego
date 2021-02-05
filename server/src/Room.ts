@@ -51,4 +51,27 @@ export class Room {
         const reponse = this.gameEngine.setMove(playerId, from_x, from_y, to_x, to_y)
     }
 
+    playerCanMove(playerId: string) :boolean{
+        if (playerId === this.firstPlayer.id && this.state === RoomState.FirstPlayerCanPlay) {
+            console.log(playerId, true)
+            return true
+        }
+        if (playerId === this.secondPlayer.id && this.state === RoomState.SecondPlayerCanPlay) {
+            console.log(playerId, true)
+            return true
+        }
+        console.log(playerId, false)
+        return false
+    }
+
+    switchTurn() :void {
+        if (this.state === RoomState.FirstPlayerCanPlay) {
+            this.state = RoomState.SecondPlayerCanPlay
+        }
+
+        else if (this.state === RoomState.SecondPlayerCanPlay) {
+            this.state = RoomState.FirstPlayerCanPlay
+        }
+    }
+
 }

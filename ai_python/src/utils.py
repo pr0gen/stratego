@@ -19,14 +19,10 @@ def basic_material_values() -> List[Tuple[int, int]]:
       (1, 1)
     ]
 
-
 def parse_board(board: List[List[str]]):
     # TODO
     return se.rust_create_stratego_board()
 
-
-# def parse_case(case: se.Case) -> str:
-    # case
 
 def move_ready(move) -> Tuple[Tuple[int, str], Tuple[int, str]]:
     return (move.from_x, move.from_y), (move.to_x, move.to_y)
@@ -105,6 +101,7 @@ class MoveBuilder:
     def set_color_to(self, color):
         self.color_to = color
         return self
+
 
 class Move:
     from_x = None

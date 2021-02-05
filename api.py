@@ -6,13 +6,11 @@ from typing import Tuple, List
 from pydantic import BaseModel
 
 from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, generate_uuid, parse_board
-from ai_python.src.engine import GamePool, Game, Engine, Player, Color
+from ai_python.src.engine import GamePool, Game, Color, play_with_ai
 import ai_python.src.stratego_engine as se
-
-from web_api.Request.CreateGameRequest import CreateGameRequest
-from web_api.Request.MoveRequest import MoveRequest
-from web_api.Response.MoveResponse import MoveResponse
-from web_api.Response.StrategoResponse import StrategoResponse
+from ai_python.src.stratego_engine import StrategoBoardWrapper
+from ai_python.src.request import CreateGameRequest, MoveRequest, AIRequest
+from ai_python.src.response import MoveResponse, StrategoResponse
 
 game_pool = GamePool([])
 
@@ -37,9 +35,8 @@ def hello_world():
 
 @app.post("/create-game")
 def read_create_game( data : CreateGameRequest):
-    parsed_board = parse_board(data.board)
-    engine = Engine((Player(data.player_id_1, Color.Red), Player(data.player_id_2, Color.Blue)), parsed_board)
-    game = Game.new(engine)
+    board = parse_board(data.board)
+    game = Game.new(board)
     uuid = game_pool.register(game)
     logging.info("Game has been created with uuid:", uuid)
     return StrategoResponse(200, False, "", uuid)
@@ -49,9 +46,7 @@ def read_create_game( data : CreateGameRequest):
 def read_game(uuid: str, color: str):
     try:
         game = game_pool.find_game(uuid)
-        engine = game.engine
-        board = engine.board
-        # TODO parse board display
+        board = game.board
         return BoardResponse(200, False, "", game.uuid, board.display_by_color(color))
     except:
         logging.error("Failed to find game for uuid", uuid)
@@ -67,8 +62,8 @@ def read_available_moves(player_color: str, uuid: str):
         return StrategoResponse(200, True, "Game Not Found", uuid)
 
     try:
-        engine = game.engine
-        moves = engine.board.get_available_moves_by_color(player_color)
+        board = game.board
+        moves = board.get_available_moves_by_color(player_color)
         return MoveResponse(200, False, "", uuid, parse_moves(moves))
     except:
         logging.error("Failed to get available moves for", uuid)
@@ -79,11 +74,24 @@ def read_available_moves(player_color: str, uuid: str):
 def move_piece(data : MoveRequest):
     try:
       game = game_pool.find_game(data.uuid)
-      engine = game.engine
-      board = engine.board
+      board = game.board
       moved = board.moving(data.coordinate_from, data.coordinate_to)
       return MoveResponse(200, False, "", data.uuid, moved)
     except:
         logging.error("Failed to find game for uuid", data.uuid)
         return StrategoResponse(200, True, "Game Not Found", data.uuid)
+
+
+@app.post("/ai")
+def use_ai(data: AIRequest):
+    try:
+        game = game_pool.find_game(data.uuid)
+        _from, to = play_with_ai(data, game)  
+        moved = game.board.moving(_from, to)
+        return MoveResponse(200, False, "", data.uuid, moved)
+    except:
+        logging.error("Failed to find game for uuid", data.uuid)
+        return StrategoResponse(200, True, "Game Not Found", data.uuid)
+
+
 
