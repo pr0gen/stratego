@@ -6,7 +6,6 @@ import random
 import copy
 
 class MonteCarloAI(StrategoAI):
-    name = "monte_carlo"
     color = str
 
     def __init__(self, color: str):
@@ -22,6 +21,7 @@ class MonteCarloAI(StrategoAI):
         isThereAWinningMove = False
 
         for move in movesFormated:
+
             copied_board = board.clone_board()
             isThereAWinningMove = self.simulateGame(move, copied_board)
             if(isThereAWinningMove):
@@ -38,14 +38,24 @@ class MonteCarloAI(StrategoAI):
             return move_ready(move)
 
 
+    def play_random(self, color, board) :
+        moves = board.get_available_moves_by_color(color)
+        movesFormated = parse_moves(moves)
+        index = random.randint(0, len(movesFormated) - 1)
+        current_move = movesFormated[index]
+        board.moving((current_move.from_x, current_move.from_y) , (current_move.to_x , current_move.to_y))
+
     def simulateGame(self, move, copied_board) -> bool :
         copied_board.moving((move.from_x, move.from_y), (move.to_x, move.to_y))
+        if self.color == 'Red' :
+            ennemy_color = 'Blue'
+        else :
+            ennemy_color = 'Red'
+
         while copied_board.basic_evaluation() == "None":
-            moves = copied_board.get_available_moves_by_color(self.color)
-            movesFormated = parse_moves(moves)
-            index = random.randint(0, len(movesFormated) - 1)
-            current_move = movesFormated[index]
-            copied_board.moving((current_move.from_x, current_move.from_y) , (current_move.to_x , current_move.to_y))
+            self.play_random(ennemy_color,copied_board);
+            self.play_random(self.color,copied_board);
+
 
         if copied_board.basic_evaluation() == self.color:
             return True
