@@ -1,8 +1,8 @@
+use crate::board::board_utils;
 use crate::board::case::{self, Case, Coordinate, PyCoord, PyState, State};
 use crate::board::classic_board::StrategoBoard;
-use crate::board::piece::{Color, Piece, PyColor, PyPieceType};
+use crate::board::piece::{Color, Piece, PieceType, PyColor, PyPieceType};
 use crate::board::Board;
-use crate::board::board_utils;
 use crate::py_bindings::evaluation_function;
 use crate::utils;
 use pyo3::exceptions;
@@ -124,7 +124,6 @@ impl StrategoBoardWrapper {
         Ok(pythonize(gil.python(), &moves)?)
     }
 
-
     pub fn get_available_moves_by_color(&self, color: PyColor) -> PyResult<Py<PyAny>> {
         let moves = board_utils::get_availables_moves_by_color(&self.board, &color.into());
         let moves: Vec<(PyCoord, PyCoord, Color, Color)> = moves
@@ -151,4 +150,22 @@ impl StrategoBoardWrapper {
             Ok(String::from("None"))
         }
     }
+
+    pub fn material_evaluation(
+        &self,
+        material_value: Vec<(PyPieceType, i16)>,
+    ) -> PyResult<Py<PyAny>> {
+        let gil_holder = utils::get_gild_holder()
+            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+        let gil = gil_holder.get();
+        let evaluation =
+            evaluation_function::material_evaluation(&self.board, &translate_material_values_to_rust(material_value));
+        Ok(pythonize(gil.python(), &evaluation)?)
+    }
+}
+
+fn translate_material_values_to_rust(material_value: Vec<(PyPieceType, i16)>) -> Vec<(PieceType, i16)> {
+    material_value.iter()
+        .map(|(rank, value)| (PieceType::from(rank), *value))
+        .collect()
 }

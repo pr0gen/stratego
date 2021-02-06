@@ -1,6 +1,5 @@
 #[cfg(test)]
 mod board_utils_test {
-
     use stratego_lib::board::board_utils;
     use stratego_lib::board::case::{self, Case, Coordinate, State};
     use stratego_lib::board::classic_board::{self, StrategoBoard};
@@ -12,18 +11,20 @@ mod board_utils_test {
         let attacker = case::create_full_case(
             Coordinate::new(0, 0),
             Piece::new(PieceType::Colonel, Color::Blue),
-        );
-        let defenser = case::create_full_case(
+        ); let defenser = case::create_full_case(
             Coordinate::new(0, 1),
             Piece::new(PieceType::Lieutenant, Color::Red),
         );
-        let res = board_utils::attack(attacker, defenser).unwrap();
 
-        assert_eq!(res.0.get_state(), &State::Empty);
-
-        let defenser2 = res.1;
-        assert_eq!(defenser2.get_state(), &State::Full);
-        assert_eq!(defenser2.get_content().get_color(), &Color::Blue);
+        let (attacker, defenser) = board_utils::attack(attacker, defenser).unwrap();
+        assert_eq!(case::create_empty_case(Coordinate::new(0, 0)), attacker);
+        assert_eq!(
+            case::create_full_case(
+                Coordinate::new(0, 1),
+                Piece::new(PieceType::Colonel, Color::Blue)
+            ),
+            defenser
+        );
     }
 
     #[test]
@@ -36,13 +37,16 @@ mod board_utils_test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Colonel, Color::Red),
         );
-        let res = board_utils::attack(attacker, defenser).unwrap();
 
-        assert_eq!(res.0.get_state(), &State::Empty);
-
-        let defenser2 = res.1;
-        assert_eq!(defenser2.get_state(), &State::Full);
-        assert_eq!(defenser2.get_content().get_color(), &Color::Red);
+        let (attacker, defenser) = board_utils::attack(attacker, defenser).unwrap();
+        assert_eq!(case::create_empty_case(Coordinate::new(0, 0)), attacker);
+        assert_eq!(
+            case::create_full_case(
+                Coordinate::new(0, 1),
+                Piece::new(PieceType::Colonel, Color::Red)
+            ),
+            defenser
+        );
     }
 
     #[test]
@@ -55,10 +59,11 @@ mod board_utils_test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Colonel, Color::Red),
         );
-        let res = board_utils::attack(attacker, defenser).unwrap();
 
-        assert_eq!(res.0.get_state(), &State::Empty);
-        assert_eq!(res.1.get_state(), &State::Empty);
+        let (attacker, defenser) = board_utils::attack(attacker, defenser).unwrap();
+
+        assert_eq!(attacker.get_state(), &State::Empty);
+        assert_eq!(defenser.get_state(), &State::Empty);
     }
 
     #[test]
@@ -135,73 +140,6 @@ mod board_utils_test {
         let defenser2 = res.1;
         assert_eq!(defenser2.get_state(), &State::Full);
         assert_eq!(defenser2.get_content().get_color(), &Color::Red);
-    }
-
-    #[test]
-    fn scout_move_is_doomed_case_six_f() {
-        let mut board = classic_board::create_empty_stratego_board();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(0, 5),
-                Piece::new(PieceType::Scout, Color::Blue),
-            ))
-            .unwrap();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(1, 5),
-                Piece::new(PieceType::Colonel, Color::Blue),
-            ))
-            .unwrap();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(3, 5),
-                Piece::new(PieceType::Captain, Color::Blue),
-            ))
-            .unwrap();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(4, 5),
-                Piece::new(PieceType::Scout, Color::Blue),
-            ))
-            .unwrap();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(5, 5),
-                Piece::new(PieceType::Scout, Color::Red),
-            ))
-            .unwrap();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(7, 5),
-                Piece::new(PieceType::Scout, Color::Red),
-            ))
-            .unwrap();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(8, 5),
-                Piece::new(PieceType::Spy, Color::Red),
-            ))
-            .unwrap();
-
-        board
-            .place(case::create_full_case(
-                Coordinate::new(9, 5),
-                Piece::new(PieceType::Bomb, Color::Red),
-            ))
-            .unwrap();
-
-        eprintln!("{}", board.display());
-
-        let res = board_utils::get_availables_moves_by_color(&board, &Color::Red);
-        eprintln!("{:?}", res);
-        assert_eq!(15, res.len());
     }
 
     #[test]
@@ -499,48 +437,10 @@ mod board_utils_test {
 #[cfg(test)]
 mod board_tests {
 
-    use stratego_lib::board::case::{self, Case, Coordinate, State};
+    use stratego_lib::board::case::{self, Coordinate, State};
     use stratego_lib::board::classic_board::{create_empty_stratego_board, StrategoBoard};
     use stratego_lib::board::piece::{Color, Piece, PieceType};
     use stratego_lib::board::Board;
-
-    fn create_3_x_3_stratego_board() -> Vec<Vec<Case>> {
-        vec![
-            vec![
-                case::create_full_case(
-                    Coordinate::new(0, 0),
-                    Piece::new(PieceType::Flag, Color::Blue),
-                ),
-                case::create_full_case(
-                    Coordinate::new(0, 1),
-                    Piece::new(PieceType::Major, Color::Blue),
-                ),
-                case::create_full_case(
-                    Coordinate::new(0, 2),
-                    Piece::new(PieceType::Spy, Color::Blue),
-                ),
-            ],
-            vec![
-                case::create_empty_case(Coordinate::new(1, 0)),
-                case::create_empty_case(Coordinate::new(1, 1)),
-                case::create_empty_case(Coordinate::new(1, 2)),
-            ],
-            vec![
-                case::create_full_case(
-                    Coordinate::new(2, 0),
-                    Piece::new(PieceType::Flag, Color::Red),
-                ),
-                case::create_full_case(
-                    Coordinate::new(2, 1),
-                    Piece::new(PieceType::Major, Color::Red),
-                ),
-                case::create_full_case(
-                    Coordinate::new(2, 2),
-                    Piece::new(PieceType::Spy, Color::Red),
-                ),
-            ],
-        ]
-    }
 
     #[test]
     fn should_allow_scout_move() {
@@ -567,23 +467,6 @@ mod board_tests {
                 assert!(false);
             }
         }
-    }
-
-    #[test]
-    fn should_get_cases_in_board_straight() {
-        let board = StrategoBoard::new(create_3_x_3_stratego_board());
-        let at = board.get_at(&Coordinate::new(0, 0));
-        let piece = at.get_content();
-        assert_eq!(&Color::Blue, piece.get_color());
-        assert_eq!(&PieceType::Flag, piece.get_rank());
-
-        let at = board.get_at(&Coordinate::new(1, 2));
-        assert_eq!(&State::Empty, at.get_state());
-
-        let at = board.get_at(&Coordinate::new(2, 1));
-        let piece = at.get_content();
-        assert_eq!(&Color::Red, piece.get_color());
-        assert_eq!(&PieceType::Major, piece.get_rank());
     }
 
     #[test]
@@ -741,4 +624,5 @@ mod board_tests {
             Err(_) => assert!(true),
         }
     }
+
 }

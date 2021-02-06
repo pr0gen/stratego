@@ -1,4 +1,5 @@
 from ai_python.src.engine import Color, GamePool, Game
+from ai_python.src.utils import basic_material_values
 import ai_python.src.stratego_engine as se
 import copy
 
@@ -29,4 +30,16 @@ def test_copy_board():
     assert board.at((1, "A")).py_get_content() != copied_board.at((1, "A")).py_get_content()
 
 
+def test_material_evaluation():
+    board = se.rust_create_empty_stratego_board()
+    res = board.material_evaluation(basic_material_values())
 
+    assert res[0] == ("Red", 0)
+    assert res[1] == ("Blue", 0)
+
+
+def test_basic_evaluation():
+    board = se.rust_create_stratego_board()
+    res = board.basic_evaluation()
+
+    assert res == "None"

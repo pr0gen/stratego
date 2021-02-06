@@ -1,6 +1,6 @@
 use pyo3::prelude::pyclass;
-use std::fmt;
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
 use self::deplacement::{AvailableMove, Move};
 
@@ -199,6 +199,26 @@ impl Piece {
     }
 }
 
+impl From<&i8> for PieceType {
+    fn from(number: &i8) -> Self {
+        match number {
+            -10 => PieceType::Null,
+            -2 => PieceType::Bomb,
+            10 => PieceType::Marshal,
+            9 => PieceType::General,
+            8 => PieceType::Colonel,
+            7 => PieceType::Major,
+            6 => PieceType::Captain,
+            5 => PieceType::Lieutenant,
+            4 => PieceType::Sergeant,
+            3 => PieceType::Miner,
+            2 => PieceType::Scout,
+            1 => PieceType::Spy,
+            -1 => PieceType::Flag,
+            _ => panic!("Invalid piece type"),
+        }
+    }
+}
 
 impl fmt::Display for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

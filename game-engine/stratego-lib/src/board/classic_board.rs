@@ -4,7 +4,7 @@ use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
 use crate::board::board_utils;
-use crate::board::case::{ self, Case, Coordinate, State, };
+use crate::board::case::{self, Case, Coordinate, State};
 use crate::board::piece::piece_utils::list_of_all_pieces;
 use crate::board::piece::Color;
 use crate::board::Board;
@@ -209,4 +209,67 @@ fn parse_row_by_color(row: &[Case], color: &Color) -> String {
     row.iter()
         .map(|case| format!("{} | ", case.display_by_color(color)))
         .collect()
+}
+
+#[cfg(test)]
+mod test_implementation {
+    use crate::board::case::{self, State, Case, Coordinate};
+    use crate::board::piece::{Piece, Color, PieceType};
+    use crate::board::classic_board::StrategoBoard;
+    use crate::board::Board;
+
+    #[test] 
+    fn should_get_cases_in_board_straight() {
+        let board = StrategoBoard::new(create_3_x_3_stratego_board());
+        let at = board.get_at(&Coordinate::new(0, 0));
+        let piece = at.get_content();
+        assert_eq!(&Color::Blue, piece.get_color());
+        assert_eq!(&PieceType::Flag, piece.get_rank());
+
+        let at = board.get_at(&Coordinate::new(1, 2));
+        assert_eq!(&State::Empty, at.get_state());
+
+        let at = board.get_at(&Coordinate::new(2, 1));
+        let piece = at.get_content();
+        assert_eq!(&Color::Red, piece.get_color());
+        assert_eq!(&PieceType::Major, piece.get_rank());
+    }
+
+    fn create_3_x_3_stratego_board() -> Vec<Vec<Case>> {
+        vec![
+            vec![
+                case::create_full_case(
+                    Coordinate::new(0, 0),
+                    Piece::new(PieceType::Flag, Color::Blue),
+                ),
+                case::create_full_case(
+                    Coordinate::new(0, 1),
+                    Piece::new(PieceType::Major, Color::Blue),
+                ),
+                case::create_full_case(
+                    Coordinate::new(0, 2),
+                    Piece::new(PieceType::Spy, Color::Blue),
+                ),
+            ],
+            vec![
+                case::create_empty_case(Coordinate::new(1, 0)),
+                case::create_empty_case(Coordinate::new(1, 1)),
+                case::create_empty_case(Coordinate::new(1, 2)),
+            ],
+            vec![
+                case::create_full_case(
+                    Coordinate::new(2, 0),
+                    Piece::new(PieceType::Flag, Color::Red),
+                ),
+                case::create_full_case(
+                    Coordinate::new(2, 1),
+                    Piece::new(PieceType::Major, Color::Red),
+                ),
+                case::create_full_case(
+                    Coordinate::new(2, 2),
+                    Piece::new(PieceType::Spy, Color::Red),
+                ),
+            ],
+        ]
+    }
 }
