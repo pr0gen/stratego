@@ -16,7 +16,7 @@ def basic_material_values() -> List[Tuple[int, int]]:
       (3, 3),
       (2, 2),
       (1, 1),
-      (1, 1)
+      (-1, 1)
     ]
 
 def parse_board(board: List[List[str]]):
