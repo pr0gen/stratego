@@ -2,15 +2,15 @@ import logging
 from typing import Optional
 from fastapi import FastAPI
 from typing import Tuple, List
-
 from pydantic import BaseModel
-
 from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, generate_uuid, parse_board
 from ai_python.src.engine import GamePool, Game, Color, play_with_ai
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper
 from ai_python.src.request import CreateGameRequest, MoveRequest, AIRequest
-from ai_python.src.response import MoveResponse, StrategoResponse
+from ai_python.src.response import MoveResponse, StrategoResponse, AINameResponse, AIName
+from ai_python.src.random import RandomAI
+from ai_python.src.monte_carlo import MonteCarloAI
 
 game_pool = GamePool([])
 
@@ -94,4 +94,11 @@ def use_ai(data: AIRequest):
         return StrategoResponse(200, True, "Game Not Found", data.uuid)
 
 
+@app.get("/ai")
+def ai_name():
+    ai_names = [
+                AIName("Random", RandomAI.name),
+                AIName("Monte Carlo", MonteCarloAI.name)
+        ]
+    return AINameResponse(200, False, "", ai_names)
 
