@@ -1,11 +1,10 @@
-from ai_python.src.utils import parse_move, generate_uuid
+from ai_python.src.utils import parse_moves, generate_uuid
 
 def test_parsing_moves():
 
-    move = parse_move(
-        ((3, '\x00B'), (4, '\x00B'), 'Blue', 'None')
-    )
+    moves = parse_moves([((3, '\x00B'), (4, '\x00B'), 'Blue', 'None')])
 
+    move = moves[0] 
     assert move.from_x == 3
     assert move.from_y == 'B'
 

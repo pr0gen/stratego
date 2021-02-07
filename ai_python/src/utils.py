@@ -4,6 +4,21 @@ import string
 from typing import Tuple, List
 import ai_python.src.stratego_engine as se
 
+Move = Tuple[int, str]
+
+class StrategoAI(abc.ABC):
+    @abc.abstractmethod
+    def ask_next_move(self, board: se.StrategoBoardWrapper) -> Tuple[Move, Move]:
+        pass
+
+
+class TestStrategoAI(StrategoAI):
+    def ask_next_move(self, board: se.StrategoBoardWrapper) -> Tuple[Move, Move]:
+        return ((3, "A"), (4, "A"))
+
+
+
+
 def basic_material_values() -> List[Tuple[int, int]]: 
     return [ (-2, 0),
       (10, 10),
@@ -32,6 +47,7 @@ def generate_uuid(length) -> str:
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k = length))
 
 
+
 def parse_moves(data):
     moves = []
 
@@ -54,16 +70,6 @@ def parse_move(move):
 
     return MoveBuilder.build(moveBuilder)
 
-
-class StrategoAI(abc.ABC):
-    @abc.abstractmethod
-    def ask_next_move(self, board: se.StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-        pass
-
-
-class TestStrategoAI(StrategoAI):
-    def ask_next_move(self, board: se.StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-        return ((3, "A"), (4, "A"))
 
 
 class MoveBuilder:

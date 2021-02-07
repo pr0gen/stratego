@@ -2,6 +2,7 @@ from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move
 from ai_python.src.monte_carlo import MonteCarloAI
 import ai_python.src.stratego_engine as se
 
+# It is merly a test to debug the ai 
 def test_monte_carlo(): 
     ai = MonteCarloAI('Red') 
     move = ai.ask_next_move(se.rust_create_stratego_board())
