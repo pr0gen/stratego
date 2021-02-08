@@ -176,4 +176,10 @@ Routes:
 
    ```
 
+- Check if a game is finished
 
+  ```
+  http://127.0.0.1:8000/end_game/{uuid}]
+  
+  
+  ```
