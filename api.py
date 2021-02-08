@@ -53,6 +53,17 @@ def read_game(uuid: str, color: str):
         return StrategoResponse(200, True, "Game Not Found", uuid)
 
 
+@app.get("/watcher/{uuid}")
+def game_watcher(uuid: str):
+    try:
+        game = game_pool.find_game(uuid)
+        board = game.board
+        return BoardResponse(200, False, "", game.uuid, board.display())
+    except:
+        logging.error("Failed to find game for uuid", uuid)
+        return StrategoResponse(200, True, "Game Not Found", uuid)
+
+
 @app.get("/moves/{player_color}/{uuid}")
 def read_available_moves(player_color: str, uuid: str):
     try:
