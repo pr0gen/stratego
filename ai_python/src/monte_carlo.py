@@ -17,7 +17,6 @@ class MonteCarloAI(StrategoAI):
     def ask_next_move(self, board: StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         moves = board.get_available_moves_by_color(self.color)
         movesFormated = parse_moves(moves)
-        index = random.randint(0, len(movesFormated) - 1)
 
         best_move = None
         for move in movesFormated:
@@ -34,9 +33,8 @@ class MonteCarloAI(StrategoAI):
                 self.color
             )
         
-        if best_move == None:
+        if best_move == None or best_move == False:
             best_move = choose_randomly(board, self.color)
-
         print("Monte Carlo plays:", best_move)
         return best_move
 

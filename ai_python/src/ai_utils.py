@@ -11,8 +11,9 @@ def simulate_game(
     iteration_max: int,
     stopping_critera: Any,
     color: str
-    ) -> Tuple[Move, Move]:
-    """ Simulate a game on a given board with a lambda function to choose which move to pick up
+    ) -> Any:
+    """
+    Simulate a game on a given board with a lambda function to choose which move to pick up
 
     - board: se.StrategoBoardWrapper - Stratego Board to play on
 
@@ -27,24 +28,17 @@ def simulate_game(
     - stopping_critera: Any - Which value should stops your evaluation_function
     
     - color: str - Color of the player you are playing
-
     """
 
-    best_move = None
     while iteration_max >= 0:
         red_move = ai_red(board, 'Red') 
         board.moving((red_move[0][0], red_move[0][1]), (red_move[1][0], red_move[1][1]))
         blue_move = ai_blue(board, 'Blue') 
         board.moving((blue_move[0][0], blue_move[0][1]), (blue_move[1][0], blue_move[1][1]))
-        if evaluation_function != stopping_critera:
-            if color == 'Red':
-                return red_move 
-            return blue_move
-        else:
-            iteration_max = iteration_max - 1
-            if color == 'Red':
-                best_move = red_move 
-            else: 
-                best_move = blue_move
+        eval = evaluation_function 
+        if eval == stopping_critera:
+            return eval
+        iteration_max = iteration_max - 1
                 
-    return best_move
+    return False
+
