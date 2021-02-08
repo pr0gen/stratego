@@ -4,6 +4,8 @@ engine:
 		cargo build --release --manifest-path game-engine/Cargo.toml
 		@echo "Copying stratego executable "
 		cp game-engine/target/release/stratego-exec game-stratego
+		@echo "Copying stratego executable "
+		cp game-engine/target/release/stratego-analyze analyzes
 		@echo "Copying stratego library in python project"
 		cp game-engine/target/release/libstratego_lib.so ai_python/src
 		mv ai_python/src/libstratego_lib.so ai_python/src/stratego_engine.so
