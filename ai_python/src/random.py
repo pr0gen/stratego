@@ -1,9 +1,18 @@
 from typing import Tuple
-from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move_ready
 
+from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move_ready
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper
 import random
+
+def choose_randomly(
+        board: se.StrategoBoardWrapper,
+        color: str
+) -> Tuple[Tuple[int, str], Tuple[int, str]]:
+        moves = board.get_available_moves_by_color(color)
+        movesFormated = parse_moves(moves)
+        return move_ready(movesFormated[random.randint(0, len(movesFormated) - 1)])
+
 
 class RandomAI(StrategoAI):
     name = "random"
@@ -13,14 +22,7 @@ class RandomAI(StrategoAI):
         self.color = color
 
     def ask_next_move(self, board: StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-        moves = board.get_available_moves_by_color(self.color)
-
-        movesFormated = parse_moves(moves)
-        print(board.basic_evaluation())
-        index = random.randint(0, len(movesFormated) - 1)
-
-        move = movesFormated[index]
-        move.show()
-        return move_ready(move)
-    
+        move = choose_randomly(board, self.color)
+        print(move)
+        return move
     

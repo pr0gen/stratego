@@ -1,9 +1,12 @@
 from typing import Tuple
-from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, parse_move , move_ready
+from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move_ready
+from ai_python.src.ai_utils import simulate_game
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper
-import random
+from ai_python.src.random import choose_randomly
+
 import copy
+import random
 
 class MonteCarloAI(StrategoAI):
     name = "monte_carlo"
@@ -14,39 +17,27 @@ class MonteCarloAI(StrategoAI):
 
     def ask_next_move(self, board: StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         moves = board.get_available_moves_by_color(self.color)
-
         movesFormated = parse_moves(moves)
 
-        index = random.randint(0, len(movesFormated) - 1)
-
-        isThereAWinningMove = False
-
+        best_move = None
         for move in movesFormated:
             copied_board = board.clone_board()
-            isThereAWinningMove = self.simulateGame(move, copied_board)
-            if(isThereAWinningMove):
-                winning_move = move
-                break
+            f, t = move_ready(move);
+            copied_board.moving(f, t)
+            best_move = simulate_game(
+                copied_board,
+                choose_randomly,
+                choose_randomly,
+                board.basic_evaluation(),
+                100,
+                (self.color),
+                self.color
+            )
+        
+        if best_move == None or best_move == False:
+            best_move = choose_randomly(board, self.color)
+        print("Monte Carlo plays:", best_move)
+        return best_move
 
-        if(isThereAWinningMove):
-            winning_move = movesFormated[index]
-            winning_move.show()
-            return move_ready(winning_move)
-        else:
-            move = movesFormated[index]
-            move.show()
-            return move_ready(move)
 
 
-    def simulateGame(self, move, copied_board) -> bool :
-        copied_board.moving((move.from_x, move.from_y), (move.to_x, move.to_y))
-        while copied_board.basic_evaluation() == "None":
-            moves = copied_board.get_available_moves_by_color(self.color)
-            movesFormated = parse_moves(moves)
-            index = random.randint(0, len(movesFormated) - 1)
-            current_move = movesFormated[index]
-            copied_board.moving((current_move.from_x, current_move.from_y) , (current_move.to_x , current_move.to_y))
-
-        if copied_board.basic_evaluation() == self.color:
-            return True
-        return False
