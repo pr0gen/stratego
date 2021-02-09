@@ -24,7 +24,6 @@ You should put all AI files in [ai_python](https://github.com/pr0gen/stratego/tr
 
 Your AIs should depend on interface `class StrategoAI(abc.ABC):`
 
-
 In [rust_bind](https://github.com/pr0gen/stratego/tree/develop/rust_bind.py), thoses functions are needed for Rust to call your AI care with the name of this one.
 e.g.: ask_next_move_ + ai name (ask_next_move_test)
 `def ask_next_move_test() -> Tuple[Tuple[int, str], Tuple[int, str]]:`

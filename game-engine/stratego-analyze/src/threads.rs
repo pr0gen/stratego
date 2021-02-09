@@ -12,13 +12,15 @@ use stratego_lib::player::ai_player::AIPlayer;
 pub fn spawn_thread_for_stratego(
     thread_number: usize,
     file_name: String,
+    first_ai_name: String,
+    second_ai_name: String,
 ) -> Result<JoinHandle<()>, StrategoError> {
     Ok(thread::spawn(move || {
         let mut engine = StrategoEngine::new(
             create_stratego_board(),
             (
-                Box::new(AIPlayer::new(Color::Red, String::from("monte_carlo"))),
-                Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
+                Box::new(AIPlayer::new(Color::Red, first_ai_name)),
+                Box::new(AIPlayer::new(Color::Blue, second_ai_name)),
             ),
         );
 
