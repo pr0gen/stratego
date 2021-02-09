@@ -7,6 +7,8 @@ client/node_modules/
 server/dist/
 
 
+log
+*.csv
 ai_python/src/stratego_engine.so
 game-stratego
 analyzes
