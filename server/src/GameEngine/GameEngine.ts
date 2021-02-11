@@ -50,4 +50,11 @@ export class GameEngine {
         console.log(reponse)
     }
 
+    async aiSetMove(aiName:string) {
+
+        const reponse = await GameEngineApi.apiSetMove(this.uuid, 'Blue', aiName)
+        console.log(reponse)
+    }
+
+
 }
