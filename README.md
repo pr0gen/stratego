@@ -2,7 +2,7 @@
 The main library is written in Rust. The AI part is using Python.
 Please, I'm new to Rust, and we are studiants who are learning. Feel free to make review or reach us if you see garbage code, I would be happy to learn !
 
-## TODO
+## TODO 
 - [ ] Evolve Python api to Rust api
 - [ ] Implementing warp for client REST calls
 
@@ -135,6 +135,14 @@ Routes:
   
   ```
 
+- Watch a game
+
+  ```
+  http://127.0.0.1:8000/watcher/{uuid}]
+  
+  
+  ```
+
 - Get all available moves on a game 
   ```
   http://127.0.0.1:8000/moves/{color}/{uuid}
@@ -170,4 +178,10 @@ Routes:
 
    ```
 
+- Check if a game is finished
 
+  ```
+  http://127.0.0.1:8000/end_game/{uuid}]
+  
+  
+  ```

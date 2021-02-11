@@ -75,6 +75,10 @@ impl StrategoBoardWrapper {
         }
     }
 
+    pub fn display(&self) -> PyResult<String> {
+        Ok(self.board.display())
+    }
+
     pub fn display_by_color(&self, color: PyColor) -> PyResult<String> {
         Ok(self.board.display_by_color(&color.into()))
     }

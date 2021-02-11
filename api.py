@@ -47,7 +47,18 @@ def read_game(uuid: str, color: str):
     try:
         game = game_pool.find_game(uuid)
         board = game.board
-        return BoardResponse(200, False, "", game.uuid, board.display_by_color(color))
+        return BoardResponse(200, False, board.basic_evaluation(), game.uuid, board.display_by_color(color))
+    except:
+        logging.error("Failed to find game for uuid", uuid)
+        return StrategoResponse(200, True, "Game Not Found", uuid)
+
+
+@app.get("/watcher/{uuid}")
+def game_watcher(uuid: str):
+    try:
+        game = game_pool.find_game(uuid)
+        board = game.board
+        return BoardResponse(200, False, "", game.uuid, board.display())
     except:
         logging.error("Failed to find game for uuid", uuid)
         return StrategoResponse(200, True, "Game Not Found", uuid)
@@ -102,3 +113,13 @@ def ai_name():
         ]
     return AINameResponse(200, False, "", ai_names)
 
+@app.get("/end_game/{uuid}")
+def end_game(uuid: str):
+    try:
+        game = game_pool.find_game(uuid)
+        board = game.board
+        return BoardResponse(200, False, "", game.uuid, board.basic_evaluation())
+    except:
+        logging.error("Failed to find game for uuid", uuid)
+        return StrategoResponse(200, True, "Game Not Found", uuid)
+    
