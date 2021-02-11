@@ -52,6 +52,16 @@ export class GameEngineApi {
         return response
     }
 
+    static async apiSetMove(uuid:string, color:string, ai_name:string){
+
+        const {data: response} = await axios.post(`http://127.0.0.1:8000/ai`, {
+            uuid,
+            color,
+            ai_name,
+        })
+        return response
+    }
+
 
     static initGame() {
         return [

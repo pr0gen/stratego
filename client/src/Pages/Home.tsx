@@ -10,6 +10,11 @@ class Home extends Component {
                 <div className="has-text-centered">
                     <ul className="home-nav">
                         <li>
+                            <Link className="button is-primary is-large mb-5 home-link" to="/select-ai">
+                                Play with AI
+                            </Link>
+                        </li>
+                        <li>
                             <Link className="button is-primary is-large mb-5 home-link" to="/create-game">
                                 Create game
                             </Link>

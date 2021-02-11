@@ -4,8 +4,9 @@ import {Rooms} from "../../src/Rooms";
 
 export default function game(socket: socketio.Socket, rooms: Rooms) {
 
-    socket.on('-game', () => {
+    socket.on('', () => {
 
+        socket.emit('response-')
     })
 
 }

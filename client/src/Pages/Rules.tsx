@@ -1,14 +1,14 @@
-import React, {Component} from "react";
+import React from "react";
 
 
-class Rules extends Component {
-    render() {
-        return (
-            <div className="rules" >
-                <h2>Rules</h2>
-            </div>
-        )
-    }
+function Rules() {
+
+    return (
+        <div className="rules">
+            <h2>Rules</h2>
+        </div>
+    )
+
 }
 
 

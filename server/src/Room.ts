@@ -2,6 +2,7 @@ import {RoomState} from "./RoomState";
 import {Player} from "./Player";
 import {GameEngine} from "./GameEngine/GameEngine";
 import {boardParser} from "../utils/boardParser";
+import { PlayerState } from "./PlayerState";
 
 export class Room {
 
@@ -51,16 +52,22 @@ export class Room {
         const reponse = this.gameEngine.setMove(playerId, from_x, from_y, to_x, to_y)
     }
 
+    async aiPlay() {
+        const reponse = await this.gameEngine.aiSetMove(this.secondPlayer.aiName)
+    }
+
     playerCanMove(playerId: string) :boolean{
+
+        if (playerId === this.firstPlayer.id && this.secondPlayer.state == PlayerState.IsAI) {
+            return true
+        }
+
         if (playerId === this.firstPlayer.id && this.state === RoomState.FirstPlayerCanPlay) {
-            console.log(playerId, true)
             return true
         }
         if (playerId === this.secondPlayer.id && this.state === RoomState.SecondPlayerCanPlay) {
-            console.log(playerId, true)
             return true
         }
-        console.log(playerId, false)
         return false
     }
 
@@ -72,6 +79,13 @@ export class Room {
         else if (this.state === RoomState.SecondPlayerCanPlay) {
             this.state = RoomState.FirstPlayerCanPlay
         }
+    }
+
+    getOtherPlayer(playerId:string) :Player{
+        return this.firstPlayer.id === playerId
+            ? this.secondPlayer
+            : this.firstPlayer
+
     }
 
 }
