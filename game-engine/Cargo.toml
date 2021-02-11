@@ -2,5 +2,6 @@
 
 members = [
     "stratego-exec",
+    "stratego-analyze",
     "stratego-lib",
 ]

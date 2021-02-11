@@ -31,7 +31,6 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
         .filter(|&c| c.get_content().get_rank() == &PieceType::Flag)
         .collect();
     if res.is_empty() {
-        eprintln!("Blue has no flag");
         return Some(Color::Red);
     }
 
@@ -40,7 +39,6 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
         .filter(|c| c.get_content().get_rank() == &PieceType::Flag)
         .collect();
     if res.is_empty() {
-        eprintln!("Red has no flag");
         return Some(Color::Blue);
     }
 
@@ -51,7 +49,6 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
         .filter(|c| !c.get_content().get_move().equals(AvailableMove::Immovable))
         .collect();
     if res.is_empty() {
-        eprintln!("Blue can not move");
         return Some(Color::Red);
     }
 
@@ -61,7 +58,6 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
         .filter(|c| !c.get_content().get_move().equals(AvailableMove::Immovable))
         .collect();
     if res.is_empty() {
-        eprintln!("Red can not move");
         return Some(Color::Blue);
     }
 
