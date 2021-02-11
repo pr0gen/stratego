@@ -47,7 +47,7 @@ def read_game(uuid: str, color: str):
     try:
         game = game_pool.find_game(uuid)
         board = game.board
-        return BoardResponse(200, False, "", game.uuid, board.display_by_color(color))
+        return BoardResponse(200, False, board.basic_evaluation(), game.uuid, board.display_by_color(color))
     except:
         logging.error("Failed to find game for uuid", uuid)
         return StrategoResponse(200, True, "Game Not Found", uuid)
