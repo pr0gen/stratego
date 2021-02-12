@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use super::{Color, Piece, PieceType};
+use crate::board::piece::{Color, Piece, PieceType};
 
 pub fn list_all_pieces() -> HashMap<PieceType, i8> {
     [

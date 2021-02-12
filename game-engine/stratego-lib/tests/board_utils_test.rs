@@ -2,9 +2,11 @@
 mod board_utils_test {
     use stratego_lib::board::board_utils;
     use stratego_lib::board::case::{self, Case, Coordinate, State};
+    use stratego_lib::board::Board;
     use stratego_lib::board::classic_board::{self, StrategoBoard};
     use stratego_lib::board::piece::{Color, Piece, PieceType};
-    use stratego_lib::board::Board;
+    use stratego_lib::engine_utils;
+
 
     #[test]
     fn attacker_should_win() {
@@ -144,7 +146,7 @@ mod board_utils_test {
 
     #[test]
     fn should_check_scouts_can_not_move_behind_pieces() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
 
         board
             .place(case::create_full_case(
@@ -180,7 +182,7 @@ mod board_utils_test {
 
     #[test]
     fn should_check_scout_move_scouts_alone() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         board
             .place(case::create_full_case(
                 Coordinate::new(2, 5),
@@ -202,7 +204,7 @@ mod board_utils_test {
 
     #[test]
     fn should_get_move_for_scout() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         board
             .place(case::create_full_case(
                 Coordinate::new(7, 5),
@@ -232,7 +234,7 @@ mod board_utils_test {
 
     #[test]
     fn should_get_move_for_scout_by_color() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         board
             .place(case::create_full_case(
                 Coordinate::new(7, 5),
@@ -262,7 +264,7 @@ mod board_utils_test {
 
     #[test]
     fn should_check_scout_move_scouts_with_others() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         board
             .place(case::create_full_case(
                 Coordinate::new(2, 5),
@@ -297,7 +299,7 @@ mod board_utils_test {
 
     #[test]
     fn should_check_scout_does_not_cross_water() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         board
             .place(case::create_full_case(
                 Coordinate::new(4, 1),
@@ -438,13 +440,14 @@ mod board_utils_test {
 mod board_tests {
 
     use stratego_lib::board::case::{self, Coordinate, State};
-    use stratego_lib::board::classic_board::{create_empty_stratego_board, StrategoBoard};
+    use stratego_lib::board::classic_board::StrategoBoard;
+    use stratego_lib::engine_utils;
     use stratego_lib::board::piece::{Color, Piece, PieceType};
     use stratego_lib::board::Board;
 
     #[test]
     fn should_allow_scout_move() {
-        let mut board = create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         board
             .place(case::create_full_case(
                 Coordinate::new(0, 0),
@@ -471,7 +474,7 @@ mod board_tests {
 
     #[test]
     fn should_build_stratego_board() {
-        let stratego_board = create_empty_stratego_board();
+        let stratego_board = engine_utils::create_empty_stratego_board();
         let state = stratego_board.state();
 
         assert_eq!(state.len(), 10);
@@ -570,7 +573,7 @@ mod board_tests {
     fn should_move_and_capture() {
         let sergeant = Piece::new(PieceType::Sergeant, Color::Blue);
         let lieutenant = Piece::new(PieceType::Lieutenant, Color::Red);
-        let mut stratego_board = create_empty_stratego_board();
+        let mut stratego_board = engine_utils::create_empty_stratego_board();
         stratego_board
             .place(case::create_full_case(
                 Coordinate::new(0, 0),

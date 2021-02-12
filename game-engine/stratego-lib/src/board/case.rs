@@ -1,6 +1,6 @@
 use pyo3::prelude::{pyclass, pymethods, PyResult};
 use serde::{Deserialize, Serialize};
-use super::piece::{Color, Piece, PieceType};
+use crate::board::piece::{Color, Piece, PieceType};
 use std::fmt;
 use crate::parse;
 

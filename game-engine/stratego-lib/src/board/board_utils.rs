@@ -1,4 +1,4 @@
-use super::case::{create_empty_case, create_full_case, Case, Coordinate, State};
+use crate::board::case::{create_empty_case, create_full_case, Case, Coordinate, State};
 use crate::board::piece::PieceType;
 use crate::board::Board;
 use crate::error::StrategoError;

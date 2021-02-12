@@ -1,15 +1,31 @@
 #[cfg(test)]
 mod py_wrapper_tests {
     use stratego_lib::board::case::{self, Coordinate};
-    use stratego_lib::board::classic_board;
+    use stratego_lib::engine_utils;
     use stratego_lib::board::Board;
     use stratego_lib::board::piece::{Color, Piece, PieceType, PyPieceType};
     use stratego_lib::py_bindings::board_wrapper;
     use stratego_lib::py_bindings::board_wrapper::StrategoBoardWrapper;
+    use stratego_lib::simulation;
+
+    #[test]
+    fn should_simulate_game_between_two_ais() {
+        let mut board = engine_utils::create_empty_stratego_board(); 
+        let cases = board.state().clone();
+        //let res_simulation = simulation::simulate(
+                        //board,
+                        //simulation::choose_randomly(&board, color),
+                        //simulation::choose_randomly(&board, color),
+                        //engine_utils::game_is_over().unwrap()
+                        //50, 
+                        //"Red",
+                        //Color::Red,  
+                //);
+    }
 
     #[test]
     fn should_parse_rust_content_to_python() {
-        let mut board = StrategoBoardWrapper::new(classic_board::create_empty_stratego_board());
+        let mut board = StrategoBoardWrapper::new(engine_utils::create_empty_stratego_board());
         let case = board.place(
             String::from("Full"),
             (1, String::from("A")),
@@ -68,7 +84,7 @@ mod py_wrapper_tests {
             (1, 1),
         ];
 
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         //Reds
         board
             .place(case::create_full_case(

@@ -2,16 +2,16 @@
 mod evaluation_tests {
 
     use stratego_lib::board::case::{self, Coordinate};
-    use stratego_lib::board::classic_board;
     use stratego_lib::board::piece::Color;
     use stratego_lib::board::piece::{Piece, PieceType};
     use stratego_lib::board::Board;
+    use stratego_lib::engine_utils;
     use stratego_lib::py_bindings::evaluation_function;
 
     #[test]
     fn should_get_winner() {
         //Win because blue can't move
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         //Reds
         board
             .place(case::create_full_case(
@@ -38,7 +38,7 @@ mod evaluation_tests {
         );
 
         //Win because red has no Flag anymore
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         //Reds
         board
             .place(case::create_full_case(
@@ -67,7 +67,7 @@ mod evaluation_tests {
 
     #[test]
     fn should_have_no_winner_yet() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
         //Reds
         board
             .place(case::create_full_case(
@@ -97,13 +97,13 @@ mod evaluation_tests {
             .unwrap();
         assert_eq!(None, evaluation_function::basic_evaluation(&board));
 
-        let board = classic_board::create_stratego_board();
+        let board = engine_utils::create_stratego_board();
         assert_eq!(None, evaluation_function::basic_evaluation(&board));
     }
 
     #[test]
     fn should_get_advantage_for_reds() {
-        let mut board = classic_board::create_empty_stratego_board();
+        let mut board = engine_utils::create_empty_stratego_board();
 
         //Reds
         board

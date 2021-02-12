@@ -1,89 +1,15 @@
 use pyo3::prelude::pyclass;
-use rand::seq::SliceRandom;
-use rand::thread_rng;
 use serde::{Deserialize, Serialize};
-
 use crate::board::board_utils;
 use crate::board::case::{self, Case, Coordinate, State};
-use crate::board::piece::piece_utils::list_of_all_pieces;
 use crate::board::piece::Color;
 use crate::board::Board;
-use crate::engine_utils::verify_board_integrity;
 use crate::error::StrategoError;
 
 #[pyclass]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
-}
-
-pub fn create_stratego_board() -> StrategoBoard {
-    let board = create_empty_stratego_board();
-
-    let mut cases = board.state().clone();
-
-    let mut pieces = list_of_all_pieces(Color::Blue);
-    pieces.shuffle(&mut thread_rng());
-
-    let max = 4;
-    for (i, row) in cases.iter_mut().enumerate().take(max) {
-        for (j, case) in row.iter_mut().enumerate() {
-            let piece = pieces.pop();
-            *case = case::create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
-        }
-    }
-
-    let mut pieces = list_of_all_pieces(Color::Red);
-    pieces.shuffle(&mut thread_rng());
-    let max = 10;
-    for (i, row) in cases.iter_mut().enumerate().take(max).skip(6) {
-        for (j, case) in row.iter_mut().enumerate() {
-            let piece = pieces.pop();
-            *case = case::create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
-        }
-    }
-
-    verify_board_integrity(StrategoBoard::new(cases))
-        .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e))
-}
-
-pub fn create_empty_stratego_board() -> StrategoBoard {
-    let size = 10;
-    let mut board: Vec<Vec<Case>> = Vec::with_capacity(size);
-    for i in 0..size {
-        board.push(Vec::with_capacity(size));
-        for j in 0..size {
-            board[i].push(case::create_empty_case(Coordinate::new(i as i16, j as i16)));
-        }
-    }
-    let mut board = StrategoBoard::new(board);
-
-    board
-        .place(case::create_unreachable_case(Coordinate::new(4, 2)))
-        .unwrap();
-    board
-        .place(case::create_unreachable_case(Coordinate::new(4, 3)))
-        .unwrap();
-    board
-        .place(case::create_unreachable_case(Coordinate::new(5, 2)))
-        .unwrap();
-    board
-        .place(case::create_unreachable_case(Coordinate::new(5, 3)))
-        .unwrap();
-    board
-        .place(case::create_unreachable_case(Coordinate::new(4, 6)))
-        .unwrap();
-    board
-        .place(case::create_unreachable_case(Coordinate::new(4, 7)))
-        .unwrap();
-    board
-        .place(case::create_unreachable_case(Coordinate::new(5, 6)))
-        .unwrap();
-    board
-        .place(case::create_unreachable_case(Coordinate::new(5, 7)))
-        .unwrap();
-
-    board
 }
 
 impl StrategoBoard {

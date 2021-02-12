@@ -1,17 +1,16 @@
-use crate::board::case::{self, Case, Coordinate, PyCoord};
-use crate::board::classic_board;
-use crate::board::piece::{PyColor, Piece, PyPieceType};
-
-use crate::error::StrategoError;
 use pyo3::prelude::*;
 use pyo3::types::PyList;
 use pyo3::wrap_pyfunction;
-
-use crate::py_bindings::board_wrapper::StrategoBoardWrapper;
 use std::env::current_dir;
+use crate::py_bindings::board_wrapper::StrategoBoardWrapper;
+use crate::board::case::{self, Case, Coordinate, PyCoord};
+use crate::board::piece::{PyColor, Piece, PyPieceType};
+use crate::error::StrategoError;
+use crate::engine_utils;
 
 pub mod board_wrapper;
 pub mod evaluation_function;
+pub mod game_simulation;
 
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
@@ -33,13 +32,13 @@ fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
 
 #[pyfunction]
 fn rust_create_empty_stratego_board() -> PyResult<StrategoBoardWrapper> {
-    let board = classic_board::create_empty_stratego_board();
+    let board = engine_utils::create_empty_stratego_board();
     Ok(StrategoBoardWrapper::new(board))
 }
 
 #[pyfunction]
 fn rust_create_stratego_board() -> PyResult<StrategoBoardWrapper> {
-    let board = classic_board::create_stratego_board();
+    let board = engine_utils::create_stratego_board();
     Ok(StrategoBoardWrapper::new(board))
 }
 

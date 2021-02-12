@@ -29,7 +29,6 @@ impl Player for HumanPlayer {
         println!("to ? (e.g 0A)");
 
         let to: (i16, i16) = parse::parse_input(parse::read_from_input().unwrap().as_str());
-        //println!("{:?}|{:?}", from, to);
 
         (Coordinate::new(from.0, from.1), Coordinate::new(to.0, to.1))
     }

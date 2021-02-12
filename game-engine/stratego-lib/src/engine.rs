@@ -2,7 +2,6 @@ use crate::board::case::{Case, Coordinate};
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::Color;
 use crate::board::Board;
-use crate::engine_utils;
 use crate::error::StrategoError;
 use crate::player::Player;
 
@@ -65,7 +64,7 @@ impl Engine<StrategoBoard> for StrategoEngine {
     fn moving(&mut self) -> Result<(), StrategoError> {
         let player = self.get_player_from_color();
         let color = *player.get_color();
-        let (from, to) = engine_utils::ask_next_move(player, self.status());
+        let (from, to) = player.ask_next_move(self.status().to_owned());
         let c = self.board.get_at(&from);
         if c.get_content().get_color() != &color {
             println!("You should move a piece of your color !");
@@ -116,7 +115,7 @@ impl Engine<StrategoBoard> for StrategoEngine {
 
 #[cfg(test)]
 mod test {
-    use crate::board::classic_board::create_empty_stratego_board;
+    use crate::engine_utils::create_empty_stratego_board;
     use crate::board::piece::Color;
     use crate::board::Board;
     use crate::player::ai_player::AIPlayer;
