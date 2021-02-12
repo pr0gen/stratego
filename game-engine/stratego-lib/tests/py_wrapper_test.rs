@@ -1,26 +1,47 @@
 #[cfg(test)]
 mod py_wrapper_tests {
     use stratego_lib::board::case::{self, Coordinate};
-    use stratego_lib::engine_utils;
-    use stratego_lib::board::Board;
     use stratego_lib::board::piece::{Color, Piece, PieceType, PyPieceType};
+    use stratego_lib::board::Board;
+    use stratego_lib::engine_utils;
     use stratego_lib::py_bindings::board_wrapper;
     use stratego_lib::py_bindings::board_wrapper::StrategoBoardWrapper;
+    use stratego_lib::py_bindings::evaluation_function;
     use stratego_lib::simulation;
 
     #[test]
     fn should_simulate_game_between_two_ais() {
-        let mut board = engine_utils::create_empty_stratego_board(); 
-        let cases = board.state().clone();
-        //let res_simulation = simulation::simulate(
-                        //board,
-                        //simulation::choose_randomly(&board, color),
-                        //simulation::choose_randomly(&board, color),
-                        //engine_utils::game_is_over().unwrap()
-                        //50, 
-                        //"Red",
-                        //Color::Red,  
-                //);
+        let mut board = engine_utils::create_empty_stratego_board();
+
+        board
+            .place(case::create_full_case(
+                Coordinate::new(0, 0),
+                Piece::new(PieceType::General, Color::Red),
+            ))
+            .unwrap();
+        board
+            .place(case::create_full_case(
+                Coordinate::new(0, 1),
+                Piece::new(PieceType::Bomb, Color::Blue),
+            ))
+            .unwrap();
+
+        if let Ok(res_simulation) = simulation::simulate(
+            &board,
+            &simulation::choose_randomly,
+            &simulation::choose_randomly,
+            &evaluation_function::basic_evaluation,
+            50,
+            Some(Color::Red),
+            Color::Red,
+        ) {
+            assert_eq!(
+                res_simulation,
+                (Coordinate::new(0, 0), Coordinate::new(0, 1))
+            );
+        } else {
+            assert!(false);
+        }
     }
 
     #[test]
