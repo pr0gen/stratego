@@ -1,7 +1,7 @@
 import socketio from "socket.io";
-import { PlayerState } from "../../src/PlayerState";
-import { Room } from "../../src/Room";
-import {Rooms} from "../../src/Rooms";
+import { PlayerState } from "../../structures/PlayerState";
+import { Room } from "../../structures/Room";
+import {Rooms} from "../../structures/Rooms";
 
 
 

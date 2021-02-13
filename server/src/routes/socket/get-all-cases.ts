@@ -1,7 +1,7 @@
 import socketio from "socket.io";
-import { GameEngineApi} from "../../src/GameEngine/GameEngineApi";
-import { PlayerState } from "../../src/PlayerState";
-import {Rooms} from "../../src/Rooms";
+import { GameEngineApi} from "../../structures/GameEngine/GameEngineApi";
+import { PlayerState } from "../../structures/PlayerState";
+import {Rooms} from "../../structures/Rooms";
 
 
 export default function getAllCases(socket: socketio.Socket, rooms: Rooms) {

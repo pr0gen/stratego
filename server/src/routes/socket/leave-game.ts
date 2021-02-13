@@ -1,4 +1,4 @@
-import {Rooms} from "../../src/Rooms";
+import {Rooms} from "../../structures/Rooms";
 import socketio, {Socket} from "socket.io";
 
 

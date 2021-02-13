@@ -1,5 +1,5 @@
 import socketio from "socket.io";
-import {Rooms} from "../../src/Rooms";
+import {Rooms} from "../../structures/Rooms";
 
 
 export default function game(socket: socketio.Socket, rooms: Rooms) {
