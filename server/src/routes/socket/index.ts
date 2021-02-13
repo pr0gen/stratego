@@ -8,6 +8,7 @@ import getAllCases from "./get-all-cases";
 import getAvailableMoves from "./get-available-moves";
 import movePiece from "./move-piece";
 import playWithAi from "./play-with-ai";
+import disconnect from "./disconnect";
 
 export default function startSockets(socket :socketio.Socket, players: Players, rooms: Rooms) {
 
@@ -18,5 +19,7 @@ export default function startSockets(socket :socketio.Socket, players: Players, 
     getAvailableMoves(socket, rooms)
     movePiece(socket, rooms)
     playWithAi(socket, rooms)
+    disconnect(socket, rooms)
+
 
 }
