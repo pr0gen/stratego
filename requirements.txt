@@ -48,3 +48,5 @@ uvicorn==0.13.3
     # via -r requirements.in
 zipp==3.4.0
     # via importlib-metadata
+pandas
+matplotlib
