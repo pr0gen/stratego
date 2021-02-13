@@ -1,8 +1,9 @@
-// Env
-import {config as dotenv} from 'dotenv'
-import run from './app'
+import { config as dotenv } from 'dotenv'
+import { env } from './utils/template/env'
 
 dotenv()
+
+
 
 // Require
 import express from 'express'
@@ -10,6 +11,7 @@ import socketio from 'socket.io'
 const app = express()
 import { Server } from 'http'
 import morgan from 'morgan'
+import run from "./app";
 
 const server = new Server(app)
 

@@ -1,8 +1,8 @@
 import generateCode from "../../utils/generateCode";
 import socketio, {Socket} from "socket.io";
-import {Room} from "../../src/Room";
-import {Rooms} from "../../src/Rooms";
-import {RoomState} from "../../src/RoomState";
+import {Room} from "../../structures/Room";
+import {Rooms} from "../../structures/Rooms";
+import {RoomState} from "../../structures/RoomState";
 
 export default function createGame( socket :socketio.Socket, rooms: Rooms) {
 

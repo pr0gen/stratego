@@ -1,6 +1,6 @@
-import {Rooms} from "../../src/Rooms";
+import {Rooms} from "../../structures/Rooms";
 import socketio from "socket.io";
-import {RoomState} from "../../src/RoomState";
+import {RoomState} from "../../structures/RoomState";
 
 export default function joinGame(socket: socketio.Socket, rooms: Rooms) {
 
