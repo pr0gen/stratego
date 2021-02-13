@@ -34,7 +34,10 @@ export class Room {
         const color = this.getPlayerColor(playerId)
 
         const board = await this.gameEngine.getBoard(color)
-        return boardParser(board.cases)
+        return {
+            cases : boardParser(board.cases),
+            message : board.message
+        }
     }
 
     async getAvailableMoves(playerId: string, x:number, y:string) {
