@@ -19,8 +19,12 @@ def plot_victories(filename) :
     y = [wins.count('Blue'),wins.count('Red')]
     width = 0.5
 
+    filenamepng = filename.split()
+    filenamepng = filenamepng[:-4]
+    filenamepng = join(filenamepng)
+
     plt.bar(x,y,width,color='b')
-    plt.savefig('SimpleBar.png')
+    plt.savefig(filenamepng)
     plt.show()
 
 plot_victories(sys.argv[1])
