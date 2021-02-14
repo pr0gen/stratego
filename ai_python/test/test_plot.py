@@ -1,7 +1,8 @@
-import ai_python.src.plot as plot
+from ai_python.src.plot import run_game_series
 
 def test_reading_file():
-    test = plot.run_game_series()
+    test = run_game_series()
+
 
 
 
