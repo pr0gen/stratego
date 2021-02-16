@@ -12,6 +12,7 @@ def run_game_series(filename) :
         list.append(color)
     return list;
 
+
 def plot_victories(filename) :
     wins = run_game_series(filename)
     fig = plt.figure()
