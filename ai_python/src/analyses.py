@@ -20,5 +20,8 @@ def plot_victories(filename) :
     width = 0.5
 
     plt.bar(x,y,width,color='b')
-    plt.savefig('SimpleBar.png')
+
+    filenamepng = str(filename)[:-3] + "png"
+
+    plt.savefig(filenamepng)
     plt.show()
