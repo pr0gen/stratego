@@ -22,5 +22,3 @@ def plot_victories(filename) :
     plt.bar(x,y,width,color='b')
     plt.savefig('SimpleBar.png')
     plt.show()
-
-plot_victories(sys.argv[1])
