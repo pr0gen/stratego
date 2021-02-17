@@ -39,5 +39,5 @@ case $a in
 * )     echo "Try again.";;
 esac
 
-./analyses $filename $numberOfThread $numberOfGame $first_ai_name $second_ai_name
+./analyzes $filename $numberOfThread $numberOfGame $first_ai_name $second_ai_name
 python3 analyses.py $filename
