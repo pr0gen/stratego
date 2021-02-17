@@ -17,7 +17,7 @@ def plot_victories(filename) :
     wins = run_game_series(filename)
     fig = plt.figure()
     x = ['Red','Blue']
-    y = [wins.count('Blue'),wins.count('Red')]
+    y = [wins.count('Red'),wins.count('Blue')]
     width = 0.5
 
     plt.bar(x,y,width,color='b')
