@@ -2,12 +2,14 @@ use crate::writter;
 use std::thread::{self, JoinHandle};
 use stratego_lib::board::classic_board::create_stratego_board;
 use stratego_lib::board::piece::Color;
+use stratego_lib::board::piece::PieceType;
 use stratego_lib::board::Board;
 use stratego_lib::engine::Engine;
 use stratego_lib::engine::StrategoEngine;
 use stratego_lib::engine_utils::game_is_over;
 use stratego_lib::error::StrategoError;
 use stratego_lib::player::ai_player::AIPlayer;
+use stratego_lib::py_bindings::evaluation_function;
 
 pub fn spawn_thread_for_stratego(
     thread_number: usize,
@@ -24,18 +26,39 @@ pub fn spawn_thread_for_stratego(
             ),
         );
 
+        let material_values: Vec<(PieceType, i16)> = vec![
+            (PieceType::Bomb, 0),
+            (PieceType::Marshal, 10),
+            (PieceType::General, 9),
+            (PieceType::Colonel, 8),
+            (PieceType::Major, 7),
+            (PieceType::Captain, 6),
+            (PieceType::Lieutenant, 5),
+            (PieceType::Sergeant, 4),
+            (PieceType::Miner, 3),
+            (PieceType::Scout, 2),
+            (PieceType::Spy, 1),
+            (PieceType::Flag, 1),
+        ];
+
         println!("{}", engine.display_by_color(&engine.get_turn()));
         loop {
             let board = engine.status();
             match game_is_over(board.state()) {
                 Some(Color::Red) => {
                     println!("Red wins");
-                    writter::write_into_file(file_name.as_str(), "Red");
+                    let (red, blue) =
+                        evaluation_function::material_evaluation(board, &material_values);
+                    let to_write = format!("Red;{};{}", red.1, blue.1);
+                    writter::write_into_file(file_name.as_str(), to_write.as_str());
                     break;
                 }
                 Some(Color::Blue) => {
                     println!("Blue wins");
-                    writter::write_into_file(file_name.as_str(), "Blue");
+                    let (red, blue) =
+                        evaluation_function::material_evaluation(board, &material_values);
+                    let to_write = format!("Red;{};{}", red.1, blue.1);
+                    writter::write_into_file(file_name.as_str(), to_write.as_str());
                     break;
                 }
                 _ => match engine.moving() {
