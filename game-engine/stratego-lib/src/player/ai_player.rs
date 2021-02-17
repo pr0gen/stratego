@@ -73,7 +73,7 @@ fn ask_ai_next_move(
 
             let next_move = call.unwrap().extract();
             if let Ok(next_move) = next_move {
-                println!("AI {} is playing", name);
+                println!("AI {} is playing - {:?}", name, color);
                 Ok(case::into(next_move))
             } else {
                 Err(StrategoError::AILoadingError(String::from(

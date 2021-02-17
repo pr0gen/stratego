@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, List
 from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move_ready
 from ai_python.src.ai_utils import simulate_game
 import ai_python.src.stratego_engine as se
@@ -20,24 +20,36 @@ class MonteCarloAI(StrategoAI):
         movesFormated = parse_moves(moves)
 
         best_move = None
+        scores = []
         for move in movesFormated:
             copied_board = board.clone_board()
             f, t = move_ready(move);
             copied_board.moving(f, t)
-            best_move = simulate_game(
+            scores.append( 
+                (move, simulate_game(
                 copied_board,
                 choose_randomly,
                 choose_randomly,
                 board.basic_evaluation(),
                 100,
-                (self.color),
+                self.__get_material_range(),
                 self.color
+                ))
             )
-        
+
+        scores.sort(reverse=True, key=sort_scores) 
+
+        best_move = scores[0][0]
+        print("Score:", scores[0][1])
         if best_move == None or best_move == False:
             best_move = choose_randomly(board, self.color)
         print("Monte Carlo plays:", best_move)
-        return best_move
+        return move_ready(best_move)
+
+    def __get_material_range(self) -> List[int]:
+       return list(range(0, 100))
 
 
+def sort_scores(e):
+    return e[1]
 
