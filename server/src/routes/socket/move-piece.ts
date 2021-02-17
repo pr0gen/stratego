@@ -1,6 +1,6 @@
 import socketio from "socket.io";
-import {PlayerState} from "../../src/PlayerState";
-import {Rooms} from "../../src/Rooms";
+import {PlayerState} from "../../structures/PlayerState";
+import {Rooms} from "../../structures/Rooms";
 
 
 export default function movePiece(socket: socketio.Socket, rooms: Rooms) {

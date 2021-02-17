@@ -8,6 +8,7 @@ import getStrategoBoard from "../Utils/getStrategoBoard";
 function Game() {
 
     const [board, setBoard] = useState(getDefaultBoard())
+    const [playerWin, setPlayerWin] = useState('')
     // @ts-ignore
     const [gameBoard, setGameBoard] = useState(getStrategoBoard(board))
     const [pieces, setPieces] = useState([])
@@ -30,10 +31,15 @@ function Game() {
     useEffect(() => {
         socket.emit('get-all-cases');
 
-        socket.on('response-get-all-cases', (pieces: any, canMove:boolean) => {
+        socket.on('response-get-all-cases', (board: any, canMove:boolean) => {
             setPieces([])
+
+            if(board.message !== 'None') {
+                setPlayerWin(board.message)
+            }
+
             console.log("can move =>" + canMove)
-            updateBoard(getStrategoBoard(pieces), canMove)
+            updateBoard(getStrategoBoard(board.cases), canMove)
         })
         
         return () => {
@@ -50,6 +56,19 @@ function Game() {
     return (
         <div className="game">
             <h2 className="medium-title">Plateau de jeux</h2>
+            <div className={playerWin ? 'modal is-active' : 'modal'}>
+                <div className="modal-background"></div>
+                <div className="modal-content">
+                    <article className="message is-dark">
+                        <div className="message-body has-text-centered">
+
+                            <h1 className="is-size-3 mb-5">Partie terminé</h1>
+                            <p className="is-size-5	mb-3"> Le gagnant de la partie est le joueur : {playerWin} </p>
+                        </div>
+                    </article>
+                </div>
+                <button className="modal-close is-large" aria-label="close"></button>
+            </div>
             <div className="board-container">
                 <Board
                     key={key}
