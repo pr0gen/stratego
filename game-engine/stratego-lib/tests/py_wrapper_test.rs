@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod py_wrapper_tests {
-    use stratego_lib::board::case::{self, Coordinate};
+        use pyo3::PyResult;
+use stratego_lib::board::case::{self, Coordinate};
     use stratego_lib::board::piece::{Color, Piece, PieceType, PyPieceType};
     use stratego_lib::board::Board;
     use stratego_lib::engine_utils;
@@ -10,39 +11,95 @@ mod py_wrapper_tests {
     use stratego_lib::simulation;
 
     #[test]
-    fn should_simulate_game_between_two_ais() {
-        let mut board = engine_utils::create_empty_stratego_board();
+    fn should_simulate_game_between_two_ais_red() -> PyResult<()> {
+        let board = engine_utils::create_empty_stratego_board();
+        let mut pyboard = StrategoBoardWrapper::new(board);
 
-        board
-            .place(case::create_full_case(
-                Coordinate::new(0, 0),
-                Piece::new(PieceType::General, Color::Red),
-            ))
-            .unwrap();
-        board
-            .place(case::create_full_case(
-                Coordinate::new(0, 1),
-                Piece::new(PieceType::Bomb, Color::Blue),
-            ))
-            .unwrap();
+        pyboard.place(String::from("Full"), (0, String::from("A")), 9,  String::from("Red"))?;
+        pyboard.place(String::from("Full"), (0, String::from("B")), -1, String::from("Red"))?;
+        pyboard.place(String::from("Full"), (0, String::from("C")), -2, String::from("Red"))?;
+        pyboard.place(String::from("Full"), (9, String::from("A")), -2, String::from("Blue"))?;
+        pyboard.place(String::from("Full"), (8, String::from("A")), 3,  String::from("Blue"))?;
 
-        if let Ok(res_simulation) = simulation::simulate(
-            &board,
+        eprintln!("{}", pyboard.display()?);
+        let res = simulation::simulate(
+            pyboard,
             &simulation::choose_randomly,
             &simulation::choose_randomly,
             &evaluation_function::basic_evaluation,
-            50,
-            Some(Color::Red),
-            Color::Red,
-        ) {
-            assert_eq!(
+            &50,
+            &Some(Color::Red),
+            4,
+            8
+        );
+        eprintln!("{:?}", res);
+        match res {
+            Ok(res_simulation) => assert_eq!(
                 res_simulation,
-                (Coordinate::new(0, 0), Coordinate::new(0, 1))
-            );
-        } else {
-            assert!(false);
+                (Coordinate::new(0, 0), Coordinate::new(1, 0))
+            ),
+            Err(_) => assert!(false),
         }
+        assert!(false);
+        Ok(())
     }
+
+    //#[test]
+    //fn should_simulate_game_between_two_ais_blue() {
+        //let mut board = engine_utils::create_empty_stratego_board();
+
+        //board
+            //.place(case::create_full_case(
+                //Coordinate::new(0, 0),
+                //Piece::new(PieceType::General, Color::Blue),
+            //))
+            //.unwrap();
+        //board
+            //.place(case::create_full_case(
+                //Coordinate::new(0, 1),
+                //Piece::new(PieceType::Bomb, Color::Red),
+            //))
+            //.unwrap();
+        //board
+            //.place(case::create_full_case(
+                //Coordinate::new(0, 2),
+                //Piece::new(PieceType::Flag, Color::Red),
+            //))
+            //.unwrap();
+        //board
+            //.place(case::create_full_case(
+                //Coordinate::new(9, 3),
+                //Piece::new(PieceType::Flag, Color::Blue),
+            //))
+            //.unwrap();
+        //board
+            //.place(case::create_full_case(
+                //Coordinate::new(9, 4),
+                //Piece::new(PieceType::General, Color::Red),
+            //))
+            //.unwrap();
+
+        //eprintln!("{}", board.display());
+        //let res = simulation::simulate(
+            //board,
+            //&simulation::choose_randomly,
+            //&simulation::choose_randomly,
+            //&evaluation_function::basic_evaluation,
+            //&50,
+            //&Some(Color::Blue),
+            //4,
+            //8
+        //);
+        //eprintln!("{:?}", res);
+        //match res {
+            //Ok(res_simulation) => assert_eq!(
+                //res_simulation,
+                //(Coordinate::new(0, 0), Coordinate::new(0, 1))
+            //),
+            //Err(_) => assert!(false),
+        //}
+    //}
+
 
     #[test]
     fn should_parse_rust_content_to_python() {

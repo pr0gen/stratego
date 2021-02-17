@@ -12,3 +12,5 @@ It takes 5 parameters:
 
 ## Some Update to discuss
   - output any evaluation function
+
+`./analyzes data-r-r-1.csv 4 8 random random`
