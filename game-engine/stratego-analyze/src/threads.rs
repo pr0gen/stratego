@@ -49,7 +49,7 @@ pub fn spawn_thread_for_stratego(
                     println!("Red wins");
                     let (red, blue) =
                         evaluation_function::material_evaluation(board, &material_values);
-                    let to_write = format!("Red;{};{}", red.1, blue.1);
+                    let to_write = format!("Red,{},{}", red.1, blue.1);
                     writter::write_into_file(file_name.as_str(), to_write.as_str());
                     break;
                 }
@@ -57,7 +57,7 @@ pub fn spawn_thread_for_stratego(
                     println!("Blue wins");
                     let (red, blue) =
                         evaluation_function::material_evaluation(board, &material_values);
-                    let to_write = format!("Blue;{};{}", red.1, blue.1);
+                    let to_write = format!("Blue,{},{}", red.1, blue.1);
                     writter::write_into_file(file_name.as_str(), to_write.as_str());
                     break;
                 }
