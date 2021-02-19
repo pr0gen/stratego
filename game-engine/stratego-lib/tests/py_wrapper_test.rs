@@ -1,14 +1,13 @@
 #[cfg(test)]
 mod py_wrapper_tests {
-        use pyo3::PyResult;
-use stratego_lib::board::case::{self, Coordinate};
+    use pyo3::PyResult;
+    use stratego_lib::board::case::{self, Coordinate};
     use stratego_lib::board::piece::{Color, Piece, PieceType, PyPieceType};
     use stratego_lib::board::Board;
     use stratego_lib::engine_utils;
     use stratego_lib::py_bindings::board_wrapper;
     use stratego_lib::py_bindings::board_wrapper::StrategoBoardWrapper;
-    use stratego_lib::py_bindings::evaluation_function;
-    use stratego_lib::simulation;
+    use stratego_lib::simulation::{self, MaterialEvaluationFunction};
 
     #[test]
     fn should_simulate_game_between_two_ais_red() -> PyResult<()> {
@@ -21,14 +20,31 @@ use stratego_lib::board::case::{self, Coordinate};
         pyboard.place(String::from("Full"), (9, String::from("A")), -2, String::from("Blue"))?;
         pyboard.place(String::from("Full"), (8, String::from("A")), 3,  String::from("Blue"))?;
 
+        let material_values: Vec<(PyPieceType, i16)> = vec![
+            (-2, 0),
+            (10, 10),
+            (9, 9),
+            (8, 8),
+            (7, 7),
+            (6, 6),
+            (5, 5),
+            (4, 4),
+            (3, 3),
+            (2, 2),
+            (1, 1),
+            (1, 1),
+        ];
+
         eprintln!("{}", pyboard.display()?);
+
+        let eval = MaterialEvaluationFunction::new(pyboard, material_values);
+        let sol = Vec::new();
         let res = simulation::simulate(
-            pyboard,
             &simulation::choose_randomly,
             &simulation::choose_randomly,
-            &evaluation_function::basic_evaluation,
+            &eval,
             &50,
-            &Some(Color::Red),
+            &sol,
             4,
             8
         );

@@ -40,6 +40,10 @@ impl StrategoBoardWrapper {
     pub fn new(board: StrategoBoard) -> Self {
         StrategoBoardWrapper { board }
     }
+
+    pub fn get_board(&self) -> &StrategoBoard {
+        &self.board
+    }
 }
 
 #[pymethods]
@@ -162,14 +166,19 @@ impl StrategoBoardWrapper {
         let gil_holder = utils::get_gild_holder()
             .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
         let gil = gil_holder.get();
-        let evaluation =
-            evaluation_function::material_evaluation(&self.board, &translate_material_values_to_rust(material_value));
+        let evaluation = evaluation_function::material_evaluation(
+            &self.board,
+            &translate_material_values_to_rust(material_value),
+        );
         Ok(pythonize(gil.python(), &evaluation)?)
     }
 }
 
-fn translate_material_values_to_rust(material_value: Vec<(PyPieceType, i16)>) -> Vec<(PieceType, i16)> {
-    material_value.iter()
+fn translate_material_values_to_rust(
+    material_value: Vec<(PyPieceType, i16)>,
+) -> Vec<(PieceType, i16)> {
+    material_value
+        .iter()
         .map(|(rank, value)| (PieceType::from(rank), *value))
         .collect()
 }
