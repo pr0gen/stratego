@@ -7,18 +7,44 @@ mod py_wrapper_tests {
     use stratego_lib::engine_utils;
     use stratego_lib::py_bindings::board_wrapper;
     use stratego_lib::py_bindings::board_wrapper::StrategoBoardWrapper;
-    use stratego_lib::simulation::{self, MaterialEvaluationFunction};
+    use stratego_lib::simulation;
+    use stratego_lib::simulation::evaluation::EvaluationFunction;
 
     #[test]
     fn should_simulate_game_between_two_ais_red() -> PyResult<()> {
         let board = engine_utils::create_empty_stratego_board();
         let mut pyboard = StrategoBoardWrapper::new(board);
 
-        pyboard.place(String::from("Full"), (0, String::from("A")), 9,  String::from("Red"))?;
-        pyboard.place(String::from("Full"), (0, String::from("B")), -1, String::from("Red"))?;
-        pyboard.place(String::from("Full"), (0, String::from("C")), -2, String::from("Red"))?;
-        pyboard.place(String::from("Full"), (9, String::from("A")), -2, String::from("Blue"))?;
-        pyboard.place(String::from("Full"), (8, String::from("A")), 3,  String::from("Blue"))?;
+        pyboard.place(
+            String::from("Full"),
+            (0, String::from("A")),
+            9,
+            String::from("Red"),
+        )?;
+        pyboard.place(
+            String::from("Full"),
+            (0, String::from("B")),
+            -1,
+            String::from("Red"),
+        )?;
+        pyboard.place(
+            String::from("Full"),
+            (0, String::from("C")),
+            -2,
+            String::from("Red"),
+        )?;
+        pyboard.place(
+            String::from("Full"),
+            (9, String::from("A")),
+            -2,
+            String::from("Blue"),
+        )?;
+        pyboard.place(
+            String::from("Full"),
+            (8, String::from("A")),
+            3,
+            String::from("Blue"),
+        )?;
 
         let material_values: Vec<(PyPieceType, i16)> = vec![
             (-2, 0),
@@ -37,85 +63,97 @@ mod py_wrapper_tests {
 
         eprintln!("{}", pyboard.display()?);
 
-        let eval = MaterialEvaluationFunction::new(pyboard, material_values);
-        let sol = Vec::new();
+        let stopping_criteria = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let eval = EvaluationFunction::MaterialEvaluationFunction(material_values, stopping_criteria);
         let res = simulation::simulate(
+            &pyboard,
             &simulation::choose_randomly,
             &simulation::choose_randomly,
             &eval,
-            &50,
-            &sol,
-            4,
-            8
+            &20,
+            (Coordinate::new(0, 0), Coordinate::new(1, 0)),
+        );
+        match res {
+            Ok((b, _)) => assert!(b),
+            Err(e) => {
+                eprintln!("{}", e.message());
+                assert!(false)
+            }
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn should_simulate_game_between_two_ais_blue() {
+        let mut board = engine_utils::create_empty_stratego_board();
+
+        board
+            .place(case::create_full_case(
+                Coordinate::new(0, 0),
+                Piece::new(PieceType::General, Color::Blue),
+            ))
+            .unwrap();
+        board
+            .place(case::create_full_case(
+                Coordinate::new(0, 1),
+                Piece::new(PieceType::Bomb, Color::Red),
+            ))
+            .unwrap();
+        board
+            .place(case::create_full_case(
+                Coordinate::new(0, 2),
+                Piece::new(PieceType::Flag, Color::Red),
+            ))
+            .unwrap();
+        board
+            .place(case::create_full_case(
+                Coordinate::new(9, 3),
+                Piece::new(PieceType::Flag, Color::Blue),
+            ))
+            .unwrap();
+        board
+            .place(case::create_full_case(
+                Coordinate::new(9, 4),
+                Piece::new(PieceType::General, Color::Red),
+            ))
+            .unwrap();
+
+        let material_values: Vec<(PyPieceType, i16)> = vec![
+            (-2, 0),
+            (10, 10),
+            (9, 9),
+            (8, 8),
+            (7, 7),
+            (6, 6),
+            (5, 5),
+            (4, 4),
+            (3, 3),
+            (2, 2),
+            (1, 1),
+            (1, 1),
+        ];
+        eprintln!("{}", board.display());
+
+        let pyboard = StrategoBoardWrapper::new(board);
+        let stopping_criteria = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        let eval = EvaluationFunction::MaterialEvaluationFunction(material_values, stopping_criteria);
+        let res = simulation::simulate_multi_thread(
+            pyboard,
+            &simulation::choose_randomly,
+            &simulation::choose_randomly,
+            eval,
+            20,
         );
         eprintln!("{:?}", res);
         match res {
             Ok(res_simulation) => assert_eq!(
                 res_simulation,
-                (Coordinate::new(0, 0), Coordinate::new(1, 0))
+                Some((Coordinate::new(0, 0), Coordinate::new(0, 1)))
             ),
             Err(_) => assert!(false),
         }
-        assert!(false);
-        Ok(())
     }
-
-    //#[test]
-    //fn should_simulate_game_between_two_ais_blue() {
-        //let mut board = engine_utils::create_empty_stratego_board();
-
-        //board
-            //.place(case::create_full_case(
-                //Coordinate::new(0, 0),
-                //Piece::new(PieceType::General, Color::Blue),
-            //))
-            //.unwrap();
-        //board
-            //.place(case::create_full_case(
-                //Coordinate::new(0, 1),
-                //Piece::new(PieceType::Bomb, Color::Red),
-            //))
-            //.unwrap();
-        //board
-            //.place(case::create_full_case(
-                //Coordinate::new(0, 2),
-                //Piece::new(PieceType::Flag, Color::Red),
-            //))
-            //.unwrap();
-        //board
-            //.place(case::create_full_case(
-                //Coordinate::new(9, 3),
-                //Piece::new(PieceType::Flag, Color::Blue),
-            //))
-            //.unwrap();
-        //board
-            //.place(case::create_full_case(
-                //Coordinate::new(9, 4),
-                //Piece::new(PieceType::General, Color::Red),
-            //))
-            //.unwrap();
-
-        //eprintln!("{}", board.display());
-        //let res = simulation::simulate(
-            //board,
-            //&simulation::choose_randomly,
-            //&simulation::choose_randomly,
-            //&evaluation_function::basic_evaluation,
-            //&50,
-            //&Some(Color::Blue),
-            //4,
-            //8
-        //);
-        //eprintln!("{:?}", res);
-        //match res {
-            //Ok(res_simulation) => assert_eq!(
-                //res_simulation,
-                //(Coordinate::new(0, 0), Coordinate::new(0, 1))
-            //),
-            //Err(_) => assert!(false),
-        //}
-    //}
-
 
     #[test]
     fn should_parse_rust_content_to_python() {
