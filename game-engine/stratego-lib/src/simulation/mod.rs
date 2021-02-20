@@ -27,8 +27,6 @@ pub fn simulate_multi_thread(
     let locked_board = Arc::new(Mutex::new(pyboard));
     let locked_eval = Arc::new(Mutex::new(evaluation_function));
 
-    //let locked_board = Arc::clone(&locked_board);
-    //let locked_eval = Arc::clone(&locked_eval);
     threads.push(thread::spawn(move || {
         let pyboard = locked_board.lock().unwrap();
         let evaluation_function = locked_eval.lock().unwrap();

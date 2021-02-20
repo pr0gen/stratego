@@ -3,7 +3,7 @@ mod board_utils_test {
     use stratego_lib::board::board_utils;
     use stratego_lib::board::case::{self, Case, Coordinate, State};
     use stratego_lib::board::Board;
-    use stratego_lib::board::classic_board::{self, StrategoBoard};
+    use stratego_lib::board::classic_board::StrategoBoard;
     use stratego_lib::board::piece::{Color, Piece, PieceType};
     use stratego_lib::engine_utils;
 

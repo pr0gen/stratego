@@ -1,6 +1,5 @@
 from typing import Tuple, List
 from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move_ready
-from ai_python.src.ai_utils import simulate_game
 from ai_python.src.utils import basic_material_values
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper

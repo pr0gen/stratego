@@ -7,12 +7,9 @@ use crate::board::case::{self, Case, Coordinate, PyCoord};
 use crate::board::piece::{PyColor, Piece, PyPieceType};
 use crate::error::StrategoError;
 use crate::engine_utils;
-use crate::simulation;
-use crate::simulation::evaluation::{self, EvaluationFunction};
 
 pub mod board_wrapper;
 pub mod evaluation_function;
-pub mod game_simulation;
 
 #[pymodule]
 fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
