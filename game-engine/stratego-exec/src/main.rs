@@ -19,10 +19,12 @@ fn main() {
         let board = engine.status();
         match engine_utils::game_is_over(board.state()) {
             Some(Color::Red) => {
+                println!("==========\n{}", board.display());
                 println!("Red wins");
                 break;
             }
             Some(Color::Blue) => {
+                println!("==========\n{}", board.display());
                 println!("Blue wins");
                 break;
             }

@@ -1,5 +1,6 @@
 from typing import Tuple, List, Callable, Any
 import ai_python.src.stratego_engine as se
+from ai_python.src.utils import basic_material_values
 
 Move = Tuple[int, str]
 
@@ -7,7 +8,7 @@ def simulate_game(
     board: se.StrategoBoardWrapper,
     ai_red: Callable[[se.StrategoBoardWrapper, str], Tuple[Move, Move]],
     ai_blue: Callable[[se.StrategoBoardWrapper, str], Tuple[Move, Move]],
-    evaluation_function: Callable[[], Any],
+    evaluation_function: Callable[[Any], Any],
     iteration_max: int,
     stopping_critera: Any,
     color: str
@@ -35,9 +36,17 @@ def simulate_game(
         board.moving((red_move[0][0], red_move[0][1]), (red_move[1][0], red_move[1][1]))
         blue_move = ai_blue(board, 'Blue') 
         board.moving((blue_move[0][0], blue_move[0][1]), (blue_move[1][0], blue_move[1][1]))
-        eval = evaluation_function 
-        if eval == stopping_critera:
-            return eval
+
+        red, blue = board.material_evaluation(basic_material_values())
+        if color == "Red":
+            delta = red[1] - blue[1]
+            if delta in stopping_critera: 
+                return red[1]
+        else:
+            delta = blue[1] - red[1]
+            if delta in stopping_critera: 
+                return blue[1]
+
         iteration_max = iteration_max - 1
                 
     return False

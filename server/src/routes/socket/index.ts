@@ -1,13 +1,14 @@
 import createGame from "./create-game";
 import leaveGame from "./leave-game";
 import joinGame from "./join-game";
-import {Players} from "../../src/Players";
-import {Rooms} from "../../src/Rooms";
+import {Players} from "../../structures/Players";
+import {Rooms} from "../../structures/Rooms";
 import socketio from "socket.io";
 import getAllCases from "./get-all-cases";
 import getAvailableMoves from "./get-available-moves";
 import movePiece from "./move-piece";
 import playWithAi from "./play-with-ai";
+import disconnect from "./disconnect";
 
 export default function startSockets(socket :socketio.Socket, players: Players, rooms: Rooms) {
 
@@ -18,5 +19,7 @@ export default function startSockets(socket :socketio.Socket, players: Players, 
     getAvailableMoves(socket, rooms)
     movePiece(socket, rooms)
     playWithAi(socket, rooms)
+    disconnect(socket, rooms)
+
 
 }

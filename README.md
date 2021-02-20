@@ -33,6 +33,13 @@ it will ask your AI if everything is correctly set up his next move.
 
 [This file](https://github.com/pr0gen/stratego/tree/develop/game-engine/stratego-lib/src/py_bindings/mod.rs) controls Python using Rust code, to move pieces, ask for board state or available moves.
 
+### Run simulations
+ Run 
+``./simulate_ia.sh`` to simulate game between two chosen AI,
+you can also choose the number of thread to run this simulation
+
+- filename must be a CSV
+
 ## How to play 
 
 In stratego-exec, the main function defines a game with a AI.

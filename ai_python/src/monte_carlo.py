@@ -21,22 +21,28 @@ class MonteCarloAI(StrategoAI):
         movesFormated = parse_moves(moves)
 
         best_move = None
+        scores = []
         for move in movesFormated:
             copied_board = board.clone_board()
             f, t = move_ready(move);
             copied_board.moving(f, t)
-            copied_board.simulate_games_material(
-                basic_material_values(),
-                self.__get_material_range(),
-                20
-            )
-        
+            scores.append( 
+                (move,
+                copied_board.simulate_games_material(basic_material_values(), self.__get_material_range(), 20)
+            ))
+
+        scores.sort(reverse=True, key=sort_scores) 
+
+        best_move = scores[0][0]
+        print("Score:", scores[0][1])
         if best_move == None or best_move == False:
             best_move = choose_randomly(board, self.color)
         print("Monte Carlo plays:", best_move)
-        return best_move
+        return move_ready(best_move)
 
     def __get_material_range(self) -> List[int]:
        return list(range(0, 20))
 
+def sort_scores(e):
+    return e[1]
 
