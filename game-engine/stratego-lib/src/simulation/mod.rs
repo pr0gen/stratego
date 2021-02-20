@@ -5,12 +5,10 @@ use crate::board::piece::Color;
 use crate::board::Board;
 use crate::error::StrategoError;
 use crate::py_bindings::board_wrapper::StrategoBoardWrapper;
+use crate::simulation::evaluation::{EvaluationFunction, EvaluationFunctionResponse};
 use rand::prelude::*;
-use std::sync::mpsc;
 use std::sync::{Arc, Mutex};
-use std::thread::{self, JoinHandle};
-use std::any::Any;
-use crate::simulation::evaluation::EvaluationFunction;
+use std::thread;
 
 pub mod evaluation;
 
@@ -22,7 +20,7 @@ pub fn simulate_multi_thread(
     second_ai: &'static (dyn Fn(&StrategoBoard, &Color) -> Option<Move> + Sync),
     evaluation_function: EvaluationFunction,
     iteration_max: i32,
-) -> Result<Option<Move>, StrategoError> {
+) -> Result<Move, StrategoError> {
     let board = pyboard.get_board().clone();
     let moves: Vec<_> = board_utils::get_availables_moves_by_color(&board, &Color::Red);
     let mut threads = Vec::with_capacity(moves.len());
@@ -35,27 +33,55 @@ pub fn simulate_multi_thread(
         threads.push(thread::spawn(move || {
             let pyboard = locked_board.lock().unwrap();
             let evaluation_function = locked_eval.lock().unwrap();
-            simulate(
-                &pyboard,
-                first_ai,
-                second_ai,
-                &*evaluation_function,
-                &iteration_max,
+            (
                 (from.clone(), to.clone()),
+                simulate(
+                    &pyboard,
+                    first_ai,
+                    second_ai,
+                    &*evaluation_function,
+                    &iteration_max,
+                    (from.clone(), to.clone()),
+                ),
             )
         }));
     });
 
-    let results: Vec<_> = threads
+    let results: Vec<(
+        (Coordinate, Coordinate),
+        Result<(bool, EvaluationFunctionResponse), StrategoError>,
+    )> = threads
         .into_iter()
         .map(|thread| thread.join().unwrap())
         .collect();
 
-    todo!()
-    //results.iter()
-    //.filter(||)
-}
+    let mut valid_moves: Vec<((Coordinate, Coordinate), EvaluationFunctionResponse)> = results
+        .into_iter()
+        .map(|(m, value)| {
+            if let Ok((b, eval)) = value {
+                Some((m, b, eval))
+            } else {
+                None
+            }
+        })
+        .filter(|res| res.is_some())
+        .map(|res| {
+            let (m, _, eval) = res.unwrap();
+            (m, eval)
+        })
+        .collect();
 
+    valid_moves.sort_by(|a, b| {
+        let (_, eval_a) = a;
+        let (_, eval_b) = b;
+        eval_a.cmp(eval_b)
+    });
+    if let Some((m, _)) = valid_moves.last() {
+        Ok(m.to_owned())
+    } else {
+        Err(StrategoError::AIExecuteError(String::from("Failed to execute all moves"))) 
+    }
+}
 pub fn simulate(
     board: &StrategoBoardWrapper,
     first_ai: &'static (dyn Fn(&StrategoBoard, &Color) -> Option<Move> + Sync),
@@ -63,10 +89,9 @@ pub fn simulate(
     evaluation_function: &EvaluationFunction,
     iteration_max: &i32,
     first_move: Move,
-) -> Result<(bool, Box<dyn Any + Send>), StrategoError> {
+) -> Result<(bool, EvaluationFunctionResponse), StrategoError> {
     let mut iteration_max = *iteration_max;
     let mut board = board.get_board().clone();
-    eprintln!("{:?}", first_move);
     board.moving(first_move.0, first_move.1)?;
 
     while iteration_max > 0 {

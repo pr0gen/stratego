@@ -64,7 +64,7 @@ mod py_wrapper_tests {
         eprintln!("{}", pyboard.display()?);
 
         let stopping_criteria = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
-        let eval = EvaluationFunction::MaterialEvaluationFunction(material_values, stopping_criteria);
+        let eval = EvaluationFunction::Material(material_values, stopping_criteria);
         let res = simulation::simulate(
             &pyboard,
             &simulation::choose_randomly,
@@ -137,7 +137,7 @@ mod py_wrapper_tests {
         let pyboard = StrategoBoardWrapper::new(board);
         let stopping_criteria = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-        let eval = EvaluationFunction::MaterialEvaluationFunction(material_values, stopping_criteria);
+        let eval = EvaluationFunction::Material(material_values, stopping_criteria);
         let res = simulation::simulate_multi_thread(
             pyboard,
             &simulation::choose_randomly,
@@ -149,7 +149,7 @@ mod py_wrapper_tests {
         match res {
             Ok(res_simulation) => assert_eq!(
                 res_simulation,
-                Some((Coordinate::new(0, 0), Coordinate::new(0, 1)))
+                (Coordinate::new(9, 4), Coordinate::new(8, 4))
             ),
             Err(_) => assert!(false),
         }
