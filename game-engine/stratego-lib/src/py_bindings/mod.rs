@@ -7,6 +7,8 @@ use crate::board::case::{self, Case, Coordinate, PyCoord};
 use crate::board::piece::{PyColor, Piece, PyPieceType};
 use crate::error::StrategoError;
 use crate::engine_utils;
+use crate::simulation;
+use crate::simulation::evaluation::{self, EvaluationFunction};
 
 pub mod board_wrapper;
 pub mod evaluation_function;
@@ -64,6 +66,8 @@ fn rust_create_unreachable_case(coordinate: PyCoord) -> PyResult<Case> {
 fn rust_create_piece(piece_type: PyPieceType, color: PyColor) -> PyResult<Piece> {
     Ok(Piece::new(piece_type.into(), color.into()))
 }
+
+
 
 pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     let syspath: &PyList = py

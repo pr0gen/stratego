@@ -3,11 +3,13 @@ use crate::board::piece::PieceType;
 use crate::board::piece::PyPieceType;
 use crate::py_bindings::evaluation_function::{self, Material};
 use std::cmp::Ordering;
+use serde::{Deserialize, Serialize};
+
 pub enum EvaluationFunction {
     Material(Vec<(PyPieceType, i16)>, Vec<i32>),
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Eq, PartialEq, Serialize, Deserialize)]
 pub enum EvaluationFunctionResponse {
     Material(Material),
 }

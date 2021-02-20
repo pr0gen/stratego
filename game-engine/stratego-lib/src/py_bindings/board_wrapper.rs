@@ -4,6 +4,8 @@ use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::{Color, Piece, PieceType, PyColor, PyPieceType};
 use crate::board::Board;
 use crate::py_bindings::evaluation_function;
+use crate::simulation;
+use crate::simulation::evaluation::EvaluationFunction;
 use crate::utils;
 use pyo3::exceptions;
 use pyo3::prelude::*;
@@ -171,6 +173,26 @@ impl StrategoBoardWrapper {
             &translate_material_values_to_rust(material_value),
         );
         Ok(pythonize(gil.python(), &evaluation)?)
+    }
+
+    pub fn simulate_games_material(
+        &self,
+        material_values: Vec<(PyPieceType, i16)>,
+        stopping_criteria: Vec<i32>,
+        iteration_max: i32,
+    ) -> PyResult<Py<PyAny>> {
+        let gil_holder = utils::get_gild_holder()
+            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+        let gil = gil_holder.get();
+        let eval = EvaluationFunction::Material(material_values, stopping_criteria);
+        let res = simulation::simulate_multi_thread(
+            self.to_owned(),
+            &simulation::choose_randomly,
+            &simulation::choose_randomly,
+            eval,
+            iteration_max,
+        );
+        Ok(pythonize(gil.python(), &res)?)
     }
 }
 

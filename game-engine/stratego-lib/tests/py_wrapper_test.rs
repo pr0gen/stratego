@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod py_wrapper_tests {
     use pyo3::PyResult;
+    use pythonize::*;
     use stratego_lib::board::case::{self, Coordinate};
     use stratego_lib::board::piece::{Color, Piece, PieceType, PyPieceType};
     use stratego_lib::board::Board;
@@ -9,6 +10,8 @@ mod py_wrapper_tests {
     use stratego_lib::py_bindings::board_wrapper::StrategoBoardWrapper;
     use stratego_lib::simulation;
     use stratego_lib::simulation::evaluation::EvaluationFunction;
+    use stratego_lib::simulation::evaluation::EvaluationFunctionResponse;
+    use stratego_lib::utils;
 
     #[test]
     fn should_simulate_game_between_two_ais_red() -> PyResult<()> {
@@ -71,7 +74,6 @@ mod py_wrapper_tests {
             &simulation::choose_randomly,
             &eval,
             &20,
-            (Coordinate::new(0, 0), Coordinate::new(1, 0)),
         );
         match res {
             Ok((b, _)) => assert!(b),
@@ -136,21 +138,18 @@ mod py_wrapper_tests {
 
         let pyboard = StrategoBoardWrapper::new(board);
         let stopping_criteria = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-        let eval = EvaluationFunction::Material(material_values, stopping_criteria);
-        let res = simulation::simulate_multi_thread(
-            pyboard,
-            &simulation::choose_randomly,
-            &simulation::choose_randomly,
-            eval,
-            20,
-        );
-        eprintln!("{:?}", res);
+        let res = pyboard.simulate_games_material(material_values, stopping_criteria, 20);
         match res {
-            Ok(res_simulation) => assert_eq!(
-                res_simulation,
-                (Coordinate::new(9, 4), Coordinate::new(8, 4))
-            ),
+            Ok(res_simulation) => {
+                let gil_holder = utils::get_gild_holder()
+                    .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+                let gil = gil_holder.get();
+                let vec = depythonize::<Vec<EvaluationFunctionResponse>>(
+                    res_simulation.as_ref(gil.python()),
+                )
+                .unwrap();
+                assert_ne!(0, vec.len());
+            }
             Err(_) => assert!(false),
         }
     }
