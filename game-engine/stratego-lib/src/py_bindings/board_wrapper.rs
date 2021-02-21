@@ -180,16 +180,19 @@ impl StrategoBoardWrapper {
         material_values: Vec<(PyPieceType, i16)>,
         stopping_criteria: Vec<i32>,
         iteration_max: i32,
+        color: PyColor,
+        number_of_threads: i32,
     ) -> PyResult<Py<PyAny>> {
         let gil_holder = utils::get_gild_holder()
             .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
         let gil = gil_holder.get();
-        let eval = EvaluationFunction::Material(material_values, stopping_criteria);
+        let eval = EvaluationFunction::Material(material_values, stopping_criteria, color.into());
         let res = simulation::simulate_multi_thread(
             self.to_owned(),
             &simulation::choose_randomly,
             &simulation::choose_randomly,
             eval,
+            number_of_threads,
             iteration_max,
         );
         Ok(pythonize(gil.python(), &res)?)

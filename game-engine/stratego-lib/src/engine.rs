@@ -71,10 +71,7 @@ impl Engine<StrategoBoard> for StrategoEngine {
             self.moving()
         } else {
             match self.perform_move(from, to) {
-                Ok(_) => {
-                    println!("{}", self.display_by_color(&self.turn));
-                    Ok(())
-                }
+                Ok(_) => Ok(()),
                 Err(StrategoError::MoveError(message, _, _)) => {
                     println!("{}", message);
                     self.moving()
@@ -115,9 +112,9 @@ impl Engine<StrategoBoard> for StrategoEngine {
 
 #[cfg(test)]
 mod test {
-    use crate::engine_utils::create_empty_stratego_board;
     use crate::board::piece::Color;
     use crate::board::Board;
+    use crate::engine_utils::create_empty_stratego_board;
     use crate::player::ai_player::AIPlayer;
     use crate::player::HumanPlayer;
 

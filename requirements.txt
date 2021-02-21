@@ -30,6 +30,7 @@ matplotlib==3.3.4
     # via -r requirements.in
 numpy==1.20.1
     # via
+    #   -r requirements.in
     #   matplotlib
     #   pandas
 packaging==20.9
@@ -70,7 +71,7 @@ typing-extensions==3.7.4.3
     #   uvicorn
 urllib3==1.26.3
     # via requests
-uvicorn==0.13.3
+uvicorn==0.13.4
     # via -r requirements.in
 zipp==3.4.0
     # via importlib-metadata

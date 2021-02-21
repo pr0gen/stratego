@@ -3,13 +3,14 @@ use stratego_lib::board::piece::Color;
 use stratego_lib::board::Board;
 use stratego_lib::engine::{Engine, StrategoEngine};
 use stratego_lib::player::ai_player::AIPlayer;
-//use stratego_lib::player::HumanPlayer;
+use stratego_lib::player::HumanPlayer;
 
 fn main() {
     let mut engine = StrategoEngine::new(
-        engine_utils::create_stratego_board(),
+        engine_utils::create_stratego_board_with_same_pieces(),
         (
             Box::new(AIPlayer::new(Color::Red, String::from("monte_carlo"))),
+            //Box::new(HumanPlayer::new(Color::Blue, String::from("Tigran"))),
             Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
         ),
     );

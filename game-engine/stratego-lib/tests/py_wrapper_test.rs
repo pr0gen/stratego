@@ -67,7 +67,7 @@ mod py_wrapper_tests {
         eprintln!("{}", pyboard.display()?);
 
         let stopping_criteria = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
-        let eval = EvaluationFunction::Material(material_values, stopping_criteria);
+        let eval = EvaluationFunction::Material(material_values, stopping_criteria, Color::Red);
         let res = simulation::simulate(
             &pyboard,
             &simulation::choose_randomly,
@@ -138,7 +138,13 @@ mod py_wrapper_tests {
 
         let pyboard = StrategoBoardWrapper::new(board);
         let stopping_criteria = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
-        let res = pyboard.simulate_games_material(material_values, stopping_criteria, 20);
+        let res = pyboard.simulate_games_material(
+            material_values,
+            stopping_criteria,
+            20,
+            String::from("Red"),
+            4,
+        );
         match res {
             Ok(res_simulation) => {
                 let gil_holder = utils::get_gild_holder()

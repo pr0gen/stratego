@@ -19,6 +19,7 @@ pub fn simulate_multi_thread(
     first_ai: &'static (dyn Fn(&StrategoBoard, &Color) -> Option<Move> + Sync),
     second_ai: &'static (dyn Fn(&StrategoBoard, &Color) -> Option<Move> + Sync),
     evaluation_function: EvaluationFunction,
+    number_of_threads: i32,
     iteration_max: i32,
 ) -> Vec<EvaluationFunctionResponse> {
     let board = pyboard.get_board().clone();
@@ -27,22 +28,32 @@ pub fn simulate_multi_thread(
     let locked_board = Arc::new(Mutex::new(pyboard));
     let locked_eval = Arc::new(Mutex::new(evaluation_function));
 
-    threads.push(thread::spawn(move || {
-        let pyboard = locked_board.lock().unwrap();
-        let evaluation_function = locked_eval.lock().unwrap();
-        simulate(
-            &pyboard,
-            first_ai,
-            second_ai,
-            &*evaluation_function,
-            &iteration_max,
-        )
-    }));
+    for i in 0..number_of_threads {
+        let locked_board = locked_board.clone();
+        let locked_eval = locked_eval.clone();
+        threads.push(
+            thread::Builder::new()
+                .name(format!("SIMULATION - {}", i))
+                .spawn(move || {
+                    let pyboard = locked_board.lock().unwrap();
+                    let evaluation_function = locked_eval.lock().unwrap();
+                    simulate(
+                        &pyboard,
+                        first_ai,
+                        second_ai,
+                        &*evaluation_function,
+                        &iteration_max,
+                    )
+                })
+                .unwrap(),
+        );
+    }
 
     let results: Vec<Result<(bool, EvaluationFunctionResponse), StrategoError>> = threads
         .into_iter()
         .map(|thread| thread.join().unwrap())
         .collect();
+    //eprintln!("{:?}", results);
 
     let valid_moves: Vec<EvaluationFunctionResponse> = results
         .into_iter()

@@ -1,17 +1,18 @@
-use std::collections::HashSet;
-use rand::seq::SliceRandom;
-use rand;
 use crate::board::case::{self, Case, Coordinate, State};
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::deplacement::AvailableMove;
+use crate::board::piece::piece_utils;
+use crate::board::piece::Piece;
 use crate::board::piece::{Color, PieceType};
 use crate::board::Board;
 use crate::error::StrategoError::{self, InitGameError};
-use crate::board::piece::piece_utils;
+use rand;
+use rand::seq::SliceRandom;
+use std::collections::HashSet;
 
 pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     let flatten_state: Vec<_> = cases.iter().flatten().collect();
-    
+
     let blues: Vec<_> = flatten_state
         .iter()
         .filter(|&c| c.get_content().get_color() == &Color::Blue)
@@ -58,6 +59,41 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     }
 
     None
+}
+
+pub fn create_stratego_board_with_same_pieces() -> StrategoBoard {
+    let board = create_empty_stratego_board();
+    let mut cases = board.state().clone();
+
+    let mut pieces = piece_utils::list_pieces();
+    pieces.shuffle(&mut rand::thread_rng());
+    let mut others_pieces = Vec::with_capacity(pieces.len());
+
+    let max = 4;
+    for (i, row) in cases.iter_mut().enumerate().take(max) {
+        for (j, case) in row.iter_mut().enumerate() {
+            let piece = pieces.pop().unwrap();
+            *case = case::create_full_case(
+                Coordinate::new(i as i16, j as i16),
+                Piece::new(piece.clone(), Color::Blue),
+            );
+            others_pieces.push(piece);
+        }
+    }
+
+    let max = 10;
+    for (i, row) in cases.iter_mut().enumerate().take(max).skip(6) {
+        for (j, case) in row.iter_mut().enumerate() {
+            let piece = others_pieces.pop();
+            *case = case::create_full_case(
+                Coordinate::new(i as i16, j as i16),
+                Piece::new(piece.unwrap(), Color::Red),
+            );
+        }
+    }
+
+    verify_board_integrity(StrategoBoard::new(cases))
+        .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e))
 }
 
 pub fn create_stratego_board() -> StrategoBoard {
