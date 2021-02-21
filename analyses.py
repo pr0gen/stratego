@@ -3,5 +3,16 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+import os
 
-plot_victories(sys.argv[1])
+filename = "data.csv"
+first_ai = "monte_carlo" 
+secondai = "random" 
+numberOfThread = "1"
+numberOfParties = "1"
+
+my_cmd = './analyzes ' + filename + " " + numberOfThread + " " + numberOfParties + " " + first_ai + " " + secondai
+
+os.system(my_cmd)
+
+plot_victories(filename)
