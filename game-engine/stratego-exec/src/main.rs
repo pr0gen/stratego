@@ -15,7 +15,6 @@ fn main() {
         ),
     );
 
-    println!("{}", engine.display_by_color(&engine.get_turn()));
     loop {
         let board = engine.status();
         match engine_utils::game_is_over(board.state()) {
@@ -30,6 +29,7 @@ fn main() {
                 break;
             }
             _ => {
+                println!("{}", board.display());
                 if let Err(e) = engine.moving() {
                     panic!("{:#?}", e)
                 }

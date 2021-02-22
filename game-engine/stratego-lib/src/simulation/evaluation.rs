@@ -27,11 +27,16 @@ impl EvaluationFunction {
                 let (first_ai, second_ai) =
                     evaluation_function::material_evaluation(board, &material_values);
 
+                let delta = match color {
+                    Color::Red => first_ai.1 - second_ai.1,
+                    Color::Blue => second_ai.1 - first_ai.1,
+                    _ => panic!("You can not evaluate, color is illegal"),
+                };
+
                 let eval = EvaluationFunctionResponse::Material((first_ai, second_ai));
                 if let Some(winner) = engine_utils::game_is_over(board.state()) {
                     (
-                        winner == *color
-                            && stopping_critera.iter().any(|&value| value == first_ai.1),
+                        winner == *color && stopping_critera.iter().any(|&value| value == delta),
                         eval,
                     )
                 } else {
@@ -47,8 +52,7 @@ impl Ord for EvaluationFunctionResponse {
         match (self, other) {
             (
                 EvaluationFunctionResponse::Material((red, _)),
-                EvaluationFunctionResponse::Material((red_other, _)),
-            ) => red.1.cmp(&red_other.1),
+                EvaluationFunctionResponse::Material((red_other, _)),) => red.1.cmp(&red_other.1),
         }
     }
 }

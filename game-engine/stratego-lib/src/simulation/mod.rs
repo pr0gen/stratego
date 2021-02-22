@@ -57,14 +57,7 @@ pub fn simulate_multi_thread(
 
     let valid_moves: Vec<EvaluationFunctionResponse> = results
         .into_iter()
-        .map(|value| {
-            if let Ok((b, eval)) = value {
-                Some((b, eval))
-            } else {
-                None
-            }
-        })
-        .filter(|res| res.is_some())
+        .filter(|value| value.is_ok())
         .map(|res| {
             let (_, eval) = res.unwrap();
             eval
@@ -95,9 +88,7 @@ pub fn simulate(
         }
         iteration_max -= 1;
     }
-    Err(StrategoError::AIExecuteError(String::from(
-        "Failed to win with this move",
-    )))
+    Ok(evaluation_function.evaluate(&board))
 }
 
 pub fn choose_randomly(board: &impl Board, color: &Color) -> Option<Move> {

@@ -17,6 +17,24 @@ class TestStrategoAI(StrategoAI):
         return ((3, "A"), (4, "A"))
 
 
+def sort_evals(evals, color):
+    res = []
+    for eval in evals:
+        if color == "Red":
+            res.append(eval['Material'][0][1])
+        else:
+            res.append(eval['Material'][1][1])
+    res.sort(reverse=True)
+    return res[0]
+          
+
+def get_best_score_by_move(score, color):
+    move, evals = score
+    return move, sort_evals(evals, color)
+
+
+def sort_best_scores(score):
+    return score[1]
 
 
 def basic_material_values() -> List[Tuple[int, int]]: 

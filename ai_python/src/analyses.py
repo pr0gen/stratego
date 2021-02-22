@@ -9,7 +9,7 @@ def run_game_series(filename) :
         list.append([row[1][0],row[1][1],row[1][2]])
     return list;
 
-def plot_victories(filename) :
+def plot_victories(filename, save_images=False) :
     wins = run_game_series(filename)
 
     x_wins = ['Red','Blue']
@@ -59,12 +59,13 @@ def plot_victories(filename) :
     plt.show()
 
     filenamepng_scores = str(filename)[:-4] + "_scores.png"
-    plt.savefig(filenamepng_scores)
 
     plt.bar(x_wins,y_wins,width,color='g')
     plt.show()
     filenamepng_wins = str(filename)[:-4] + "_wins.png"
-    plt.savefig(filenamepng_wins)
+    if save_images:
+        plt.savefig(filenamepng_scores)
+        plt.savefig(filenamepng_wins)
 
 
 

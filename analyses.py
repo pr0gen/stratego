@@ -8,8 +8,8 @@ import os
 filename = "data.csv"
 first_ai = "monte_carlo" 
 secondai = "random" 
-numberOfThread = "1"
-numberOfParties = "1"
+numberOfThread = "5"
+numberOfParties = "10"
 
 my_cmd = './analyzes ' + filename + " " + numberOfThread + " " + numberOfParties + " " + first_ai + " " + secondai
 
