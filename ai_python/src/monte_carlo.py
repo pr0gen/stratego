@@ -1,12 +1,8 @@
-from typing import Tuple
-from ai_python.src.utils import StrategoAI, Move, MoveBuilder, parse_moves, move_ready
-from ai_python.src.ai_utils import simulate_game
+from typing import Tuple, List
+from ai_python.src.utils import *
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper
 from ai_python.src.random import choose_randomly
-
-import copy
-import random
 
 class MonteCarloAI(StrategoAI):
     name = "monte_carlo"
@@ -20,24 +16,32 @@ class MonteCarloAI(StrategoAI):
         movesFormated = parse_moves(moves)
 
         best_move = None
+        scores = []
         for move in movesFormated:
             copied_board = board.clone_board()
             f, t = move_ready(move);
             copied_board.moving(f, t)
-            best_move = simulate_game(
-                copied_board,
-                choose_randomly,
-                choose_randomly,
-                board.basic_evaluation(),
-                100,
-                (self.color),
-                self.color
-            )
-        
+            sim = copied_board.simulate_games_material(basic_material_values(),
+                                self.__get_material_range(), 30, self.color, 4)
+            scores.append((move, sim))
+
+        best_scores = []
+        for score in scores:
+            best_scores.append(get_best_score_by_move(score, self.color))
+
+        best_scores.sort(reverse=True, key=sort_best_scores)
+
+        best_move = best_scores[0][0]
         if best_move == None or best_move == False:
             best_move = choose_randomly(board, self.color)
-        print("Monte Carlo plays:", best_move)
-        return best_move
+        m = move_ready(best_move)
+        print('Move:', m, '- Score:', best_scores[0][1])
+        return m
 
+    def __get_material_range(self) -> List[int]:
+       return list(range(0, 50))
+
+
+     
 
 

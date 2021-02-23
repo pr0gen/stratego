@@ -1,4 +1,5 @@
 use std::env;
+use std::sync::{Arc, Mutex};
 
 pub mod threads;
 pub mod writter;
@@ -18,12 +19,13 @@ fn main() {
     let mut threads = Vec::new();
 
     let per_threads = number_of_parties / number_of_thread;
+    let file_name = Arc::new(Mutex::new(file_name));
 
     for _ in 0..per_threads {
         for j in 0..number_of_thread {
             threads.push(threads::spawn_thread_for_stratego(
                 j,
-                file_name.clone(),
+                Arc::clone(&file_name),
                 first_ai_name.clone(),
                 second_ai_name.clone(),
             ));
@@ -31,7 +33,9 @@ fn main() {
     }
 
     // Wait for all threads to be finished
-    threads
-        .into_iter()
-        .for_each(|thread| thread.unwrap().join().unwrap());
+    threads.into_iter().for_each(|thread| {
+        if let Err(e) = thread.unwrap().join() {
+            println!("Failed to get result from one thread {:?}", e);
+        }
+    });
 }

@@ -1,6 +1,51 @@
 use std::collections::HashMap;
 
-use super::{Color, Piece, PieceType};
+use crate::board::piece::{Color, Piece, PieceType};
+
+pub fn list_pieces() -> Vec<PieceType> {
+    vec![
+        PieceType::Bomb,
+        PieceType::Bomb,
+        PieceType::Bomb,
+        PieceType::Bomb,
+        PieceType::Bomb,
+        PieceType::Bomb,
+        PieceType::Marshal,
+        PieceType::General,
+        PieceType::Colonel,
+        PieceType::Colonel,
+        PieceType::Major,
+        PieceType::Major,
+        PieceType::Major,
+        PieceType::Captain,
+        PieceType::Captain,
+        PieceType::Captain,
+        PieceType::Captain,
+        PieceType::Lieutenant,
+        PieceType::Lieutenant,
+        PieceType::Lieutenant,
+        PieceType::Lieutenant,
+        PieceType::Sergeant,
+        PieceType::Sergeant,
+        PieceType::Sergeant,
+        PieceType::Sergeant,
+        PieceType::Miner,
+        PieceType::Miner,
+        PieceType::Miner,
+        PieceType::Miner,
+        PieceType::Miner,
+        PieceType::Scout,
+        PieceType::Scout,
+        PieceType::Scout,
+        PieceType::Scout,
+        PieceType::Scout,
+        PieceType::Scout,
+        PieceType::Scout,
+        PieceType::Scout,
+        PieceType::Spy,
+        PieceType::Flag, 
+    ]
+}
 
 pub fn list_all_pieces() -> HashMap<PieceType, i8> {
     [

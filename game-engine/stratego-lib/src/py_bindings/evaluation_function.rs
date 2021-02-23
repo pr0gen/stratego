@@ -3,6 +3,7 @@ use crate::board::piece::{Color, PieceType};
 use crate::board::Board;
 use crate::engine_utils;
 
+pub type Material = ((Color, i32), (Color, i32));
 /// Return winner of the game, if one there is
 pub fn basic_evaluation(board: &impl Board) -> Option<Color> {
     engine_utils::game_is_over(board.state())
@@ -12,7 +13,7 @@ pub fn basic_evaluation(board: &impl Board) -> Option<Color> {
 pub fn material_evaluation(
     board: &impl Board,
     material_values: &[(PieceType, i16)],
-) -> ((Color, i32), (Color, i32)) {
+) ->  Material {
     let (reds, blues) = get_all_pieces(board.state());
     (
         (Color::Red, count_material(&reds, &material_values)),

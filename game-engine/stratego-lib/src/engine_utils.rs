@@ -1,21 +1,18 @@
-use std::collections::HashSet;
-use crate::board::case::{Case, Coordinate, State};
+use crate::board::case::{self, Case, Coordinate, State};
 use crate::board::classic_board::StrategoBoard;
 use crate::board::piece::deplacement::AvailableMove;
-use crate::board::piece::piece_utils::list_all_pieces;
+use crate::board::piece::piece_utils;
+use crate::board::piece::Piece;
 use crate::board::piece::{Color, PieceType};
 use crate::board::Board;
 use crate::error::StrategoError::{self, InitGameError};
-use crate::player::Player;
-
-
-pub fn ask_next_move(player: &dyn Player, board: &StrategoBoard) -> (Coordinate, Coordinate) {
-    player.ask_next_move(board.to_owned())
-}
+use rand;
+use rand::seq::SliceRandom;
+use std::collections::HashSet;
 
 pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     let flatten_state: Vec<_> = cases.iter().flatten().collect();
-    
+
     let blues: Vec<_> = flatten_state
         .iter()
         .filter(|&c| c.get_content().get_color() == &Color::Blue)
@@ -64,6 +61,109 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     None
 }
 
+pub fn create_stratego_board_with_same_pieces() -> StrategoBoard {
+    let board = create_empty_stratego_board();
+    let mut cases = board.state().clone();
+
+    let mut pieces = piece_utils::list_pieces();
+    pieces.shuffle(&mut rand::thread_rng());
+    let mut others_pieces = Vec::with_capacity(pieces.len());
+
+    let max = 4;
+    for (i, row) in cases.iter_mut().enumerate().take(max) {
+        for (j, case) in row.iter_mut().enumerate() {
+            let piece = pieces.pop().unwrap();
+            *case = case::create_full_case(
+                Coordinate::new(i as i16, j as i16),
+                Piece::new(piece.clone(), Color::Blue),
+            );
+            others_pieces.push(piece);
+        }
+    }
+
+    let max = 10;
+    for (i, row) in cases.iter_mut().enumerate().take(max).skip(6) {
+        for (j, case) in row.iter_mut().enumerate() {
+            let piece = others_pieces.pop();
+            *case = case::create_full_case(
+                Coordinate::new(i as i16, j as i16),
+                Piece::new(piece.unwrap(), Color::Red),
+            );
+        }
+    }
+
+    verify_board_integrity(StrategoBoard::new(cases))
+        .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e))
+}
+
+pub fn create_stratego_board() -> StrategoBoard {
+    let board = create_empty_stratego_board();
+
+    let mut cases = board.state().clone();
+
+    let mut pieces = piece_utils::list_of_all_pieces(Color::Blue);
+    pieces.shuffle(&mut rand::thread_rng());
+
+    let max = 4;
+    for (i, row) in cases.iter_mut().enumerate().take(max) {
+        for (j, case) in row.iter_mut().enumerate() {
+            let piece = pieces.pop();
+            *case = case::create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+        }
+    }
+
+    let mut pieces = piece_utils::list_of_all_pieces(Color::Red);
+    pieces.shuffle(&mut rand::thread_rng());
+    let max = 10;
+    for (i, row) in cases.iter_mut().enumerate().take(max).skip(6) {
+        for (j, case) in row.iter_mut().enumerate() {
+            let piece = pieces.pop();
+            *case = case::create_full_case(Coordinate::new(i as i16, j as i16), piece.unwrap());
+        }
+    }
+
+    verify_board_integrity(StrategoBoard::new(cases))
+        .unwrap_or_else(|e| panic!("failed to check engine integrity: {:?}", e))
+}
+
+pub fn create_empty_stratego_board() -> StrategoBoard {
+    let size = 10;
+    let mut board: Vec<Vec<Case>> = Vec::with_capacity(size);
+    for i in 0..size {
+        board.push(Vec::with_capacity(size));
+        for j in 0..size {
+            board[i].push(case::create_empty_case(Coordinate::new(i as i16, j as i16)));
+        }
+    }
+    let mut board = StrategoBoard::new(board);
+
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 2)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 3)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 2)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 3)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 6)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(4, 7)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 6)))
+        .unwrap();
+    board
+        .place(case::create_unreachable_case(Coordinate::new(5, 7)))
+        .unwrap();
+
+    board
+}
 
 pub fn verify_board_integrity(board: impl Board) -> Result<StrategoBoard, StrategoError> {
     let state = board.state();
@@ -117,7 +217,7 @@ fn check_player_has_correct_pieces(cases: &[Vec<Case>]) -> bool {
         })
         .collect();
 
-    let all_pieces = list_all_pieces();
+    let all_pieces = piece_utils::list_all_pieces();
     for (key, value) in pieces.iter() {
         if all_pieces.get(key) != Some(value) {
             return false;
@@ -165,12 +265,8 @@ fn check_board_size(cases: &[Vec<Case>]) -> bool {
     if 10 != cases.len() {
         false
     } else {
-        cases.iter().find(|row| !check_row_size(row)).is_none()
+        cases.iter().find(|row| !10 == row.len()).is_none()
     }
-}
-
-fn check_row_size(row: &[Case]) -> bool {
-    10 == row.len()
 }
 
 fn check_empty_lakes(board: &impl Board) -> bool {

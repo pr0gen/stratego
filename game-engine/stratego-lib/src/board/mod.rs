@@ -1,8 +1,8 @@
 use std::fmt::Debug;
 
-use self::case::{Case, Coordinate};
-use self::piece::Color;
-use super::error::StrategoError;
+use crate::board::case::{Case, Coordinate};
+use crate::board::piece::Color;
+use crate::error::StrategoError;
 
 pub mod board_utils;
 pub mod case;
