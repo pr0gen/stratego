@@ -34,11 +34,26 @@ it will ask your AI if everything is correctly set up his next move.
 [This file](https://github.com/pr0gen/stratego/tree/develop/game-engine/stratego-lib/src/py_bindings/mod.rs) controls Python using Rust code, to move pieces, ask for board state or available moves.
 
 ### Run simulations
- Run 
-``./simulate_ia.sh`` to simulate game between two chosen AI,
+
+#### Run 
+
+`python3 analyzes.py` to simulate game between two chosen AI,
 you can also choose the number of thread to run this simulation
 
 - filename must be a CSV
+
+#### AI analyzes  
+
+You can use `./analyzes` to automatically compare two ai.
+
+It takes 5 parameters: 
+  - file_name : output file with the winner of each game
+  - number_of_parties : how many parties to execute (please make sure that it
+    is dividable by the number_of_thread)
+  - first_ai_name : It is give as a player for the game
+  - second_ai_name 
+
+`./analyzes data-r-r-1.csv 8 random random`
 
 ## How to play 
 
@@ -62,6 +77,7 @@ The object `StrategoBoardWrapper` is available to be used in Python.
 
 ```python
     import stratego_engine as se
+    from ai_python.src.utils import basic_material_values
 
     board = se.StrategoBoardWrapper(cases) #constructor
 
@@ -74,12 +90,15 @@ The object `StrategoBoardWrapper` is available to be used in Python.
 
     board.get_available_moves()
     board.get_available_moves_by_color('Red')
+
     # maybe parsed in python with parse_moves() in ai.py file 
-    board.rust_basic_evaluation() # return color of the winner, if one there is *Yoda*
-
-    board.place("Full", (1, "A"), 1, "Red") # place a piece at coordinate
-
     board.basic_evaluation() # return color of the winner, if one there is *Yoda*
+    board.material_evaluation(basic_material_values()) # return 
+
+    clone = board.clone_board() # Clone a board
+
+    # result should be parsed with methods in ai_python.src.utils sort_evals()
+    sim = board.simulate_games_material(basic_material_values(), range(0, 100), 30, 'Red', 4)
 
 ```
 
