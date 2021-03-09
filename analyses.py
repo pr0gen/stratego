@@ -8,10 +8,9 @@ import os
 filename = "data.csv"
 first_ai = "monte_carlo" 
 secondai = "random" 
-numberOfThread = "5"
 numberOfParties = "10"
 
-my_cmd = './analyzes ' + filename + " " + numberOfThread + " " + numberOfParties + " " + first_ai + " " + secondai
+my_cmd = './analyzes ' + filename + " " + numberOfParties + " " + first_ai + " " + secondai
 
 os.system(my_cmd)
 

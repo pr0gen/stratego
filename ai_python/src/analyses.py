@@ -2,12 +2,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
+
 def run_game_series(filename) :
     csv = pd.read_csv(filename)
     list = []
     for row in csv.iterrows():
         list.append([row[1][0],row[1][1],row[1][2]])
     return list;
+
 
 def plot_victories(filename, save_images=False) :
     wins = run_game_series(filename)
@@ -41,7 +43,7 @@ def plot_victories(filename, save_images=False) :
 
     width = 0.5
 
-    fig, axs = plt.subplots(2, 1, constrained_layout=True)
+    fig, axs = plt.subplots(3, 1, constrained_layout=True)
     axs[0].plot(x_scores_red,y_scores_red_Redwins,width,color='r', label="joueur rouge")
     axs[0].plot(x_scores_red,y_scores_blue_Redwins,width,color='b', label="joueur bleu")
     axs[0].set_title('Scores when Red wins')
@@ -56,14 +58,12 @@ def plot_victories(filename, save_images=False) :
     axs[1].set_title('Scores when Blue wins')
     axs[1].set_ylabel('Score')
 
+    axs[2].bar(x_wins,y_wins,width,color='g')
     plt.show()
 
-    filenamepng_scores = str(filename)[:-4] + "_scores.png"
-
-    plt.bar(x_wins,y_wins,width,color='g')
-    plt.show()
-    filenamepng_wins = str(filename)[:-4] + "_wins.png"
     if save_images:
+        filenamepng_scores = str(filename)[:-4] + "_scores.png"
+        filenamepng_wins = str(filename)[:-4] + "_wins.png"
         plt.savefig(filenamepng_scores)
         plt.savefig(filenamepng_wins)
 
