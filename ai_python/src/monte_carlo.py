@@ -35,7 +35,7 @@ class MonteCarloAI(StrategoAI):
         if best_move == None or best_move == False:
             best_move = choose_randomly(board, self.color)
         m = move_ready(best_move)
-        print('Move:', m, '- Score:', best_scores[0][1])
+        print('Color', self.color, 'Move:', m, '- Score:', best_scores[0][1])
         return m
 
     def __get_material_range(self) -> List[int]:
