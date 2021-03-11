@@ -20,7 +20,7 @@ pub fn spawn_thread_for_stratego(
         .name(format!("ANALYZE - {}", thread_number))
         .spawn(move || {
             let mut engine = StrategoEngine::new(
-                engine_utils::create_stratego_board(),
+                engine_utils::create_stratego_board_with_same_pieces(),
                 (
                     Box::new(AIPlayer::new(Color::Red, first_ai_name)),
                     Box::new(AIPlayer::new(Color::Blue, second_ai_name)),
@@ -42,6 +42,7 @@ pub fn spawn_thread_for_stratego(
                 (PieceType::Flag, 1),
             ];
 
+            let mut profondeur = 0;
             loop {
                 println!("[Thread-{}]", thread_number);
                 let board = engine.status();
@@ -50,7 +51,7 @@ pub fn spawn_thread_for_stratego(
                         println!("Red wins");
                         let (red, blue) =
                             evaluation_function::material_evaluation(board, &material_values);
-                        let to_write = format!("Red,{},{}", red.1, blue.1);
+                        let to_write = format!("Red,{},{},{}", red.1, blue.1, profondeur);
                         let file_name = file_name.lock().unwrap();
                         writter::write_into_file(file_name.as_str(), to_write.as_str());
                         break;
@@ -59,7 +60,7 @@ pub fn spawn_thread_for_stratego(
                         println!("Blue wins");
                         let (red, blue) =
                             evaluation_function::material_evaluation(board, &material_values);
-                        let to_write = format!("Blue,{},{}", red.1, blue.1);
+                        let to_write = format!("Blue,{},{},{}", red.1, blue.1, profondeur);
                         let file_name = file_name.lock().unwrap();
                         writter::write_into_file(file_name.as_str(), to_write.as_str());
                         break;
@@ -67,6 +68,8 @@ pub fn spawn_thread_for_stratego(
                     _ => {
                         if let Err(e) = engine.moving() {
                             panic!("{:#?}", e);
+                        } else {
+                            profondeur += 1;
                         }
                     }
                 }
