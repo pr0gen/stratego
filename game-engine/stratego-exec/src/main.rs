@@ -9,9 +9,10 @@ fn main() {
     let mut engine = StrategoEngine::new(
         engine_utils::create_stratego_board_with_same_pieces(),
         (
-            Box::new(AIPlayer::new(Color::Red, String::from("monte_carlo"))),
+            Box::new(AIPlayer::new(Color::Red, String::from("monte_carlo_v2"))),
             //Box::new(HumanPlayer::new(Color::Blue, String::from("Tigran"))),
             Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
+//             Box::new(AIPlayer::new(Color::Blue, String::from("monte_carloV2"))),
         ),
     );
 

@@ -5,10 +5,10 @@ import numpy as np
 import sys
 import os
 
-filename = "data.csv"
-first_ai = "monte_carlo" 
-secondai = "random" 
-numberOfParties = "10"
+filename = "data2.csv"
+first_ai = "random"
+secondai = "monte_carlo"
+numberOfParties = "50"
 
 my_cmd = './analyzes ' + filename + " " + numberOfParties + " " + first_ai + " " + secondai
 
