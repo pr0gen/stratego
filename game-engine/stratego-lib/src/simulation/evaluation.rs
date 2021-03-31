@@ -4,13 +4,12 @@ use crate::board::Board;
 use crate::engine_utils;
 use crate::py_bindings::evaluation_function::{self, Material};
 use serde::{Deserialize, Serialize};
-use std::cmp::Ordering;
 
 pub enum EvaluationFunction {
     Material(Vec<(PyPieceType, i16)>, Vec<i32>, Color),
 }
 
-#[derive(Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum EvaluationFunctionResponse {
     Material(Material),
 }
@@ -43,27 +42,6 @@ impl EvaluationFunction {
                     (false, eval)
                 }
             }
-        }
-    }
-}
-
-impl Ord for EvaluationFunctionResponse {
-    fn cmp(&self, other: &Self) -> Ordering {
-        match (self, other) {
-            (
-                EvaluationFunctionResponse::Material((red, _)),
-                EvaluationFunctionResponse::Material((red_other, _)),) => red.1.cmp(&red_other.1),
-        }
-    }
-}
-
-impl PartialOrd for EvaluationFunctionResponse {
-    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        match (self, other) {
-            (
-                EvaluationFunctionResponse::Material((red, _)),
-                EvaluationFunctionResponse::Material((red_other, _)),
-            ) => Some(red.1.cmp(&red_other.1)),
         }
     }
 }

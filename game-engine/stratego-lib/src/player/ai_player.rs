@@ -21,7 +21,8 @@ impl AIPlayer {
 
 impl<'p> Player for AIPlayer {
     fn ask_next_move(&self, board: StrategoBoard) -> (Coordinate, Coordinate) {
-        ask_ai_next_move(self.name.as_str(), board, &self.color).unwrap_or_else(|e| panic!("{}", e.message()))
+        ask_ai_next_move(self.name.as_str(), board, &self.color)
+            .unwrap_or_else(|e| panic!("{}", e.message()))
     }
 
     fn get_color(&self) -> &Color {
@@ -36,7 +37,7 @@ impl<'p> Player for AIPlayer {
 fn ask_ai_next_move(
     name: &str,
     board: StrategoBoard,
-    color: &Color
+    color: &Color,
 ) -> Result<(Coordinate, Coordinate), StrategoError> {
     let gil_holder = utils::get_gild_holder();
     match gil_holder {

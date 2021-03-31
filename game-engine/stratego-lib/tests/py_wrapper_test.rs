@@ -1,20 +1,17 @@
 #[cfg(test)]
 mod py_wrapper_tests {
-    use pyo3::PyResult;
     use pythonize::*;
     use stratego_lib::board::case::{self, Coordinate};
     use stratego_lib::board::piece::{Color, Piece, PieceType, PyPieceType};
     use stratego_lib::board::Board;
     use stratego_lib::engine_utils;
-    use stratego_lib::py_bindings::board_wrapper;
-    use stratego_lib::py_bindings::board_wrapper::StrategoBoardWrapper;
+    use stratego_lib::py_bindings::board_wrapper::{self, StrategoBoardWrapper};
     use stratego_lib::simulation;
-    use stratego_lib::simulation::evaluation::EvaluationFunction;
-    use stratego_lib::simulation::evaluation::EvaluationFunctionResponse;
+    use stratego_lib::simulation::evaluation::{EvaluationFunction, EvaluationFunctionResponse};
     use stratego_lib::utils;
 
     #[test]
-    fn should_simulate_game_between_two_ais_red() -> PyResult<()> {
+    fn should_simulate_game_between_two_ais_red() -> pyo3::PyResult<()> {
         let board = engine_utils::create_empty_stratego_board();
         let mut pyboard = StrategoBoardWrapper::new(board);
 
@@ -218,11 +215,12 @@ mod py_wrapper_tests {
             (3, 3),
             (2, 2),
             (1, 1),
-            (1, 1),
+            (-1, 0),
         ];
 
         let mut board = engine_utils::create_empty_stratego_board();
         //Reds
+        // 5 + 3 + 2 + 0 + 4 = 14
         board
             .place(case::create_full_case(
                 Coordinate::new(9, 0),
@@ -255,6 +253,7 @@ mod py_wrapper_tests {
             .unwrap();
 
         //Blues
+        // 6 + 7 + 0 = 13
         board
             .place(case::create_full_case(
                 Coordinate::new(0, 0),
