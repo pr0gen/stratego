@@ -15,6 +15,5 @@ def test_monte_carlo():
     print(board.display())
     ai = MonteCarloAI('Blue', 4, 2) 
     move = ai.ask_next_move(board)
-    assert 1 == 0
     
 
