@@ -38,7 +38,6 @@ class MonteCarloAI(StrategoAI):
         best_scores = []
         for score in scores:
             best_scores.append(get_best_score_by_move(score, self.color))
-        print(best_scores)
 
         best_scores.sort(reverse=True, key=sort_best_scores)
         # print(best_scores)

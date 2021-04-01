@@ -48,6 +48,7 @@ pub fn spawn_thread_for_stratego(
                 let board = engine.status();
                 match engine_utils::game_is_over(board.state()) {
                     Some(Color::Red) => {
+                println!("==========\n{}", board.display());
                         println!("Red wins");
                         let (red, blue) =
                             evaluation_function::material_evaluation(board, &material_values);
@@ -57,6 +58,7 @@ pub fn spawn_thread_for_stratego(
                         break;
                     }
                     Some(Color::Blue) => {
+                println!("==========\n{}", board.display());
                         println!("Blue wins");
                         let (red, blue) =
                             evaluation_function::material_evaluation(board, &material_values);
@@ -66,9 +68,11 @@ pub fn spawn_thread_for_stratego(
                         break;
                     }
                     _ => {
+                        println!("=== NEW TURN {} ===  \n{}",profondeur,  board.display());
                         if let Err(e) = engine.moving() {
                             panic!("{:#?}", e);
                         } else {
+                        println!("=== END TURN {} === ", profondeur);
                             profondeur += 1;
                         }
                     }

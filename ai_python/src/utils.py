@@ -20,7 +20,6 @@ class TestStrategoAI(StrategoAI):
 def sort_evals(evals, color):
     res = []
     for eval in evals:
-        print(eval)
         if color == "Red":
             res.append(eval['Material'][0][1])
         else:
