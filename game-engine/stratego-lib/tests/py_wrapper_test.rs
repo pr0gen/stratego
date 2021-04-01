@@ -171,20 +171,7 @@ mod py_wrapper_tests {
 
     #[test]
     fn should_create_board_from_for_python() {
-        let py_cases = vec![
-            vec![(
-                String::from("Full"),
-                1,
-                (0, String::from("A")),
-                String::from("Red"),
-            )],
-            vec![(
-                String::from("Full"),
-                4,
-                (3, String::from("A")),
-                String::from("Blue"),
-            )],
-        ];
+        let py_cases = vec![vec![String::from("01R")], vec![String::from("04B")]];
 
         let expected = vec![
             vec![case::create_full_case(
@@ -192,7 +179,7 @@ mod py_wrapper_tests {
                 Piece::new(PieceType::Spy, Color::Red),
             )],
             vec![case::create_full_case(
-                Coordinate::new(3, 0),
+                Coordinate::new(1, 0),
                 Piece::new(PieceType::Sergeant, Color::Blue),
             )],
         ];
