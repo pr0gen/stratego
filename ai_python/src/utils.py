@@ -38,18 +38,19 @@ def sort_best_scores(score):
 
 
 def basic_material_values() -> List[Tuple[int, int]]: 
-    return [ (-2, 0),
-      (10, 10),
-      (9, 9),
-      (8, 8),
-      (7, 7),
-      (6, 6),
-      (5, 5),
-      (4, 4),
-      (3, 3),
-      (2, 2),
-      (1, 1),
-      (-1, 1)
+    return [
+        (-2, 0),
+        (10, 10),
+        (9, 9),
+        (8, 8),
+        (7, 7),
+        (6, 6),
+        (5, 5),
+        (4, 4),
+        (3, 3),
+        (2, 2),
+        (1, 1),
+        (-1, 1)
     ]
 
 def parse_board(board: List[List[str]]):

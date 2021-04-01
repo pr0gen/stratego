@@ -19,7 +19,7 @@ pub fn simulate_multi_thread(
     first_ai: &'static (dyn Fn(&StrategoBoard, &Color) -> Option<Move> + Sync),
     second_ai: &'static (dyn Fn(&StrategoBoard, &Color) -> Option<Move> + Sync),
     evaluation_function: EvaluationFunction,
-    number_of_threads: i32,
+    number_of_simulations: i32,
     iteration_max: i32,
 ) -> Vec<EvaluationFunctionResponse> {
     let board = pyboard.get_board().clone();
@@ -28,7 +28,7 @@ pub fn simulate_multi_thread(
     let locked_board = Arc::new(Mutex::new(pyboard));
     let locked_eval = Arc::new(Mutex::new(evaluation_function));
 
-    for i in 0..number_of_threads {
+    for i in 0..number_of_simulations {
         let locked_board = locked_board.clone();
         let locked_eval = locked_eval.clone();
         threads.push(

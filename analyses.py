@@ -6,12 +6,12 @@ import sys
 import os
 
 filename = "data.csv"
-first_ai = "monte_carlo" 
-secondai = "random" 
+first_ai = "random" 
+secondai = "monte_carlo" 
 numberOfParties = "10"
 
 my_cmd = './analyzes ' + filename + " " + numberOfParties + " " + first_ai + " " + secondai
 
 os.system(my_cmd)
 
-plot_victories(filename)
+plot_victories(filename, True)
