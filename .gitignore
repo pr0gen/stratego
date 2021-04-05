@@ -17,3 +17,7 @@ ai_python/src/__pycache__
 __pycache__
 
 client/.eslintcache
+
+ai_python/src/board_generator/venv/bin/
+
+ai_python/src/board_generator/venv/
