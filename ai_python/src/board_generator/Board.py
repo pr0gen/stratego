@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 from PIece import Piece
 from utils import piece_to_text, piece_to_text_for_file
@@ -10,7 +11,7 @@ class Board:
     def __init__(self, board=[]):
 
         if not board:
-            self.board = []
+            self.board = np.array([])
             self.initBoard()
             self.full_shuffle()
 

@@ -98,7 +98,7 @@ def get_all_neighboor_index_from_position(p):
     if p.x < 9:
         neighboor.append(get_index_by_position(Position(p.x + 1, p.y)))
 
-    if p.y < 9:
+    if p.y < 3:
         neighboor.append(get_index_by_position(Position(p.x, p.y + 1)))
 
     return neighboor
