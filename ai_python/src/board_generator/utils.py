@@ -1,5 +1,6 @@
 from PIece import Piece
 from Position import Position
+from collections import defaultdict
 
 
 def piece_to_text(piece):
@@ -86,19 +87,29 @@ def get_index_by_position(position):
     return position.y * 10 + position.x
 
 
-def get_all_neighboor_index_from_position(p):
-    neighboor = []
+def nested_dict(n, type):
+    if n == 1:
+        return defaultdict(type)
+    else:
+        return defaultdict(lambda: nested_dict(n - 1, type))
 
-    if p.x > 0:
-        neighboor.append(get_index_by_position(Position(p.x - 1, p.y)))
 
-    if p.y > 0:
-        neighboor.append(get_index_by_position(Position(p.x, p.y - 1)))
+def get_index_by_position(position):
+        return position.y * 10 + position.x
 
-    if p.x < 9:
-        neighboor.append(get_index_by_position(Position(p.x + 1, p.y)))
+def get_all_neighboor_index_from_position( p):
+        neighboor = []
 
-    if p.y < 3:
-        neighboor.append(get_index_by_position(Position(p.x, p.y + 1)))
+        if p.x > 0:
+            neighboor.append(p.y * 10 + (p.x - 1))
 
-    return neighboor
+        if p.y > 0:
+            neighboor.append((p.y - 1) * 10 + p.x)
+
+        if p.x < 9:
+            neighboor.append(p.y * 10 + (p.x + 1))
+
+        if p.y < 3:
+            neighboor.append((p.y + 1) * 10 + p.x)
+
+        return neighboor

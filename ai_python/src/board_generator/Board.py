@@ -8,7 +8,7 @@ from utils import piece_to_text, piece_to_text_for_file
 class Board:
     board = []
 
-    def __init__(self, board=[]):
+    def __init__(self, board=np.array([])):
 
         if not board:
             self.board = np.array([])
@@ -20,7 +20,7 @@ class Board:
 
     def addPieces(self, piece, number):
         while number > 0:
-            self.board.append(piece)
+            self.board = np.append(self.board, piece)
             number -= 1
 
     def initBoard(self):
@@ -38,7 +38,7 @@ class Board:
         self.addPieces(Piece.Bomb, 6)
 
     def full_shuffle(self):
-        random.shuffle(self.board)
+        np.random.shuffle(self.board)
 
     def show(self):
         
