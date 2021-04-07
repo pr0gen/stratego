@@ -6,6 +6,8 @@ client/node_modules/
 
 server/dist/
 
+ai_python/src/__init__.pyc
+ai_python/src/board_generator/*.pyc
 
 log
 *.csv
