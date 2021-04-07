@@ -1,8 +1,8 @@
 import random
 import numpy as np
 
-from PIece import Piece
-from utils import piece_to_text, piece_to_text_for_file
+from ai_python.src.board_generator.piece import Piece
+from ai_python.src.board_generator.utils import piece_to_text, piece_to_text_for_file
 
 
 class Board:

@@ -1,5 +1,5 @@
-from PIece import Piece
-from Position import Position
+from ai_python.src.board_generator.piece import Piece
+from ai_python.src.board_generator.position import Position
 from collections import defaultdict
 
 

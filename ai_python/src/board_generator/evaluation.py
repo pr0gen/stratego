@@ -1,5 +1,5 @@
-from PIece import Piece
-from ai_python.src.board_generator.Position import Position
+from ai_python.src.board_generator.piece import Piece
+from ai_python.src.board_generator.position import Position
 from ai_python.src.board_generator.utils import get_position_by_index, nested_dict, \
     get_all_neighboor_index_from_position
 

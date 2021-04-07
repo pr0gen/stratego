@@ -2,12 +2,11 @@ import math
 import random
 import time
 
-from Board import Board
-from Evaluation import Eval
 from multiprocessing import Process, Queue, cpu_count
 
-from ai_python.src.board_generator.Position import Position
-
+from ai_python.src.board_generator.position import Position
+from ai_python.src.board_generator.board import Board
+from ai_python.src.board_generator.evaluation import Eval
 
 def mainV1(number_evaluation, queue):
 
