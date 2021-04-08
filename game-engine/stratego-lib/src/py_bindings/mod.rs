@@ -77,28 +77,28 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     let syspath: &PyList = py
         .import("sys")
         .unwrap_or_else(|e| {
-            panic!(StrategoError::AILoadingError(format!(
+            std::panic::panic_any(StrategoError::AILoadingError(format!(
                 "Failed to find sys python module, {}",
                 e
             )))
         })
         .get("path")
         .unwrap_or_else(|e| {
-            panic!(StrategoError::AILoadingError(format!(
+            std::panic::panic_any(StrategoError::AILoadingError(format!(
                 "Failed to find path function in sys python module, {}",
                 e
             )))
         })
         .try_into()
         .unwrap_or_else(|e| {
-            panic!(StrategoError::AILoadingError(format!(
+            std::panic::panic_any(StrategoError::AILoadingError(format!(
                 "Failed to get result from path function in sys python module, {}",
                 e
             )))
         });
 
     let cur = current_dir().unwrap_or_else(|e| {
-        panic!(StrategoError::AILoadingError(format!(
+        std::panic::panic_any(StrategoError::AILoadingError(format!(
             "Failed to find pwd, {}",
             e
         )))
@@ -107,7 +107,7 @@ pub fn load_stratego_ai_module(py: &Python) -> Result<(), StrategoError> {
     let pwd = cur.as_path().as_os_str().to_str().unwrap();
     match syspath.insert(0, pwd.to_string()) {
         Ok(_) => Ok(()),
-        Err(e) => panic!(StrategoError::AILoadingError(format!(
+        Err(e) => std::panic::panic_any(StrategoError::AILoadingError(format!(
             "Failed to load ai for stratego, {}",
             e
         ))),
