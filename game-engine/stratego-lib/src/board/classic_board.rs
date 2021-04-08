@@ -10,11 +10,14 @@ use crate::error::StrategoError;
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
+    last_coup: (Case, Case),
 }
 
 impl StrategoBoard {
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
-        StrategoBoard { cases }
+        let from = case::create_empty_case(Coordinate::new(-1, -1));
+        let to = case::create_empty_case(Coordinate::new(-1, -1));
+        StrategoBoard { cases, last_coup: (from, to) }
     }
 
     fn move_piece_when_empty(
