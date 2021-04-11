@@ -50,8 +50,19 @@ def test_last_coup():
     board.moving((1, "A"), (2, "A")) # move a case
     
     last_coup = board.get_last_coup()
-    assert 'Empty' == last_coup[0]['state']
-
-    assert 'Full' == last_coup[1]['state']
+    _from = last_coup[0]
+    assert 'Empty' == _from['state']
+    assert {'x': 1, 'y': 0} == _from['coordinate']
+    assert {'m': (0, 0), 'rank': 'Null', 'color': 'None'} == _from['content']
+    
+    to = last_coup[1]
+    assert 'Full' == to['state']
+    assert {'x': 2, 'y': 0} == to['coordinate']
+    assert {'m': (0, 1), 'rank': 'Spy', 'color': 'Red'} == to['content']
     
 
+def test_first_last_coup():
+    board = se.rust_create_empty_stratego_board()
+    last_coup = board.get_last_coup()
+    assert None == last_coup
+    
