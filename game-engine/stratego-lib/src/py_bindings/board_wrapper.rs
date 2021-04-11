@@ -103,6 +103,13 @@ impl StrategoBoardWrapper {
         }
     }
 
+    pub fn get_last_coup(&self) -> PyResult<Py<PyAny>> {
+        let gil_holder = utils::get_gild_holder()
+            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), self.board.get_last_coup())?)
+    }
+
     pub fn display(&self) -> PyResult<String> {
         Ok(self.board.display())
     }

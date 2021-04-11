@@ -1,23 +1,24 @@
-use pyo3::prelude::pyclass;
-use serde::{Deserialize, Serialize};
 use crate::board::board_utils;
 use crate::board::case::{self, Case, Coordinate, State};
 use crate::board::piece::Color;
 use crate::board::Board;
 use crate::error::StrategoError;
+use pyo3::prelude::pyclass;
+use serde::{Deserialize, Serialize};
 
 #[pyclass]
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
-    last_coup: (Case, Case),
+    last_coup: Option<(Case, Case)>,
 }
 
 impl StrategoBoard {
     pub fn new(cases: Vec<Vec<Case>>) -> Self {
-        let from = case::create_empty_case(Coordinate::new(-1, -1));
-        let to = case::create_empty_case(Coordinate::new(-1, -1));
-        StrategoBoard { cases, last_coup: (from, to) }
+        StrategoBoard {
+            cases,
+            last_coup: None,
+        }
     }
 
     fn move_piece_when_empty(
@@ -29,9 +30,10 @@ impl StrategoBoard {
         let new_case = case::create_full_case(to, piece.to_owned());
         self.place(new_case.clone())?;
         let case_coord = case.get_coordinate();
-        self.place(case::create_empty_case(case_coord.to_owned()))?;
+        let from = case::create_empty_case(case_coord.to_owned());
+        self.place(from.clone())?;
 
-        Ok(vec![new_case])
+        Ok(vec![from, new_case])
     }
 
     fn move_piece_when_full(
@@ -55,6 +57,22 @@ impl StrategoBoard {
             Err(e) => Err(e),
         }
     }
+
+    fn register_last_move(&mut self, move_result: &[Case]) -> Result<(), StrategoError> {
+        let length = move_result.len();
+        self.last_coup = if 2 == length {
+            Some((move_result[0].clone(), move_result[1].clone()))
+        } else {
+            return Err(StrategoError::AIExecuteError(String::from(
+                "There is two cases in a move, something really bad happened",
+            )));
+        };
+        Ok(())
+    }
+
+    pub fn get_last_coup(&self) -> &Option<(Case, Case)> {
+        &self.last_coup
+    }
 }
 
 impl Board for StrategoBoard {
@@ -70,7 +88,7 @@ impl Board for StrategoBoard {
 
         let aim_case = self.get_at(&to).to_owned();
 
-        match aim_case.get_state() {
+        let move_action = match aim_case.get_state() {
             State::Empty => self.move_piece_when_empty(to, case),
             State::Full => self.move_piece_when_full(case, &aim_case),
             State::Unreachable => Err(StrategoError::MoveError(
@@ -78,7 +96,11 @@ impl Board for StrategoBoard {
                 case,
                 to,
             )),
-        }
+        }?;
+
+        self.register_last_move(&move_action)?;
+
+        Ok(move_action)
     }
 
     fn state(&self) -> &Vec<Vec<Case>> {
@@ -142,12 +164,12 @@ fn parse_row_by_color(row: &[Case], color: &Color) -> String {
 
 #[cfg(test)]
 mod test_implementation {
-    use crate::board::case::{self, State, Case, Coordinate};
-    use crate::board::piece::{Piece, Color, PieceType};
+    use crate::board::case::{self, Case, Coordinate, State};
     use crate::board::classic_board::StrategoBoard;
+    use crate::board::piece::{Color, Piece, PieceType};
     use crate::board::Board;
 
-    #[test] 
+    #[test]
     fn should_get_cases_in_board_straight() {
         let board = StrategoBoard::new(create_3_x_3_stratego_board());
         let at = board.get_at(&Coordinate::new(0, 0));

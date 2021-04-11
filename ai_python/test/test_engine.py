@@ -42,3 +42,16 @@ def test_basic_evaluation():
     res = board.basic_evaluation()
 
     assert res == "None"
+
+
+def test_last_coup():
+    board = se.rust_create_empty_stratego_board()
+    board.place("Full", (1, "A"), 1, "Red")
+    board.moving((1, "A"), (2, "A")) # move a case
+    
+    last_coup = board.get_last_coup()
+    assert 'Empty' == last_coup[0]['state']
+
+    assert 'Full' == last_coup[1]['state']
+    
+
