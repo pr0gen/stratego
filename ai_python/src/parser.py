@@ -44,7 +44,6 @@ def middle_row() -> List[str]:
         EMPTY_CASE, EMPTY_CASE
     ]
 
-
 def parse_board_to_list(board: str, color: str) -> List[List[str]]:
     board_to_list: List[List[str]] = []
     cases: List[str] = board.split('|')

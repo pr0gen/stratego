@@ -6,8 +6,12 @@ use stratego_lib::player::ai_player::AIPlayer;
 use stratego_lib::player::HumanPlayer;
 
 fn main() {
+
+    let board = engine_utils::create_stratego_board_from_file("./boards.txt")
+        .unwrap();
     let mut engine = StrategoEngine::new(
-        engine_utils::create_stratego_board_with_same_pieces(),
+        // engine_utils::create_stratego_board_with_same_pieces(),
+        board,
         (
             Box::new(AIPlayer::new(Color::Red, String::from("random"))),
             //Box::new(HumanPlayer::new(Color::Blue, String::from("Tigran"))),

@@ -88,3 +88,25 @@ class Board:
             text += piece_to_text_for_file(piece) + '|'
 
         return text[:-1]
+
+    def to_string_for_rust():
+        dict = {
+            'bomb': '-2', 
+            'Mars': '10',
+            'Gene': '09',
+            'colo': '08',
+            'majo': '07', 
+            'capt': '06', 
+            'lieu': '05',
+            'serg': '04', 
+            'mine': '03',
+            'scou': '02', 
+            'spy': '01', 
+            'flag': '-1',
+        }
+        text = ""
+             
+        for piece in self.board:
+            text += dict.get(piece_to_text_for_file(piece)) + '|'
+
+        return text[:-1]

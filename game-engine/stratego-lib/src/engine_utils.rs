@@ -9,6 +9,9 @@ use crate::error::StrategoError::{self, InitGameError};
 use rand;
 use rand::seq::SliceRandom;
 use std::collections::HashSet;
+use std::fs;
+use crate::py_bindings::board_wrapper;
+use rand::prelude::*;
 
 pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     let flatten_state: Vec<_> = cases.iter().flatten().collect();
@@ -60,6 +63,45 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
 
     None
 }
+
+
+pub fn create_stratego_board_from_file(file_name: &str) -> Result<StrategoBoard, StrategoError> {
+    let content = read_file(file_name)?;
+    // TODO
+    let content: Vec<&str> = content.split('\n').collect();
+    let length = content.len();
+    let board_row = rand::thread_rng().gen_range(0, length);
+    let board = content[0]; 
+    let board: Vec<&str> = board.split('|').collect();
+    let mut cases: Vec<Vec<String>> = Vec::new();
+    let mut index = 0;
+    let mut parsed_row: Vec<String> = Vec::new(); 
+    for row in board {
+        if index == 9 {
+            cases.push(parsed_row);
+            parsed_row =  Vec::new();
+            index = 0;
+        } else {
+            parsed_row.push(String::from(row));
+            index += 1;
+        }
+        
+    }
+
+    Ok(StrategoBoard::new(board_wrapper::parse_python_cases(cases)))
+}
+
+fn read_file(file_name: &str) -> Result<String, StrategoError> {
+    match fs::read_to_string(file_name) {
+        Ok(content) => Ok(content),
+        Err(e) => Err(StrategoError::ParsingError(format!(
+            "Failed to read file {} to parse StrategoBoard. \n {}",
+            file_name,
+            e
+        ))),
+    }
+}
+
 
 pub fn create_stratego_board_with_same_pieces() -> StrategoBoard {
     let board = create_empty_stratego_board();
