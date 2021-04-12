@@ -19,8 +19,11 @@ pub fn spawn_thread_for_stratego(
     Ok(thread::Builder::new()
         .name(format!("ANALYZE - {}", thread_number))
         .spawn(move || {
+
+            let board = engine_utils::create_stratego_board_from_file("./boards.txt", String::from("R")).unwrap();
             let mut engine = StrategoEngine::new(
-                engine_utils::create_stratego_board_with_same_pieces(),
+                board,
+                // engine_utils::create_stratego_board_with_same_pieces(),
                 (
                     Box::new(AIPlayer::new(Color::Red, first_ai_name)),
                     Box::new(AIPlayer::new(Color::Blue, second_ai_name)),
