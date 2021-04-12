@@ -5,13 +5,13 @@ import numpy as np
 import sys
 import os
 
-filename = "data2.csv"
-first_ai = "random"
-secondai = "monte_carlo"
-numberOfParties = "50"
+filename = "data.csv"
+first_ai = "random" 
+secondai = "random" 
+numberOfParties = "2"
 
 my_cmd = './analyzes ' + filename + " " + numberOfParties + " " + first_ai + " " + secondai
 
 os.system(my_cmd)
 
-plot_victories(filename)
+plot_victories(filename, True)

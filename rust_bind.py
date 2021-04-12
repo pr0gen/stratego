@@ -22,7 +22,7 @@ def ask_next_move_test2(board: se.StrategoBoardWrapper) -> Tuple[Tuple[int, str]
 
 
 def ask_next_move_monte_carlo(board: se.StrategoBoardWrapper, color: str) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-    monteCarlo = MonteCarloAI(color)
+    monteCarlo = MonteCarloAI(color, 20, 20)
     return monteCarlo.ask_next_move(board) 
 
 def ask_next_move_monte_carlo_v2(board: se.StrategoBoardWrapper, color: str) -> Tuple[Tuple[int, str], Tuple[int, str]]:

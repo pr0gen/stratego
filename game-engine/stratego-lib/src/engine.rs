@@ -35,7 +35,7 @@ impl StrategoEngine {
         StrategoEngine {
             board,
             players,
-            turn: Color::Red,
+            turn: Color::Blue,
         }
     }
 
@@ -90,6 +90,7 @@ impl Engine<StrategoBoard> for StrategoEngine {
     ) -> Result<Vec<Case>, StrategoError> {
         match self.board.moving(from, to) {
             Ok(cases) => {
+                println!("{:?} plays : {:?}, {:?}", self.turn, from, to);
                 self.flip_color();
                 Ok(cases)
             }

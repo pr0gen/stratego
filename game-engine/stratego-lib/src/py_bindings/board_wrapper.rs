@@ -12,22 +12,44 @@ use pyo3::prelude::*;
 use pythonize::pythonize;
 use serde::{Deserialize, Serialize};
 
+// ["09B", "04B", "-1B", "03B"],
+// ["NOP", "NOP", "NOP", "NOP"],
+// ["NOP", "XXX", "NOP", "NOP"],
+// ["01R", "02R", "-1R", "03R"]
 pub fn parse_python_cases(py_cases: Vec<Vec<PyCase>>) -> Vec<Vec<Case>> {
-    py_cases.iter().map(|row| parse_python_row(row)).collect()
+    let row_len = py_cases.len() - 1;
+    let mut parsed_cases: Vec<Vec<Case>> = Vec::with_capacity(row_len);
+    for x in 0..=row_len {
+        let col_len = py_cases[x].len() - 1;
+        let mut row_parsed = Vec::with_capacity(col_len);
+        for y in 0..=col_len {
+            let case = py_cases[x][y].clone();
+            row_parsed.push(parse_python_case(case, x as i16, y as i16));
+        }
+        parsed_cases.push(row_parsed);
+    }
+    parsed_cases
 }
 
-fn parse_python_row(py_cases: &[PyCase]) -> Vec<Case> {
-    py_cases
-        .iter()
-        .map(|(state, piece_type, coord, color): &PyCase| {
-            let piece_type: PyPieceType = *piece_type;
-            Case::new(
-                State::from(state.as_str()),
-                Coordinate::from(coord.clone()),
-                Piece::new(piece_type.into(), Color::from(color.as_str())),
-            )
-        })
-        .collect()
+pub fn parse_python_case(py_case: PyCase, x: i16, y: i16) -> Case {
+    match py_case.as_str() {
+        "NOP" => case::create_empty_case(Coordinate::new(x, y)),
+        "XXX" => case::create_unreachable_case(Coordinate::new(x, y)),
+        str_piece => {
+            let chars: Vec<char> = str_piece.chars().collect();
+            let piece_type: String = chars[0..2].iter().map(|c| c.to_string()).collect();
+            let piece_type = piece_type
+                .parse::<i8>()
+                .unwrap_or_else(|e| panic!("Failed to parse case {}.\n {}", str_piece, e));
+            let piece_type = PieceType::from(&piece_type);
+            let color = if 'B' == chars[2] {
+                Color::Blue
+            } else {
+                Color::Red
+            };
+            case::create_full_case(Coordinate::new(x, y), Piece::new(piece_type, color))
+        }
+    }
 }
 
 #[pyclass]
@@ -36,7 +58,7 @@ pub struct StrategoBoardWrapper {
     board: StrategoBoard,
 }
 
-pub type PyCase = (String, PyPieceType, PyCoord, PyColor);
+pub type PyCase = String;
 
 impl StrategoBoardWrapper {
     pub fn new(board: StrategoBoard) -> Self {
@@ -79,6 +101,13 @@ impl StrategoBoardWrapper {
                 e.message()
             ))),
         }
+    }
+
+    pub fn get_last_coup(&self) -> PyResult<Py<PyAny>> {
+        let gil_holder = utils::get_gild_holder()
+            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), self.board.get_last_coup())?)
     }
 
     pub fn display(&self) -> PyResult<String> {
@@ -172,6 +201,7 @@ impl StrategoBoardWrapper {
             &self.board,
             &translate_material_values_to_rust(material_value),
         );
+        eprintln!("{:?}", evaluation);
         Ok(pythonize(gil.python(), &evaluation)?)
     }
 
@@ -181,7 +211,7 @@ impl StrategoBoardWrapper {
         stopping_criteria: Vec<i32>,
         iteration_max: i32,
         color: PyColor,
-        number_of_threads: i32,
+        number_of_simulations: i32,
     ) -> PyResult<Py<PyAny>> {
         let gil_holder = utils::get_gild_holder()
             .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
@@ -192,7 +222,7 @@ impl StrategoBoardWrapper {
             &simulation::choose_randomly,
             &simulation::choose_randomly,
             eval,
-            number_of_threads,
+            number_of_simulations,
             iteration_max,
         );
         Ok(pythonize(gil.python(), &res)?)
