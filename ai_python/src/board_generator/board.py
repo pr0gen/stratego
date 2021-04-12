@@ -78,18 +78,8 @@ class Board:
         for i in range(number_random_move):
             self.random_move()
 
-
     
     def to_string(self):
-
-        text = ''
-
-        for piece in self.board:
-            text += piece_to_text_for_file(piece) + '|'
-
-        return text[:-1]
-
-    def to_string_for_rust():
         dict = {
             'bomb': '-2', 
             'Mars': '10',
@@ -110,3 +100,4 @@ class Board:
             text += dict.get(piece_to_text_for_file(piece)) + '|'
 
         return text[:-1]
+

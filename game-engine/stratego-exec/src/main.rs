@@ -7,7 +7,7 @@ use stratego_lib::player::HumanPlayer;
 
 fn main() {
 
-    let board = engine_utils::create_stratego_board_from_file("./boards.txt")
+    let board = engine_utils::create_stratego_board_from_file("./boards.txt", String::from("R"))
         .unwrap();
     let mut engine = StrategoEngine::new(
         // engine_utils::create_stratego_board_with_same_pieces(),

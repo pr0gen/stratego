@@ -6,12 +6,12 @@ use crate::board::piece::Piece;
 use crate::board::piece::{Color, PieceType};
 use crate::board::Board;
 use crate::error::StrategoError::{self, InitGameError};
+use crate::py_bindings::board_wrapper;
 use rand;
+use rand::prelude::*;
 use rand::seq::SliceRandom;
 use std::collections::HashSet;
 use std::fs;
-use crate::py_bindings::board_wrapper;
-use rand::prelude::*;
 
 pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     let flatten_state: Vec<_> = cases.iter().flatten().collect();
@@ -64,31 +64,65 @@ pub fn game_is_over(cases: &[Vec<Case>]) -> Option<Color> {
     None
 }
 
-
-pub fn create_stratego_board_from_file(file_name: &str) -> Result<StrategoBoard, StrategoError> {
+pub fn create_stratego_board_from_file(
+    file_name: &str,
+    color: String,
+) -> Result<StrategoBoard, StrategoError> {
     let content = read_file(file_name)?;
-    // TODO
     let content: Vec<&str> = content.split('\n').collect();
     let length = content.len();
     let board_row = rand::thread_rng().gen_range(0, length);
-    let board = content[0]; 
+    let board = content[board_row];
     let board: Vec<&str> = board.split('|').collect();
     let mut cases: Vec<Vec<String>> = Vec::new();
     let mut index = 0;
-    let mut parsed_row: Vec<String> = Vec::new(); 
-    for row in board {
+    let mut parsed_row: Vec<String> = Vec::new();
+    for case in board {
+        parsed_row.push(format!("{}{}", case, color));
         if index == 9 {
             cases.push(parsed_row);
-            parsed_row =  Vec::new();
+            parsed_row = Vec::new();
             index = 0;
         } else {
-            parsed_row.push(String::from(row));
             index += 1;
         }
-        
     }
 
-    Ok(StrategoBoard::new(board_wrapper::parse_python_cases(cases)))
+    // Add the two rows in the center
+    cases.push(get_middle_row());
+    cases.push(get_middle_row());
+
+    let mut pieces = piece_utils::list_pieces();
+    pieces.shuffle(&mut rand::thread_rng());
+
+
+    let color_opponent = if color == String::from("B") {
+        String::from("R")
+    } else {
+        String::from("B")
+    };
+
+    let mut index = 0;
+    let mut row: Vec<String> = Vec::new();
+    for piece in pieces {
+        let text = piece.for_python();
+        let text = if text > 0 && text < 10 { format!("0{}", text) } else { text.to_string()};
+        row.push(format!("{}{}", text , color_opponent));
+        if index == 9 {
+            cases.push(row);
+            row = Vec::new();
+            index = 0;
+        } else {
+            index += 1;
+        }
+    }
+    
+
+    println!("{:?}", cases);
+    let board = StrategoBoard::new(board_wrapper::parse_python_cases(cases));
+    println!("{}", board.display());
+
+    Ok(board)
 }
 
 fn read_file(file_name: &str) -> Result<String, StrategoError> {
@@ -96,12 +130,25 @@ fn read_file(file_name: &str) -> Result<String, StrategoError> {
         Ok(content) => Ok(content),
         Err(e) => Err(StrategoError::ParsingError(format!(
             "Failed to read file {} to parse StrategoBoard. \n {}",
-            file_name,
-            e
+            file_name, e
         ))),
     }
 }
 
+fn get_middle_row() -> Vec<String> {
+    vec![
+        String::from("NOP"),
+        String::from("NOP"),
+        String::from("XXX"),
+        String::from("XXX"),
+        String::from("NOP"),
+        String::from("NOP"),
+        String::from("XXX"),
+        String::from("XXX"),
+        String::from("NOP"),
+        String::from("NOP"),
+    ]
+}
 
 pub fn create_stratego_board_with_same_pieces() -> StrategoBoard {
     let board = create_empty_stratego_board();
