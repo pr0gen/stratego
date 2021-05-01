@@ -23,31 +23,33 @@ pub fn parse_python_cases(py_cases: Vec<Vec<PyCase>>) -> Vec<Vec<Case>> {
         let col_len = py_cases[x].len() - 1;
         let mut row_parsed = Vec::with_capacity(col_len);
         for y in 0..=col_len {
-            row_parsed.push(match py_cases[x][y].as_str() {
-                "NOP" => case::create_empty_case(Coordinate::new(x as i16, y as i16)),
-                "XXX" => case::create_unreachable_case(Coordinate::new(x as i16, y as i16)),
-                str_piece => {
-                    let chars: Vec<char> = str_piece.chars().collect();
-                    let piece_type: String = chars[0..2].iter().map(|c| c.to_string()).collect();
-                    let piece_type = piece_type
-                        .parse::<i8>()
-                        .unwrap_or_else(|e| panic!("Failed to parse case {}.\n {}", str_piece, e));
-                    let piece_type = PieceType::from(&piece_type);
-                    let color = if 'B' == chars[2] {
-                        Color::Blue
-                    } else {
-                        Color::Red
-                    };
-                    case::create_full_case(
-                        Coordinate::new(x as i16, y as i16),
-                        Piece::new(piece_type, color),
-                    )
-                }
-            });
+            let case = py_cases[x][y].clone();
+            row_parsed.push(parse_python_case(case, x as i16, y as i16));
         }
         parsed_cases.push(row_parsed);
     }
     parsed_cases
+}
+
+pub fn parse_python_case(py_case: PyCase, x: i16, y: i16) -> Case {
+    match py_case.as_str() {
+        "NOP" => case::create_empty_case(Coordinate::new(x, y)),
+        "XXX" => case::create_unreachable_case(Coordinate::new(x, y)),
+        str_piece => {
+            let chars: Vec<char> = str_piece.chars().collect();
+            let piece_type: String = chars[0..2].iter().map(|c| c.to_string()).collect();
+            let piece_type = piece_type
+                .parse::<i8>()
+                .unwrap_or_else(|e| panic!("Failed to parse case {}.\n {}", str_piece, e));
+            let piece_type = PieceType::from(&piece_type);
+            let color = if 'B' == chars[2] {
+                Color::Blue
+            } else {
+                Color::Red
+            };
+            case::create_full_case(Coordinate::new(x, y), Piece::new(piece_type, color))
+        }
+    }
 }
 
 #[pyclass]
@@ -99,6 +101,13 @@ impl StrategoBoardWrapper {
                 e.message()
             ))),
         }
+    }
+
+    pub fn get_last_coup(&self) -> PyResult<Py<PyAny>> {
+        let gil_holder = utils::get_gild_holder()
+            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+        let gil = gil_holder.get();
+        Ok(pythonize(gil.python(), self.board.get_last_coup())?)
     }
 
     pub fn display(&self) -> PyResult<String> {

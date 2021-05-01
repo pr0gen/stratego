@@ -6,9 +6,9 @@ import sys
 import os
 
 filename = "data.csv"
-first_ai = "random" 
-secondai = "monte_carlo" 
-numberOfParties = "10"
+first_ai = "random"
+secondai = "random"
+numberOfParties = "2"
 
 my_cmd = './analyzes ' + filename + " " + numberOfParties + " " + first_ai + " " + secondai
 
