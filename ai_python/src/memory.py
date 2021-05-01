@@ -21,8 +21,11 @@ class PiecesManager():
         }
 
     def remove_one_piece(self, piece_name):
-        self.pieces[piece_name] -= 1
+        if self.pieces[piece_name] > 0:
+            self.pieces[piece_name] -= 1
 
+    def get_pieces_left(self):
+        return self.pieces
 
 class PieceCache:
     uuid = None
