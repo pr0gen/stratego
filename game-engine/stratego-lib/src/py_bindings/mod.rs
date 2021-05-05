@@ -39,7 +39,7 @@ fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
 fn rust_attacker(from: PyCase, to: PyCase) -> PyResult<(i8, i8)> {
     let to = board_wrapper::parse_python_case(to, 0, 0);
     match board_utils::attack(board_wrapper::parse_python_case(from, 0, 0), to.clone()) {
-        Ok((_, new_to)) => Ok((parse_attacker_result(new_to), parse_attacker_result(to))),
+        Ok(((_, new_to), _)) => Ok((parse_attacker_result(new_to), parse_attacker_result(to))),
         Err(e) => Err(exceptions::PyTypeError::new_err(format!(
             "[Error] attacker function : {}",
             e.message()

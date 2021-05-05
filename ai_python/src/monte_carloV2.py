@@ -9,13 +9,13 @@ from ai_python.src.random import choose_randomly
 
 class MonteCarloV2AI(StrategoAI):
     name = "monte_carlo_v2"
-    color = str
-    # cache: Cache
+    color: str
+    cache: Cache
     # piecesManager: PiecesManager
 
-    def __init__(self, color: str):
+    def __init__(self, color: str, width, height):
         self.color = color
-        self.cache = Cache(color)
+        self.cache = Cache.instance(color, width, height)
         self.piecesManager = PiecesManager()
 
 
@@ -24,6 +24,9 @@ class MonteCarloV2AI(StrategoAI):
         movesFormated = parse_moves(moves)
 
         # update cache
+        coup = board.get_last_coup()
+        if coup is not None: 
+            print('Coup', coup)
 
         scores = []
         for move in movesFormated:
@@ -50,8 +53,11 @@ class MonteCarloV2AI(StrategoAI):
         best_move = best_scores[0][0]
         if best_move == None or best_move == False:
             best_move = choose_randomly(board, self.color)
+
         m = move_ready(best_move)
+
         print('Move:', m, '- Score:', best_scores[0][1])
+        # self.cache.show()
         return m
 
     def __get_material_range(self) -> List[int]:

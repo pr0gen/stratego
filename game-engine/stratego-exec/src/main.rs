@@ -13,9 +13,9 @@ fn main() {
         // engine_utils::create_stratego_board_with_same_pieces(),
         board,
         (
-            Box::new(AIPlayer::new(Color::Red, String::from("random"))),
-            //Box::new(HumanPlayer::new(Color::Blue, String::from("Tigran"))),
-            Box::new(AIPlayer::new(Color::Blue, String::from("monte_carlo"))),
+            Box::new(AIPlayer::new(Color::Red, String::from("singleton"))),
+            Box::new(HumanPlayer::new(Color::Blue, String::from("Tigran"))),
+            // Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
         ),
     );
 

@@ -127,6 +127,8 @@ The following function are there to help you build content for the board:
     se.rust_create_empty_case((1, "A")) # without content
     se.rust_create_unreachable_case((1, "A")) # water
 
+    last_coup = board.get_last_coup()# return last played coup (None at the first coup)
+
 ```
 
 ### Web API
