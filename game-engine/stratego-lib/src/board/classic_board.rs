@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
-    last_coup: Option<(Case, Case)>,
+    last_coup: Option<((Case, Case), bool)>,
 }
 
 impl StrategoBoard {
@@ -40,7 +40,7 @@ impl StrategoBoard {
         &mut self,
         case: Case,
         aim_case: &Case,
-    ) -> Result<Vec<Case>, StrategoError> {
+    ) -> Result<(Vec<Case>, bool), StrategoError> {
         let piece = case.get_content();
         let case_coord = case.get_coordinate();
 
@@ -48,20 +48,20 @@ impl StrategoBoard {
             case::create_full_case(case_coord.to_owned(), piece.to_owned()),
             aim_case.to_owned(),
         ) {
-            Ok((from, to)) => {
+            Ok(((from, to), res)) => {
                 self.place(from.clone())?;
                 self.place(to.clone())?;
 
-                Ok(vec![from, to])
+                Ok((vec![from, to], res))
             }
             Err(e) => Err(e),
         }
     }
 
-    fn register_last_move(&mut self, move_result: &[Case]) -> Result<(), StrategoError> {
+    fn register_last_move(&mut self, move_result: &[Case], has_kill: bool) -> Result<(), StrategoError> {
         let length = move_result.len();
         self.last_coup = if 2 == length {
-            Some((move_result[0].clone(), move_result[1].clone()))
+            Some(((move_result[0].clone(), move_result[1].clone()), has_kill))
         } else {
             return Err(StrategoError::AIExecuteError(String::from(
                 "There is two cases in a move, something really bad happened",
@@ -70,7 +70,7 @@ impl StrategoBoard {
         Ok(())
     }
 
-    pub fn get_last_coup(&self) -> &Option<(Case, Case)> {
+    pub fn get_last_coup(&self) -> &Option<((Case, Case), bool)> {
         &self.last_coup
     }
 }
@@ -86,11 +86,16 @@ impl Board for StrategoBoard {
             ));
         }
 
+        let mut has_kill = false;
         let aim_case = self.get_at(&to).to_owned();
 
         let move_action = match aim_case.get_state() {
             State::Empty => self.move_piece_when_empty(to, case),
-            State::Full => self.move_piece_when_full(case, &aim_case),
+            State::Full => {
+                let (move_action, res) = self.move_piece_when_full(case, &aim_case)?;
+                    has_kill = res;
+                    Ok(move_action)
+            },
             State::Unreachable => Err(StrategoError::MoveError(
                 String::from("Unreachable"),
                 case,
@@ -98,7 +103,7 @@ impl Board for StrategoBoard {
             )),
         }?;
 
-        self.register_last_move(&move_action)?;
+        self.register_last_move(&move_action, has_kill)?;
 
         Ok(move_action)
     }

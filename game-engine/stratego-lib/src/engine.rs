@@ -35,7 +35,7 @@ impl StrategoEngine {
         StrategoEngine {
             board,
             players,
-            turn: Color::Blue,
+            turn: Color::Red,
         }
     }
 

@@ -2,6 +2,7 @@ import ai_python.src.stratego_engine as se
 from ai_python.src.random import choose_randomly
 
 
+
 def test_random_ai():
     board = se.rust_create_empty_stratego_board()
     board.place("Full", (0, "A"), 4, "Red")

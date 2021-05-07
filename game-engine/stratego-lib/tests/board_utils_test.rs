@@ -18,15 +18,8 @@ mod board_utils_test {
             Piece::new(PieceType::Lieutenant, Color::Red),
         );
 
-        let (attacker, defenser) = board_utils::attack(attacker, defenser).unwrap();
-        assert_eq!(case::create_empty_case(Coordinate::new(0, 0)), attacker);
-        assert_eq!(
-            case::create_full_case(
-                Coordinate::new(0, 1),
-                Piece::new(PieceType::Colonel, Color::Blue)
-            ),
-            defenser
-        );
+        let (_, res) = board_utils::attack(attacker, defenser).unwrap();
+        assert!(res);
     }
 
     #[test]
@@ -40,15 +33,8 @@ mod board_utils_test {
             Piece::new(PieceType::Colonel, Color::Red),
         );
 
-        let (attacker, defenser) = board_utils::attack(attacker, defenser).unwrap();
-        assert_eq!(case::create_empty_case(Coordinate::new(0, 0)), attacker);
-        assert_eq!(
-            case::create_full_case(
-                Coordinate::new(0, 1),
-                Piece::new(PieceType::Colonel, Color::Red)
-            ),
-            defenser
-        );
+        let (_, res) = board_utils::attack(attacker, defenser).unwrap();
+        assert!(!res);
     }
 
     #[test]
@@ -62,10 +48,11 @@ mod board_utils_test {
             Piece::new(PieceType::Colonel, Color::Red),
         );
 
-        let (attacker, defenser) = board_utils::attack(attacker, defenser).unwrap();
+        let ((attacker, defenser), res) = board_utils::attack(attacker, defenser).unwrap();
 
         assert_eq!(attacker.get_state(), &State::Empty);
         assert_eq!(defenser.get_state(), &State::Empty);
+        assert!(!res);
     }
 
     #[test]
@@ -78,7 +65,7 @@ mod board_utils_test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Marshal, Color::Red),
         );
-        let res = board_utils::attack(attacker, defenser).unwrap();
+        let (res, _) = board_utils::attack(attacker, defenser).unwrap();
 
         assert_eq!(res.0.get_state(), &State::Empty);
 
@@ -97,7 +84,7 @@ mod board_utils_test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Bomb, Color::Red),
         );
-        let res = board_utils::attack(attacker, defenser).unwrap();
+        let (res, _) = board_utils::attack(attacker, defenser).unwrap();
 
         assert_eq!(res.0.get_state(), &State::Empty);
 
@@ -116,7 +103,7 @@ mod board_utils_test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Bomb, Color::Red),
         );
-        let res = board_utils::attack(attacker, defenser).unwrap();
+        let (res, _) = board_utils::attack(attacker, defenser).unwrap();
 
         assert_eq!(res.0.get_state(), &State::Empty);
 
@@ -135,7 +122,7 @@ mod board_utils_test {
             Coordinate::new(0, 1),
             Piece::new(PieceType::Marshal, Color::Red),
         );
-        let res = board_utils::attack(attacker, defenser).unwrap();
+        let (res, _) = board_utils::attack(attacker, defenser).unwrap();
 
         assert_eq!(res.0.get_state(), &State::Empty);
 
