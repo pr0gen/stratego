@@ -23,7 +23,12 @@ class ia_teytaud(StrategoAI):
         moves = board.get_available_moves_by_color(self.color)
         movesFormated = parse_moves(moves)
 
-        ##TODO: actualiser le piece manager (retirer les pions potentiellement pris durant le tour)
+        last_move = board.get_last_coup()
+        if last_move is not None:
+            ##Pas d'information sur la piece mangée ?
+            first_piece = last_move[0]
+            second_piece = last_move[1]
+
 
         ennemy_pieces = self.piecesManager.get_pieces_left()
 
@@ -43,7 +48,12 @@ class ia_teytaud(StrategoAI):
         ##valeur du pion ennemi le plus probable de rencontrer :     probValueList[max_pos][0]
         ##Bouger un pion plus fort ? ou alors bouger sans prendre de pions ?
 
+        if last_move is None :
+            best_move = choose_randomly(board, self.color)
+
+        ##Remettre a jour le pieceManager ?
+
         m = move_ready(best_move)
-        print('Move:', m, '- Score:', best_scores[0][1])
+        print('Move:', m)
         return m
 
