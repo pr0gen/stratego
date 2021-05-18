@@ -49,11 +49,12 @@ def test_last_coup():
     board.place("Full", (1, "A"), 1, "Red")
     board.moving((1, "A"), (2, "A")) # move a case
     
-    last_coup = board.get_last_coup()
+    last_coup, won = board.get_last_coup()
     _from = last_coup[0]
     assert 'Empty' == _from['state']
     assert {'x': 1, 'y': 0} == _from['coordinate']
     assert {'m': (0, 0), 'rank': 'Null', 'color': 'None'} == _from['content']
+    assert won == False
     
     to = last_coup[1]
     assert 'Full' == to['state']

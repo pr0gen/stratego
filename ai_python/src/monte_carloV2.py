@@ -16,17 +16,52 @@ class MonteCarloV2AI(StrategoAI):
     def __init__(self, color: str, width, height):
         self.color = color
         self.cache = Cache.instance(color, width, height)
+        self.cache.show()
         self.piecesManager = PiecesManager()
+
+    def __convert_rank(self, rank: str) -> int:
+        switcher = {
+            'Marshal': 10 ,
+            'General' : 9,
+            'Colonel' : 8,
+            'Major' : 7,
+            'Captain' : 6,
+            'Lieutenant' : 5,
+            'Sergeant' : 4,
+            'Miner' : 3,
+            'Scout' : 2,
+            'Spy' : 1,
+            'Flag' : 0,
+            'Bomb' : -1,
+        }
+        value = switcher.get(rank)
+        print(rank, value)
+        if value is None:
+            print('Does not exist')
+        return value
+
 
 
     def ask_next_move(self, board: StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         moves = board.get_available_moves_by_color(self.color)
         movesFormated = parse_moves(moves)
-
+        
         # update cache
         coup = board.get_last_coup()
+        
         if coup is not None: 
-            print('Coup', coup)
+            cases, won = coup
+            _from, to = cases
+            co_from = _from['coordinate']
+            co_to = to['coordinate']
+            if won: 
+                rank = self.__convert_rank(to['content']['rank'])
+                self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'], rank)
+                self.cache.show()
+                print(board.display())
+            else:
+                self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'])
+            
 
         scores = []
         for move in movesFormated:
