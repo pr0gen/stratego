@@ -81,6 +81,16 @@ class Cache(object):
         piece.position = (x_to, y_to)
 
 
+    def delete_piece(self, x, y):
+        new_pieces = []
+        for piece in self._pieces:
+            original_x, original_y = piece.position
+            if original_x != x or original_y != y:
+                new_pieces.append(piece)
+        self._pieces = new_pieces
+        
+
+
     def show(self):
         for piece in self._pieces:
             piece.show()

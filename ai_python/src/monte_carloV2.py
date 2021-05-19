@@ -33,6 +33,7 @@ class MonteCarloV2AI(StrategoAI):
             'Spy' : 1,
             'Flag' : 0,
             'Bomb' : -1,
+            'Null' : None,
         }
         value = switcher.get(rank)
         print(rank, value)
@@ -49,6 +50,7 @@ class MonteCarloV2AI(StrategoAI):
         # update cache
         coup = board.get_last_coup()
         
+        #Store opponent move
         if coup is not None: 
             cases, won = coup
             _from, to = cases
@@ -92,7 +94,25 @@ class MonteCarloV2AI(StrategoAI):
         m = move_ready(best_move)
 
         print('Move:', m, '- Score:', best_scores[0][1])
-        # self.cache.show()
+
+        #Store our move
+
+        from_case = board.at(m[0])
+        to_case = board.at(m[1])
+
+        from_rank = self.__convert_rank(from_case['content']['rank'])
+        to_rank = self.__convert_rank(to_case['content']['rank'])
+        if to_rank is not None:
+            print(self.cache.show())
+            if from_rank < to_rank: # we attempt to attack, but we loosed
+                print('i take the piece')
+                self.cache.update_piece(co_to['x'], co_to['y'], co_to['x'], co_to['y'],
+                    self.__convert_rank(to_rank)
+                )
+            else: 
+                self.cache.delete_piece(co_to['x'], co_to['y'])
+            print(self.cache.show())
+
         return m
 
     def __get_material_range(self) -> List[int]:
