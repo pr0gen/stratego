@@ -86,6 +86,7 @@ class Cache(object):
             piece.show()
 
 
+
 class Probability:
     cache = None
     pieceManager = None
@@ -143,10 +144,3 @@ class Probability:
 
         return probabilities
 
-
-# cache = Cache()
-# pieceManager = PiecesManager()
-# # cache.get_piece(5).show()
-#
-# p = Probability(cache, pieceManager)
-# p.getProbability()

@@ -53,9 +53,9 @@ def test_monte_carlo_2():
     ai_2 = RandomAI('Blue')
 
     print(board.display())
-    _play_many_turns(board, 100, ai, ai_2)
+    _play_many_turns(board, 500, ai, ai_2)
     ai.cache.show()
+    print(board.display())
 
     assert 1 == 0
-
     
