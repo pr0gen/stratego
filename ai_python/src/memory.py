@@ -29,15 +29,17 @@ class PiecesManager():
 
 class PieceCache:
     moved = False
-    scout = False
     value = None
     position = Tuple[int, int]
 
     def __init__(self, x, y):
         self.position = (x, y)
 
+    def is_scout(self) -> bool:
+        return self.value == 2
+
     def show(self):
-        print('piece: moved ' + str(self.moved) + ', scout ' + str(self.scout) + ',position ' + str(self.position))
+        print('piece: moved ' + str(self.moved) + ', value ' + str(self.value) + ',position ' + str(self.position))
 
 
 ### This object is a Singleton
@@ -59,9 +61,10 @@ class Cache(object):
         for x in range(width):
             for y in range(height):
                 temp = 0
-                if color == 'Red':
-                    temp += (int) (width / 2)
-                cls._pieces.append(PieceCache(x,y + temp))
+                if color == 'Blue':
+                    temp += (int) (height / 2) + 1
+                cls._pieces.append(PieceCache(x + temp, y))
+
         return cls._instance
 
 
@@ -73,14 +76,28 @@ class Cache(object):
         raise NameError('uuid does not exist')
 
 
-    def update_piece(self, x_from,y_from, x_to,y_to):
-        piece = self.get_piece(x_from,y_from)
-        piece.position = (x_to,y_to)
+    def update_piece(self, x_from, y_from, x_to, y_to, value=None):
+        piece = self.get_piece(x_from, y_from)
+        piece.moved = True
+        if value is not None:
+            piece.value = value
+        piece.position = (x_to, y_to)
+
+
+    def delete_piece(self, x, y):
+        new_pieces = []
+        for piece in self._pieces:
+            original_x, original_y = piece.position
+            if original_x != x or original_y != y:
+                new_pieces.append(piece)
+        self._pieces = new_pieces
+        
 
 
     def show(self):
         for piece in self._pieces:
             piece.show()
+
 
 
 class Probability:
@@ -140,10 +157,3 @@ class Probability:
 
         return probabilities
 
-
-# cache = Cache()
-# pieceManager = PiecesManager()
-# # cache.get_piece(5).show()
-#
-# p = Probability(cache, pieceManager)
-# p.getProbability()

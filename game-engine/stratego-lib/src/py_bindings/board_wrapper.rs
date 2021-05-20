@@ -118,8 +118,12 @@ impl StrategoBoardWrapper {
         Ok(self.board.display_by_color(&color.into()))
     }
 
-    pub fn at(&self, coordinate: PyCoord) -> PyResult<Case> {
-        Ok(self.board.get_at(&Coordinate::from(coordinate)).clone())
+    pub fn at(&self, coordinate: PyCoord) -> PyResult<Py<PyAny>> {
+        let gil_holder = utils::get_gild_holder()
+            .unwrap_or_else(|e| panic!("Failed to get python gil holder, {}", e.message()));
+        let gil = gil_holder.get();
+        let at = self.board.get_at(&Coordinate::from(coordinate));
+        Ok(pythonize(gil.python(), at)?)
     }
 
     pub fn place(

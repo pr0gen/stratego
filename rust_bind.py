@@ -47,7 +47,6 @@ class Singleton(object):
     @classmethod
     def instance(cls):
         if cls._instance is None:
-            print('Creating new instance')
             cls._instance = cls.__new__(cls)
             cls._created += 1
             # Put any initialization here.
