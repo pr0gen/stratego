@@ -10,7 +10,7 @@ def _play_one_turn(board, move):
 
 def _play_many_turns(board, turns, ai, ai_2):
     for i in range(0, turns):
-        print('=== START ', i, '=== ')
+        # print('=== START ', i, '=== ')
         # print('   === NOUS === ')
         _play_one_turn(board, ai.ask_next_move(board))
 
@@ -65,9 +65,9 @@ def test_monte_carlo_2():
     ai_2 = RandomAI('Blue')
 
     # print(board.display())
-    _play_many_turns(board, 500, ai, ai_2)
-    # ai.cache.show()
-    # print(board.display())
+    _play_many_turns(board, 10, ai, ai_2)
+    ai.cache.show()
+    print(board.display())
 
     assert 1 == 0
     

@@ -36,7 +36,6 @@ class MonteCarloV2AI(StrategoAI):
             'Null' : None,
         }
         value = switcher.get(rank)
-        print(rank, value)
         if value is None:
             print('Does not exist')
         return value
@@ -51,18 +50,18 @@ class MonteCarloV2AI(StrategoAI):
         coup = board.get_last_coup()
         
         #Store opponent move
-        if coup is not None: 
-            cases, won = coup
-            _from, to = cases
-            co_from = _from['coordinate']
-            co_to = to['coordinate']
-            if won: 
-                rank = self.__convert_rank(to['content']['rank'])
-                self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'], rank)
-                self.cache.show()
-                print(board.display())
-            else:
-                self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'])
+        # if coup is not None: 
+            # cases, won = coup
+            # _from, to = cases
+            # co_from = _from['coordinate']
+            # co_to = to['coordinate']
+            # if won: 
+                # rank = self.__convert_rank(to['content']['rank'])
+                # self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'], rank)
+                # self.cache.show()
+                # print(board.display())
+            # else:
+                # self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'])
             
 
         scores = []
@@ -93,7 +92,7 @@ class MonteCarloV2AI(StrategoAI):
 
         m = move_ready(best_move)
 
-        print('Move:', m, '- Score:', best_scores[0][1])
+        # print('Move:', m, '- Score:', best_scores[0][1])
 
         #Store our move
 
@@ -102,8 +101,11 @@ class MonteCarloV2AI(StrategoAI):
 
         from_rank = self.__convert_rank(from_case['content']['rank'])
         to_rank = self.__convert_rank(to_case['content']['rank'])
+
+        co_to = to_case['coordinate']
+        co_from = from_case['coordinate']
         if to_rank is not None:
-            print(self.cache.show())
+            print('from', from_rank, 'to', to_rank)
             if from_rank < to_rank: # we attempt to attack, but we loosed
                 print('i take the piece')
                 self.cache.update_piece(co_to['x'], co_to['y'], co_to['x'], co_to['y'],
@@ -111,7 +113,6 @@ class MonteCarloV2AI(StrategoAI):
                 )
             else: 
                 self.cache.delete_piece(co_to['x'], co_to['y'])
-            print(self.cache.show())
 
         return m
 

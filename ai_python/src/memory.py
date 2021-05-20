@@ -92,6 +92,7 @@ class Cache(object):
 
 
     def show(self):
+        print('=== Display cache ===')
         for piece in self._pieces:
             piece.show()
 
