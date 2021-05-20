@@ -25,8 +25,8 @@ def test_copy_board():
     board.moving((1, "A"), (2, "A")) # move a case
 
     case = board.at((1, "A"))
-    assert case.py_get_state() != copied_board.at((1, "A")).py_get_state()
-    assert case.py_get_content() != copied_board.at((1, "A")).py_get_content()
+    assert case['state'] != copied_board.at((1, "A"))['state']
+    assert case['content'] != copied_board.at((1, "A"))['content']
 
 
 def test_material_evaluation():
