@@ -1,6 +1,7 @@
 from typing import Tuple, List
 
 from ai_python.src.memory import Cache, PiecesManager
+from ai_python.src.random import RandomAI
 from ai_python.src.utils import *
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper
@@ -16,7 +17,6 @@ class MonteCarloV2AI(StrategoAI):
     def __init__(self, color: str, width, height):
         self.color = color
         self.cache = Cache.instance(color, width, height)
-        self.cache.show()
         self.piecesManager = PiecesManager()
 
     def __convert_rank(self, rank: str) -> int:
@@ -41,63 +41,58 @@ class MonteCarloV2AI(StrategoAI):
         return value
 
 
-
     def ask_next_move(self, board: StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         moves = board.get_available_moves_by_color(self.color)
         movesFormated = parse_moves(moves)
         
-        # update cache
-        coup = board.get_last_coup()
-        
-        #Store opponent move
-        # if coup is not None: 
-            # cases, won = coup
-            # _from, to = cases
-            # co_from = _from['coordinate']
-            # co_to = to['coordinate']
-            # if won: 
-                # rank = self.__convert_rank(to['content']['rank'])
-                # self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'], rank)
-                # self.cache.show()
-                # print(board.display())
-            # else:
-                # self.cache.update_piece(co_from['x'], co_from['y'], co_to['x'], co_to['y'])
-            
+        self.__store_opponents_move(board)    
 
-        scores = []
-        for move in movesFormated:
-
-            copied_board = board.clone_board()
-            f, t = move_ready(move)
-            copied_board.moving(f, t)
-
-            sim = copied_board.simulate_games_material(
-                basic_material_values(),
-                self.__get_material_range(),
-                30,
-                self.color,
-                4
-            )
-            scores.append((move, sim))
-
-        best_scores = []
-        for score in scores:
-            best_scores.append(get_best_score_by_move(score, self.color))
-
-        best_scores.sort(reverse=True, key=sort_best_scores)
-
-        best_move = best_scores[0][0]
-        if best_move == None or best_move == False:
-            best_move = choose_randomly(board, self.color)
-
-        m = move_ready(best_move)
+        ai = RandomAI(self.color)
+        move = ai.ask_next_move(board)
 
         # print('Move:', m, '- Score:', best_scores[0][1])
 
-        #Store our move
+        # self.__store_our_move(board, move)
 
-        from_case = board.at(m[0])
-        to_case = board.at(m[1])
+        return move
+
+
+    def __store_opponents_move(self, board: StrategoBoardWrapper):
+        coup = board.get_last_coup()
+
+        if coup is None:
+            return # This is the first turn
+        
+        (_from, to), won = coup
+        co_from = _from['coordinate']
+        co_from = (co_from['x'], co_from['y'])
+        co_to = to['coordinate']
+        co_to = (co_to['x'], co_to['y'])
+
+        content_to = to['content']
+        if not won and self.__check_we_won_on_opponent_move(board, content_to):
+            self.cache.delete_piece(co_from)
+            return 
+
+        if not won:
+            self.cache.update_piece(co_from, co_to)
+            return 
+
+        rank = self.__convert_rank(content_to['rank'])
+        self.cache.update_piece(co_from, co_to, rank)
+
+    
+    def __check_we_won_on_opponent_move(self, board, content) -> bool:
+        print(content, self.color)
+        return content['color'] == self.color
+
+
+    def __store_our_move(self, 
+        board: StrategoBoardWrapper,
+        move: Tuple[Tuple[str, int], Tuple[str, int]]
+    ):
+        from_case = board.at(move[0])
+        to_case = board.at(move[1])
 
         from_rank = self.__convert_rank(from_case['content']['rank'])
         to_rank = self.__convert_rank(to_case['content']['rank'])
@@ -107,14 +102,10 @@ class MonteCarloV2AI(StrategoAI):
         if to_rank is not None:
             print('from', from_rank, 'to', to_rank)
             if from_rank < to_rank: # we attempt to attack, but we loosed
-                print('i take the piece')
-                self.cache.update_piece(co_to['x'], co_to['y'], co_to['x'], co_to['y'],
-                    self.__convert_rank(to_rank)
-                )
+                self.cache.update_piece(co_to, co_to, self.__convert_rank(to_rank))
             else: 
-                self.cache.delete_piece(co_to['x'], co_to['y'])
+                self.cache.delete_piece(co_to)
 
-        return m
 
     def __get_material_range(self) -> List[int]:
         return list(range(0, 50))

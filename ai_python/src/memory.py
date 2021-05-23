@@ -1,5 +1,4 @@
-from typing import Tuple
-
+from typing import Tuple, List
 
 class PiecesManager():
     pieces = {}
@@ -39,11 +38,20 @@ class PieceCache:
         print('piece: moved ' + str(self.moved) + ', value ' + str(self.value) + ',position ' + str(self.position))
 
 
+def create_pieces(color, width, height) -> List[PieceCache]:
+    pieces = []
+    for x in range(width):
+        for y in range(height):
+            temp = 0
+            if color == 'Blue':
+                temp += (int) (height / 2) + 1
+            pieces.append(PieceCache(x + temp, y))
+    return pieces
+
 ### This object is a Singleton
 class Cache(object):
     _instance = None
     _pieces = []
-
 
     def __init__(self):
         raise RuntimeError('Call instance() instead')
@@ -55,17 +63,18 @@ class Cache(object):
             cls._instance = cls.__new__(cls)
 
             # Put any initialization here.
-        for x in range(width):
-            for y in range(height):
-                temp = 0
-                if color == 'Blue':
-                    temp += (int) (height / 2) + 1
-                cls._pieces.append(PieceCache(x + temp, y))
+            cls._pieces = create_pieces(color, width, height)
 
         return cls._instance
 
 
-    def get_piece(self, x, y):
+    def reset_cache(self, color, width, height):
+        # Mainly for Tests pourpuses
+            self._pieces = create_pieces(color, width, height)
+        
+
+    def get_piece(self, coord: Tuple[int, int]):
+        x, y = coord
         for piece in self._pieces:
             original_x, original_y = piece.position
             if original_x == x and original_y == y:
@@ -73,22 +82,24 @@ class Cache(object):
         raise NameError('uuid does not exist')
 
 
-    def update_piece(self, x_from, y_from, x_to, y_to, value=None):
-        piece = self.get_piece(x_from, y_from)
+    def update_piece(self, _from: Tuple[int, int], to: Tuple[int, int], value=None):
+        piece = self.get_piece(_from)
         piece.moved = True
         if value is not None:
             piece.value = value
-        piece.position = (x_to, y_to)
+        piece.position = (to[0], to[1])
 
 
-    def delete_piece(self, x, y):
+    def delete_piece(self, coord: Tuple[int, int]):
+        x, y = coord
         new_pieces = []
         for piece in self._pieces:
             original_x, original_y = piece.position
             if original_x != x or original_y != y:
                 new_pieces.append(piece)
+            else:
+                print('Deleting:', coord)
         self._pieces = new_pieces
-        
 
 
     def show(self):

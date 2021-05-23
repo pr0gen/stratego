@@ -6,6 +6,10 @@ from ai_python.src.monte_carloV2 import MonteCarloV2AI
 from ai_python.src.stratego_engine import StrategoBoardWrapper
 import pytest
 
+
+### IMPORTANT 
+### Because of MonteCarloV2AI specifications, thoses tests can not be runned on parallel
+
 def _play_one_turn(board, move):
     f, t = move
     board.moving(f, t)
@@ -76,88 +80,108 @@ def est_monte_carlo_2():
 
 def test_monte_carlo_v2_opponent_attacks_first_opponent_won():
     cases = [
-        ["06B", "-2B", "NOP"],
-        ["NOP", "NOP", "NOP"],
-        ["02R", "-2R", "NOP"],
+        ["02B", "-2B", "NOP"],
+        ["02B", "NOP", "NOP"],
+        ["06R", "-2R", "NOP"],
     ]
     board = StrategoBoardWrapper(cases)
-    ai = MonteCarloV2AI('Red', 3, 1)
-    ai_2 = RandomAI('Blue')
+    ai = MonteCarloV2AI('Blue', 1, 3)
+    ai_2 = RandomAI('Red')
 
-    #Blue plays
-    _play_one_turn(board, ai_2.ask_next_move(board))
+
+    print('=== Init === ')
+    ai.cache.reset_cache('Blue', 1, 3)
+    ai.cache.show()
+    print(board.display())
+    print('============')
+
 
     #Red plays
-    _play_one_turn(board, ai.ask_next_move(board))
+    _play_one_turn(board, ai_2.ask_next_move(board))
+    print(board.display())
 
-    piece = ai.cache.get_piece(0, 1)
+    #Blue plays
+    _play_one_turn(board, ai.ask_next_move(board))
+    print(board.display())
+
+    piece = ai.cache.get_piece((1, 0))
+    ai.cache.show()
 
     assert piece.value == 6
-    assert piece.moved == False
+    assert piece.moved 
 
 
 def test_monte_carlo_v2_opponent_attacks_first_opponent_lost():
-    with pytest.raises(RuntimeError) as e_info:
+    with pytest.raises(NameError) as e_info:
         cases = [
             ["02B", "-2B", "NOP"],
-            ["NOP", "NOP", "NOP"],
-            ["06R", "-2R", "NOP"],
-        ]
-        board = StrategoBoardWrapper(cases)
-        ai = MonteCarloV2AI('Red', 3, 1)
-        ai_2 = RandomAI('Blue')
-
-        #Blue plays
-        _play_one_turn(board, ai_2.ask_next_move(board))
-
-        #Red plays
-        _play_one_turn(board, ai.ask_next_move(board))
-
-        piece = ai.cache.get_piece(1, 0)
-        print(board.display())
-
-
-def test_monte_carlo_v2_we_attack_first_we_won():
-    with pytest.raises(RuntimeError) as e_info:
-
-        cases = [
-            ["02B", "-2B", "NOP"],
-            ["NOP", "NOP", "NOP"],
-            ["06R", "-2R", "NOP"],
-        ]
-        board = StrategoBoardWrapper(cases)
-        ai = MonteCarloV2AI('Red', 3, 1)
-        ai_2 = RandomAI('Blue')
-
-        #Red plays
-        _play_one_turn(board, ai.ask_next_move(board))
-
-        #Blue plays
-        _play_one_turn(board, ai_2.ask_next_move(board))
-
-        piece = ai.cache.get_piece(0, 0)
-        print(board.display())
-
-
-def test_monte_carlo_v2_we_attack_first_we_lost():
-        cases = [
-            ["06B", "-2B", "NOP"],
-            ["NOP", "NOP", "NOP"],
+            ["06B", "NOP", "NOP"],
             ["02R", "-2R", "NOP"],
         ]
         board = StrategoBoardWrapper(cases)
-        ai = MonteCarloV2AI('Red', 3, 1)
-        ai_2 = RandomAI('Blue')
+        ai = MonteCarloV2AI('Blue', 1, 3)
+        ai_2 = RandomAI('Red')
+
+        print('=== Init ===')
+        ai.cache.reset_cache('Blue', 1, 3)
+        ai.cache.show()
+        print(board.display())
+        print('============')
 
         #Red plays
-        _play_one_turn(board, ai.ask_next_move(board))
-
-        #Blue plays
         _play_one_turn(board, ai_2.ask_next_move(board))
-
-        piece = ai.cache.get_piece(1, 0)
+        ai.cache.show()
         print(board.display())
 
-        assert piece.value == 6
-        assert piece.moved == False
+        #Blue plays
+        _play_one_turn(board, ai.ask_next_move(board))
+        ai.cache.show()
+        print(board.display())
+
+        piece = ai.cache.get_piece((2, 0))
+        ai.cache.show()
+
+
+# def test_monte_carlo_v2_we_attack_first_we_won():
+    # with pytest.raises(RuntimeError) as e_info:
+        # cases = [
+            # ["02B", "-2B", "NOP"],
+            # ["NOP", "NOP", "NOP"],
+            # ["06R", "-2R", "NOP"],
+        # ]
+        # board = StrategoBoardWrapper(cases)
+        # ai = MonteCarloV2AI('Red', 1, 3)
+        # ai_2 = RandomAI('Blue')
+# 
+        # #Red plays
+        # _play_one_turn(board, ai.ask_next_move(board))
+# 
+        # #Blue plays
+        # _play_one_turn(board, ai_2.ask_next_move(board))
+# 
+        # piece = ai.cache.get_piece((0, 0))
+        # print(board.display())
+# 
+# 
+# def test_monte_carlo_v2_we_attack_first_we_lost():
+        # cases = [
+            # ["06B", "-2B", "NOP"],
+            # ["NOP", "NOP", "NOP"],
+            # ["02R", "-2R", "NOP"],
+        # ]
+        # board = StrategoBoardWrapper(cases)
+        # ai = MonteCarloV2AI('Red', 1, 3)
+        # ai_2 = RandomAI('Blue')
+# 
+        # #Red plays
+        # _play_one_turn(board, ai.ask_next_move(board))
+# 
+        # #Blue plays
+        # _play_one_turn(board, ai_2.ask_next_move(board))
+# 
+        # piece = ai.cache.get_piece((1, 0))
+        # print(board.display())
+# 
+        # assert piece.value == 6
+        # assert piece.moved == False
 
