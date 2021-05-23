@@ -50,9 +50,9 @@ class MonteCarloV2AI(StrategoAI):
         ai = RandomAI(self.color)
         move = ai.ask_next_move(board)
 
-        # print('Move:', m, '- Score:', best_scores[0][1])
+        print('Move:', move)
 
-        # self.__store_our_move(board, move)
+        self.__store_our_move(board, move)
 
         return move
 
@@ -83,7 +83,6 @@ class MonteCarloV2AI(StrategoAI):
 
     
     def __check_we_won_on_opponent_move(self, board, content) -> bool:
-        print(content, self.color)
         return content['color'] == self.color
 
 
@@ -94,17 +93,21 @@ class MonteCarloV2AI(StrategoAI):
         from_case = board.at(move[0])
         to_case = board.at(move[1])
 
+        print('FROM:', from_case, 'TO:', to_case)
+
         from_rank = self.__convert_rank(from_case['content']['rank'])
         to_rank = self.__convert_rank(to_case['content']['rank'])
 
+        if to_rank is None: # We moved on an empty case
+            return 
+
         co_to = to_case['coordinate']
         co_from = from_case['coordinate']
-        if to_rank is not None:
-            print('from', from_rank, 'to', to_rank)
-            if from_rank < to_rank: # we attempt to attack, but we loosed
-                self.cache.update_piece(co_to, co_to, self.__convert_rank(to_rank))
-            else: 
-                self.cache.delete_piece(co_to)
+
+        if from_rank > to_rank: # we attempt to attack, but we won
+            self.cache.update_piece(co_to, co_to, self.__convert_rank(to_rank))
+        else: 
+            self.cache.delete_piece(co_to)
 
 
     def __get_material_range(self) -> List[int]:

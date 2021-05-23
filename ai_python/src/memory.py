@@ -48,6 +48,12 @@ def create_pieces(color, width, height) -> List[PieceCache]:
             pieces.append(PieceCache(x + temp, y))
     return pieces
 
+class CacheException(Exception):
+    
+    def __init__(self, message: str):
+        self.message = message
+
+
 ### This object is a Singleton
 class Cache(object):
     _instance = None
@@ -79,7 +85,7 @@ class Cache(object):
             original_x, original_y = piece.position
             if original_x == x and original_y == y:
                 return piece
-        raise NameError('uuid does not exist')
+        raise CacheException('piece does not exist')
 
 
     def update_piece(self, _from: Tuple[int, int], to: Tuple[int, int], value=None):
