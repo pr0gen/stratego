@@ -3,8 +3,8 @@ The main library is written in Rust. The AI part is using Python.
 Please, I'm new to Rust, and we are studiants who are learning. Feel free to make review or reach us if you see garbage code, I would be happy to learn !
 
 # Stratego article 
-overleaf link : 
-https://fr.overleaf.com/project/60a9d5b4178b8c6388fc29b2
+Overleaf Links :
+https://www.overleaf.com/2628549423ydfggscvpgbr
 
 WIP :
 - [X] Templating
