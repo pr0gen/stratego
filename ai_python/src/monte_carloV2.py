@@ -6,6 +6,7 @@ from ai_python.src.utils import *
 import ai_python.src.stratego_engine as se
 from ai_python.src.stratego_engine import StrategoBoardWrapper
 from ai_python.src.random import choose_randomly
+from ai_python.src.random import RandomAI
 
 
 class MonteCarloV2AI(StrategoAI):
