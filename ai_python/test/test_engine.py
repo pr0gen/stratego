@@ -47,6 +47,7 @@ def test_basic_evaluation():
 def test_last_coup():
     board = se.rust_create_empty_stratego_board()
     board.place("Full", (1, "A"), 1, "Red")
+    print(board.display())
     board.moving((1, "A"), (2, "A")) # move a case
     
     last_coup, won = board.get_last_coup()
@@ -54,7 +55,7 @@ def test_last_coup():
     assert 'Empty' == _from['state']
     assert {'x': 1, 'y': 0} == _from['coordinate']
     assert {'m': (0, 0), 'rank': 'Null', 'color': 'None'} == _from['content']
-    assert won == False
+    assert won == 0
     
     to = last_coup[1]
     assert 'Full' == to['state']

@@ -98,6 +98,7 @@ class Cache(object):
 
     def delete_piece(self, coord: Tuple[int, int]):
         x, y = coord
+        print(x, y)
         new_pieces = []
         for piece in self._pieces:
             original_x, original_y = piece.position

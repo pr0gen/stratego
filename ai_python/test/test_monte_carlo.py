@@ -17,6 +17,7 @@ def _play_one_turn(board, move):
 def _play_many_turns(board, turns, ai, ai_2):
     for i in range(0, turns):
         print('=== START ', i, '=== ')
+        print(board.display())
         print('   === NOUS === ')
         _play_one_turn(board, ai.ask_next_move(board))
 
@@ -78,6 +79,7 @@ def test_monte_carlo_v2_opponent_attacks_first_opponent_won():
     assert piece.moved 
 
 
+
 def test_monte_carlo_v2_opponent_attacks_first_opponent_lost():
     with pytest.raises(CacheException) as e_info:
         cases = [
@@ -106,6 +108,37 @@ def test_monte_carlo_v2_opponent_attacks_first_opponent_lost():
         print(board.display())
 
         piece = ai.cache.get_piece((2, 0))
+        ai.cache.show()
+
+
+def test_monte_carlo_v2_opponent_attacks_first_both_loose():
+    with pytest.raises(CacheException) as e_info:
+        cases = [
+            ["03B", "-2B", "NOP"],
+            ["NOP", "NOP", "NOP"],
+            ["03R", "-2R", "NOP"],
+        ]
+        board = StrategoBoardWrapper(cases)
+        ai = MonteCarloV2AI('Blue', 1, 3)
+        ai_2 = RandomAI('Red')
+
+        print('=== Init ===')
+        ai.cache.reset_cache('Blue', 1, 3)
+        ai.cache.show()
+        print(board.display())
+        print('============')
+
+        #Red plays
+        _play_one_turn(board, ai_2.ask_next_move(board))
+        ai.cache.show()
+        print(board.display())
+
+        #Blue plays
+        _play_one_turn(board, ai.ask_next_move(board))
+        ai.cache.show()
+        print(board.display())
+
+        piece = ai.cache.get_piece((1, 0))
         ai.cache.show()
 
 
@@ -179,6 +212,37 @@ def test_monte_carlo_v2_we_attack_first_we_lost():
 
         assert piece.value == 6
         assert piece.moved == True
+
+
+def test_monte_carlo_v2_we_attack_first_both_loose():
+    with pytest.raises(CacheException) as e_info:
+        cases = [
+            ["03B", "-2B", "NOP"],
+            ["NOP", "NOP", "NOP"],
+            ["03R", "-2R", "NOP"],
+        ]
+        board = StrategoBoardWrapper(cases)
+        ai = MonteCarloV2AI('Red', 1, 3)
+        ai_2 = RandomAI('Blue')
+
+        print('=== Init ===')
+        ai.cache.reset_cache('Red', 1, 3)
+        ai.cache.show()
+        print(board.display())
+        print('============')
+
+        #Red plays
+        _play_one_turn(board, ai.ask_next_move(board))
+        ai.cache.show()
+        print(board.display())
+
+        #Blue plays
+        _play_one_turn(board, ai_2.ask_next_move(board))
+        ai.cache.show()
+        print(board.display())
+
+        piece = ai.cache.get_piece((1, 0))
+        ai.cache.show()
 
 
 def test_monte_carlo_2():
