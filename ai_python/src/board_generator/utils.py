@@ -113,3 +113,42 @@ def get_all_neighboor_index_from_position( p):
             neighboor.append((p.y + 1) * 10 + p.x)
 
         return neighboor
+
+
+def piece_to_value(piece):
+
+    if piece == Piece.Marshal:
+        return 9
+
+    if piece == Piece.General:
+        return 8
+
+    if piece == Piece.Colonel:
+        return 7
+
+    if piece == Piece.Major:
+        return 6
+
+    if piece == Piece.Captain:
+        return 5
+
+    if piece == Piece.Lieutenant:
+        return 4
+
+    if piece == Piece.Sergeant:
+        return 3
+
+    if piece == Piece.Miner:
+        return 5
+
+    if piece == Piece.Scout:
+        return 2
+
+    if piece == Piece.Spy:
+        return 1
+
+    if piece == Piece.Flag:
+        return -3
+
+    if piece == Piece.Bomb:
+        return 5

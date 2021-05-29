@@ -1,16 +1,18 @@
 import math
+import os
 import random
 import time
 
 from multiprocessing import Process, Queue, cpu_count
 
+from ai_python.src.board_generator.evaluationV2 import EvalV2
 from ai_python.src.board_generator.position import Position
 from ai_python.src.board_generator.board import Board
 from ai_python.src.board_generator.evaluation import Eval
 
 def mainV1(number_evaluation, queue):
 
-    eval = Eval()
+    eval = EvalV2()
     board = Board()
 
     number_boards = 0
@@ -27,30 +29,10 @@ def mainV1(number_evaluation, queue):
     queue.put(number_boards)
 
 
-def mainV2(number_evaluation, queue):
-
-    eval = Eval()
-    board = Board()
-
-    number_boards = 0
-    # f = open("boards.txt", "a")
-
-    for i in range(number_evaluation):
-        board.full_shuffle()
-        score = eval.get_score(board.board)
-        if score >= eval.get_max_score():
-            # f.write(board.to_string() + "\n")
-            number_boards += 1
-
-    # f.close()
-    queue.put(number_boards)
-
-
-
 
 def multi_cpu():
 
-    number_total_board = 10000000
+    number_total_board = 1000000
 
     number_cpu = cpu_count()
     number_board_per_cpu = (int) (number_total_board / number_cpu)
@@ -78,8 +60,28 @@ def multi_cpu():
 
 if __name__ == '__main__':
 
+    if os.path.exists("boards.txt"):
+        os.remove("boards.txt")
+    else:
+        print("The file does not exist")
+
     start_time = time.time()
-    multi_cpu()
+
+    eval = EvalV2()
+    board = Board()
+
+    board.full_shuffle()
+    results = []
+
+    for i in range(1):
+        board.full_shuffle()
+        print(eval.can_take_this_board(board.board))
+        #results.append(eval.can_take_this_board(board.board))
+
+    results = sorted(results)
+    print(results)
+
+  #  multi_cpu()
     # b = Board()
     #
     # for i in range(10):
