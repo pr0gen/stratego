@@ -23,6 +23,6 @@ class RandomAI(StrategoAI):
 
     def ask_next_move(self, board: StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
         move = choose_randomly(board, self.color)
-        print('Color', self.color, 'Move:', move)
+        # print('Color', self.color, 'Move:', move)
         return move
     
