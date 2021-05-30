@@ -27,7 +27,7 @@ def ask_next_move_monte_carlo(board: se.StrategoBoardWrapper, color: str) -> Tup
 
 
 def ask_next_move_monte_carlo_v2(board: se.StrategoBoardWrapper, color: str) -> Tuple[Tuple[int, str], Tuple[int, str]]:
-    monteCarlo = MonteCarloV2AI(color) # TODO
+    monteCarlo = MonteCarloV2AI(color, 4, 10) # TODO
     return monteCarlo.ask_next_move(board)
 
 

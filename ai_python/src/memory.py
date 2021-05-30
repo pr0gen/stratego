@@ -76,7 +76,8 @@ class Cache(object):
 
     def reset_cache(self, color, width, height):
         # Mainly for Tests pourpuses
-            self._pieces = create_pieces(color, width, height)
+        self._pieces = create_pieces(color, width, height)
+        print('Reseting cache')
         
 
     def get_piece(self, coord: Tuple[int, int]):

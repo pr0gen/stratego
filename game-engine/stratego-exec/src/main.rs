@@ -7,15 +7,15 @@ use stratego_lib::player::HumanPlayer;
 
 fn main() {
 
-    let board = engine_utils::create_stratego_board_from_file("./boards.txt", String::from("R"))
+    let board = engine_utils::create_stratego_board_from_file("./boards.txt", String::from("B"))
         .unwrap();
     let mut engine = StrategoEngine::new(
         // engine_utils::create_stratego_board_with_same_pieces(),
         board,
         (
-            Box::new(AIPlayer::new(Color::Red, String::from("singleton"))),
-            Box::new(HumanPlayer::new(Color::Blue, String::from("Tigran"))),
-            // Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
+            Box::new(AIPlayer::new(Color::Red, String::from("monte_carlo_v2"))),
+            Box::new(AIPlayer::new(Color::Blue, String::from("random"))),
+            // Box::new(HumanPlayer::new(Color::Blue, String::from("Tigran"))),
         ),
     );
 

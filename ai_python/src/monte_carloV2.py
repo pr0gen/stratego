@@ -50,6 +50,8 @@ class MonteCarloV2AI(StrategoAI):
 
         self.__store_our_move(board, move)
 
+        self.cache.show()
+
         return move
 
     def __generate_move(self, board: StrategoBoardWrapper) -> Tuple[Tuple[int, str], Tuple[int, str]]:
