@@ -22,29 +22,38 @@ class EvalV2():
 
     def can_take_this_board(self, board):
 
-        score = 0
-        index = 0
-
-        need_show = True
-
-        flag_found = False
         totalSum = 0
 
+        index = 0
+        flag_found = False
+        for piece in board:
+            if index > 10:
+                continue
+
+            if index == 10 and flag_found == False:
+                return 10000000
+
+            if piece == Piece.Flag:
+                flag_found = True
+
+            index += 1
+
+
         for x in range(5):
-            for y in range(2):
+            for y in range(3):
                 sum = 0
 
-                if need_show:
-                    Position((x * 2), y + 1).show()
-                    Position((x * 2) + 1, y + 1).show()
-                    Position((x * 2), y).show()
-                    Position((x * 2) + 1, y).show()
-                    print('===========')
+                # if False:
+                #     Position((x * 2), y).show()
+                #     Position((x * 2), y + 1).show()
+                #     Position((x * 2) + 1, y).show()
+                #     Position((x * 2) + 1, y + 1).show()
+                #     print('===========')
 
-                top_left_index = get_index_by_position(Position((x * 2), y + 1))
-                top_right_index = get_index_by_position(Position((x * 2) + 1, y + 1))
+                bottom_right_index = get_index_by_position(Position((x * 2), y + 1))
                 bottom_left_index = get_index_by_position(Position((x * 2), y))
-                bottom_right_index = get_index_by_position(Position((x * 2) + 1, y))
+                top_left_index = get_index_by_position(Position((x * 2) + 1, y + 1))
+                top_right_index = get_index_by_position(Position((x * 2) + 1, y))
 
                 sum += piece_to_value(board[top_left_index])
                 sum += piece_to_value(board[top_right_index])
@@ -53,19 +62,17 @@ class EvalV2():
 
                 totalSum += abs(sum - 15)
 
-        print('#####################################')
-        print('#####################################')
 
         for x in range(4):
-            for y in range(2):
+            for y in range(3):
                 sum = 0
 
-                if False:
-                    Position(((x + 1) * 2), y + 1).show()
-                    Position(((x + 1) * 2) + 1, y + 1).show()
-                    Position(((x + 1) * 2), y).show()
-                    Position(((x + 1) * 2) + 1, y).show()
-                    print('===========')
+                # if False:
+                #     Position(((x) * 2)+1, y).show()
+                #     Position(((x) * 2) + 2, y).show()
+                #     Position(((x) * 2)+1, y + 1).show()
+                #     Position(((x) * 2) + 2, y + 1).show()
+
 
                 top_left_index = get_index_by_position(Position(((x + 1) * 2), y + 1))
                 top_right_index = get_index_by_position(Position(((x + 1) * 2) + 1, y + 1))
@@ -81,44 +88,4 @@ class EvalV2():
 
 
 
-        print('#####################################')
-        print('#####################################')
-
-        for x in range(5):
-            for y in range(1):
-                sum = 0
-
-                if False:
-                    Position((x * 2), (y + 1) + 1).show()
-                    Position((x * 2) + 1, (y + 1) + 1).show()
-                    Position((x * 2), (y + 1)).show()
-                    Position((x * 2) + 1, (y + 1)).show()
-                    print('===========')
-
-                top_left_index = get_index_by_position(Position((x * 2), (y + 1) + 1))
-                top_right_index = get_index_by_position(Position((x * 2) + 1, (y + 1) + 1))
-                bottom_left_index = get_index_by_position(Position((x * 2), (y + 1)))
-                bottom_right_index = get_index_by_position(Position((x * 2) + 1, (y + 1)))
-
-                sum += piece_to_value(board[top_left_index])
-                sum += piece_to_value(board[top_right_index])
-                sum += piece_to_value(board[bottom_left_index])
-                sum += piece_to_value(board[bottom_right_index])
-
-                totalSum += abs(sum - 15)
-
         return totalSum
-
-    # print("=============", )
-    #    print("next ", )
-
-    #     print("bottom_left : ", )
-    #      Position((x * 2), y*2).show()
-    #       print("bottom_right : ", )
-    #        Position((x * 2) + 1, y*2).show()
-
-    #         print("top_left : ", )
-    #          Position((x * 2), (y*2) + 1).show()
-
-    #           print("top_right : ", )
-    #            Position((x * 2)+1, (y*2) + 1).show()

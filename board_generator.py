@@ -60,10 +60,12 @@ def multi_cpu():
 
 if __name__ == '__main__':
 
-    if os.path.exists("boards.txt"):
-        os.remove("boards.txt")
+    if os.path.exists("boards_balenced.txt"):
+        os.remove("boards_balenced.txt")
     else:
         print("The file does not exist")
+
+    f = open("boards_balenced.txt", "a")
 
     start_time = time.time()
 
@@ -73,12 +75,17 @@ if __name__ == '__main__':
     board.full_shuffle()
     results = []
 
-    for i in range(1):
+    number_boards = 5000000
+    for i in range(number_boards):
         board.full_shuffle()
-        print(eval.can_take_this_board(board.board))
-        #results.append(eval.can_take_this_board(board.board))
+        score = eval.can_take_this_board(board.board)
+        if score < 38:
+            results.append(eval.can_take_this_board(board.board))
+            f.write(board.to_string() + "\n")
 
     results = sorted(results)
+    print(str((len(results)/number_boards)*100)  + " %" )
+    print(str(len(results)) + " sur " + str(number_boards))
     print(results)
 
   #  multi_cpu()
