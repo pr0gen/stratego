@@ -106,7 +106,6 @@ class MonteCarloV2AI(StrategoAI):
 
     def __store_opponents_move(self, board: StrategoBoardWrapper):
         coup = board.get_last_coup()
-        print(coup)
 
         if coup is None:
             return  # This is the first turn
@@ -156,7 +155,6 @@ class MonteCarloV2AI(StrategoAI):
         elif from_rank == to_rank:  # both loose
             print('both loose')
             self.cache.delete_piece(co_to)
-        self.cache.show()
 
     def __get_material_range(self) -> List[int]:
         return list(range(0, 50))

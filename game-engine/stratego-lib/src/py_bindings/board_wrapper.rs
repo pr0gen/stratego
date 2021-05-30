@@ -79,6 +79,9 @@ impl StrategoBoardWrapper {
         }
     }
 
+    pub fn get_coup(&self) -> PyResult<i128> {
+        Ok(self.board.get_coup())
+    }
     pub fn clone_board(&self) -> Self {
         self.clone()
     }

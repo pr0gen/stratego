@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 pub struct StrategoBoard {
     cases: Vec<Vec<Case>>,
     last_coup: Option<((Case, Case), i8)>,
+    coup: i128,
 }
 
 impl StrategoBoard {
@@ -18,7 +19,12 @@ impl StrategoBoard {
         StrategoBoard {
             cases,
             last_coup: None,
+            coup: 0,
         }
+    }
+
+    pub fn get_coup(&self) -> i128 {
+        self.coup.clone()
     }
 
     fn move_piece_when_empty(
@@ -128,6 +134,7 @@ impl Board for StrategoBoard {
         let content = case.get_content();
         self.register_last_move(&move_action, has_kill, &content.get_color())?;
 
+        self.coup += 1;
         Ok(move_action)
     }
 

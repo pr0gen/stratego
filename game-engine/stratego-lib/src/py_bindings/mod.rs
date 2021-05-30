@@ -26,6 +26,7 @@ fn stratego_engine(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pyfunction!(rust_create_piece))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_empty_stratego_board))?;
     m.add_wrapped(wrap_pyfunction!(rust_create_stratego_board))?;
+    m.add_wrapped(wrap_pyfunction!(rust_create_random_board))?;
     m.add_wrapped(wrap_pyfunction!(
         rust_create_stratego_board_with_same_pieces
     ))?;
@@ -63,6 +64,15 @@ fn rust_create_empty_stratego_board() -> PyResult<StrategoBoardWrapper> {
 fn rust_create_stratego_board() -> PyResult<StrategoBoardWrapper> {
     let board = engine_utils::create_stratego_board();
     Ok(StrategoBoardWrapper::new(board))
+}
+
+#[pyfunction]
+fn rust_create_random_board(color: String) -> PyResult<StrategoBoardWrapper> {
+    if let Ok(board) = engine_utils::create_stratego_board_from_file("boards.txt", color) {
+        Ok(StrategoBoardWrapper::new(board))
+    } else {
+        panic!("Failed to create board")
+    }
 }
 
 #[pyfunction]

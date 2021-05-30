@@ -73,24 +73,9 @@ pub fn create_stratego_board_from_file(
     let length = content.len();
     let board_row = rand::thread_rng().gen_range(0, length);
     let board = content[board_row];
-    let board: Vec<&str> = board.split('|').collect();
+    let mut board: Vec<&str> = board.split('|').collect();
+    board.reverse();
     let mut cases: Vec<Vec<String>> = Vec::new();
-    let mut index = 0;
-    let mut parsed_row: Vec<String> = Vec::new();
-    for case in board {
-        parsed_row.push(format!("{}{}", case, color));
-        if index == 9 {
-            cases.push(parsed_row);
-            parsed_row = Vec::new();
-            index = 0;
-        } else {
-            index += 1;
-        }
-    }
-
-    // Add the two rows in the center
-    cases.push(get_middle_row());
-    cases.push(get_middle_row());
 
     let mut pieces = piece_utils::list_pieces();
     pieces.shuffle(&mut rand::thread_rng());
@@ -117,12 +102,25 @@ pub fn create_stratego_board_from_file(
         }
     }
     
+    // Add the two rows in the center
+    cases.push(get_middle_row());
+    cases.push(get_middle_row());
 
-    println!("{:?}", cases);
-    let board = StrategoBoard::new(board_wrapper::parse_python_cases(cases));
-    println!("{}", board.display());
 
-    Ok(board)
+    let mut index = 0;
+    let mut parsed_row: Vec<String> = Vec::new();
+    for case in board {
+        parsed_row.push(format!("{}{}", case, color));
+        if index == 9 {
+            cases.push(parsed_row);
+            parsed_row = Vec::new();
+            index = 0;
+        } else {
+            index += 1;
+        }
+    }
+
+    Ok(StrategoBoard::new(board_wrapper::parse_python_cases(cases)))
 }
 
 fn read_file(file_name: &str) -> Result<String, StrategoError> {
