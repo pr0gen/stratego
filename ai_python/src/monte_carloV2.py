@@ -74,33 +74,35 @@ class MonteCarloV2AI(StrategoAI):
 
     def __move_to_score(self, board, move):
         _from, to = move
-        # print("ma pieeeeeeeeeeeeecccccccceeeeeeeeeee")
         from_case = board.at(_from)
 
         _from = (_from[0], self.letter_to_int(_from[1]))
         to = (to[0], self.letter_to_int(to[1]))
 
         my_piece_value = self.__convert_rank(from_case['content']['rank'])
-        # print(my_piece_value)
 
         try:
             piece = self.cache.get_piece(to)
 
             if piece.value is not None:
                 if piece.value < my_piece_value:
-                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    return 500
+                    return 10000
+
+                elif piece.value >= my_piece_value:
+                    return -10000
+
+            # 3 == miner
+            if my_piece_value == 3 and piece.moved:
+                return -7500
+
+            if my_piece_value == 3 and piece.moved is False:
+                return 7500
 
 
         except CacheException:
-            return 0
+            return 1000 - (my_piece_value**3)
 
-        return 0
+        return 1000 - (my_piece_value ** 3)
 
     def __store_opponents_move(self, board: StrategoBoardWrapper):
         coup = board.get_last_coup()
