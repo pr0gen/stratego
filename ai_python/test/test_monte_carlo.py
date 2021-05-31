@@ -29,7 +29,6 @@ def _play_many_turns(board, turns, ai, ai_2):
 
         print('=== END === ')
 
-
 # It is merly a test to debug the ai 
 def test_monte_carlo(): 
     cases = [
@@ -43,7 +42,6 @@ def test_monte_carlo():
     print(board.display())
     ai = MonteCarloAI('Blue', 4, 2) 
     move = ai.ask_next_move(board)
-    
     
 
 def test_monte_carlo_v2_opponent_attacks_first_opponent_won():

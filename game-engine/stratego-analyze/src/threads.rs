@@ -18,6 +18,7 @@ pub fn spawn_thread_for_stratego(
 ) -> Result<JoinHandle<()>, StrategoError> {
     Ok(thread::Builder::new()
         .name(format!("ANALYZE - {}", thread_number))
+
         .spawn(move || play_one_game(file_name, first_ai_name,  second_ai_name,  thread_number as i32))
         .unwrap())
 }

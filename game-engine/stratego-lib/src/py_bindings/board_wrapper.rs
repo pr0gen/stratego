@@ -23,6 +23,7 @@ pub fn parse_python_cases(py_cases: Vec<Vec<PyCase>>) -> Vec<Vec<Case>> {
         let col_len = py_cases[x].len() - 1;
         let mut row_parsed = Vec::with_capacity(col_len);
         for y in 0..=col_len {
+
             let case = py_cases[x][y].clone();
             row_parsed.push(parse_python_case(case, x as i16, y as i16));
         }
