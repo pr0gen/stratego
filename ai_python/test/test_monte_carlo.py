@@ -284,4 +284,3 @@ def test_monte_carlo_2():
     ai.cache.show()
     print(board.display())
 
-    assert 1 == 0
