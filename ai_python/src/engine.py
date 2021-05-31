@@ -1,6 +1,8 @@
 from typing import Tuple, List
 import enum 
 import ai_python.src.stratego_engine as se
+
+from ai_python.src.monte_carloV2 import MonteCarloV2AI
 from ai_python.src.utils import generate_uuid, StrategoAI, TestStrategoAI
 from ai_python.src.monte_carlo import MonteCarloAI
 from ai_python.src.random import RandomAI
@@ -51,7 +53,8 @@ def play_with_ai(data: AIRequest, game: Game) -> Tuple[Tuple[int, str], Tuple[in
     color = data.color
     switcher = {
         RandomAI.name: RandomAI(color),
-        MonteCarloAI.name : MonteCarloAI(color) 
+        MonteCarloAI.name : MonteCarloAI(color),
+        MonteCarloV2AI.name : MonteCarloV2AI(color)
     }
     ai = switcher.get(data.ai_name)
     return ai.ask_next_move(game.board)

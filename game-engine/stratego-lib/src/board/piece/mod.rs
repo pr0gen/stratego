@@ -42,6 +42,26 @@ pub enum PieceType {
     Flag = -1,
 }
 
+impl PieceType { 
+    pub fn for_python(&self) -> i8 {
+        match &self {
+            PieceType::Null => -10,
+            PieceType::Bomb => -2,
+            PieceType::Marshal => 10,
+            PieceType::General => 9,
+            PieceType::Colonel => 8,
+            PieceType::Major => 7,
+            PieceType::Captain => 6,
+            PieceType::Lieutenant => 5,
+            PieceType::Sergeant => 4,
+            PieceType::Miner => 3,
+            PieceType::Scout => 2,
+            PieceType::Spy => 1,
+            PieceType::Flag => -1,
+        }
+    }
+}
+
 impl Into<Color> for PyColor {
     fn into(self) -> Color {
         match self.as_str() {
